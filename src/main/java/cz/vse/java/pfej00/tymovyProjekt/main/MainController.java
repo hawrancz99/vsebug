@@ -1,5 +1,10 @@
 package cz.vse.java.pfej00.tymovyProjekt.main;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.vse.java.pfej00.tymovyProjekt.Model.IssueDto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,6 +13,8 @@ import javafx.scene.control.TextField;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.List;
+
 
 public class MainController {
     @FXML
@@ -35,10 +42,10 @@ public class MainController {
         System.out.println(sendGet());
 
     }
-    private String sendGet() throws Exception {
+    private List<IssueDto> sendGet() throws Exception {
 
         Request request = new Request.Builder()
-                .url("https://www.google.com/search?q=mkyong")
+                .url("https://vsebug-be.herokuapp.com/issues/")
                 .addHeader("custom-key", "mkyong")  // add request headers
                 .addHeader("User-Agent", "OkHttp Bot")
                 .build();
@@ -47,8 +54,16 @@ public class MainController {
 
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
+            String json = response.body().string();
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            List<IssueDto> issueDto = objectMapper.reader().forType(new TypeReference<List<IssueDto>>() {}).readValue(json);
+            System.out.println(issueDto.get(0).getName());
+            output.getItems().addAll(issueDto);
+            return issueDto;
+
+
             // Get response body
-            return response.body().string();
         }
     }
     private void sendPost() throws Exception {
@@ -61,7 +76,7 @@ public class MainController {
                 .build();
 
         Request request = new Request.Builder()
-                .url("https://httpbin.org/post")
+                .url("https://vsebug-be.herokuapp.com/issues/")
                 .addHeader("User-Agent", "OkHttp Bot")
                 .post(formBody)
                 .build();
