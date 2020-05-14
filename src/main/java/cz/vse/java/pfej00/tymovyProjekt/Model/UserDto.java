@@ -4,11 +4,17 @@ public class UserDto {
     private String username;
     private String password;
     private int roleID;
+    private RoleDto roleName;
 
-    public UserDto(String username, String password, int roleID) {
+    public UserDto(String username, String password, int roleID, RoleDto roleName) {
         this.username = username;
         this.password = password;
         this.roleID = roleID;
+        this.roleName = roleName;
+    }
+
+    public UserDto() {
+        super();
     }
 
     public String getUsername() {
@@ -33,5 +39,13 @@ public class UserDto {
 
     public void setRoleID(int roleID) {
         this.roleID = roleID;
+    }
+
+    public RoleDto getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(RoleDto roleName) {
+        this.roleName = roleName;
     }
 }

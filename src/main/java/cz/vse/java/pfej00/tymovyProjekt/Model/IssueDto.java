@@ -1,20 +1,31 @@
 package cz.vse.java.pfej00.tymovyProjekt.Model;
 
+import java.util.Date;
+
 public class IssueDto {
     private String name;
     private String description;
-    private long project;
+    private int projectId;
+    private int stateId;
+    private int userId;
+    private Date created;
+    private UserDto assignee;
+    private StateDto stateName;
 
-    public IssueDto(){
-        super();
-    }
-
-    public IssueDto( String name, String description, long project) {
+    public IssueDto(String name, String description, int projectId, int stateId, int userId, Date created, UserDto assignee, StateDto stateName) {
         this.name = name;
         this.description = description;
-        this.project = project;
+        this.projectId = projectId;
+        this.stateId = stateId;
+        this.userId = userId;
+        this.created = created;
+        this.assignee = assignee;
+        this.stateName = stateName;
     }
 
+    public IssueDto() {
+        super();
+    }
 
     public String getName() {
         return name;
@@ -32,16 +43,56 @@ public class IssueDto {
         this.description = description;
     }
 
-    public long getProject() {
-        return project;
+    public int getProjectId() {
+        return projectId;
     }
 
-    public void setProject(long project) {
-        this.project = project;
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
+
+    public int getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(int stateId) {
+        this.stateId = stateId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public UserDto getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(UserDto assignee) {
+        this.assignee = assignee;
+    }
+
+    public StateDto getStateName() {
+        return stateName;
+    }
+
+    public void setStateName(StateDto stateName) {
+        this.stateName = stateName;
     }
 
     @Override
     public String toString() {
-        return project + " " + name + " " + description;
+        return name + " " + description;
     }
 }

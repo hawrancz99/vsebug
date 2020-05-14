@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ProjectDto {
-    private long Id;
+    private int id;
     private String name;
     private String description;
     private Date created;
@@ -14,20 +14,20 @@ public class ProjectDto {
         super();
     }
 
-    public ProjectDto(long id, String name, String description, Date created, List<IssueDto> issues) {
-        Id = id;
+    public ProjectDto(int id, String name, String description, Date created, List<IssueDto> issues) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.created = created;
         this.issues = issues;
     }
 
-    public long getId() {
-        return Id;
+    public int getId() {
+        return id;
     }
 
-    public void setId(long id) {
-        Id = id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

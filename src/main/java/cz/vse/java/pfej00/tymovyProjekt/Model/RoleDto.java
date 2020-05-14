@@ -4,15 +4,20 @@ public class RoleDto {
 
     private String role;
 
-    public String getRole() {
-        return role;
+    public RoleDto() {
+        super();
     }
 
     public RoleDto(String role) {
         this.role = role;
     }
 
-    public RoleDto() {
-        super();
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
