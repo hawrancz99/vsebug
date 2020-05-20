@@ -2,14 +2,12 @@ package cz.vse.java.pfej00.tymovyProjekt.Model;
 
 public class UserDto {
     private String username;
-    private String password;
-    private int roleID;
+    private int role;
     private RoleDto roleName;
 
-    public UserDto(String username, String password, int roleID, RoleDto roleName) {
+    public UserDto(String username, int role, RoleDto roleName) {
         this.username = username;
-        this.password = password;
-        this.roleID = roleID;
+        this.role = role;
         this.roleName = roleName;
     }
 
@@ -25,20 +23,13 @@ public class UserDto {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public int getRoleID() {
-        return roleID;
+        return role;
     }
 
     public void setRoleID(int roleID) {
-        this.roleID = roleID;
+        this.role = roleID;
     }
 
     public RoleDto getRoleName() {
