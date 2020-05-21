@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.vse.java.pfej00.tymovyProjekt.Model.IssueDto;
+import cz.vse.java.pfej00.tymovyProjekt.builders.PopupBuilder;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -33,7 +34,6 @@ public class MainController {
     @FXML
     public Button login;
 
-    //TODO
     @FXML
     public TextField passwordLoginField = new TextField();
     @FXML
@@ -139,14 +139,10 @@ public class MainController {
 
     public void onSuccessLoginOpenProjects(MouseEvent mouseEvent) throws IOException {
         if(usernameLoginField.getText().isEmpty() || passwordLoginField.getText().isEmpty()){
-            WebView webView = new WebView();
-            webView.getEngine().load(getClass().getResource("/allFieldsValid.html").toExternalForm());
-            Stage stage = new Stage();
-            stage.setScene(new Scene(webView, 400, 100));
-          //  stage.setTitle("Musíš vyplnit Password i Username");
-            stage.initStyle(StageStyle.UTILITY);
-            stage.show();
+            PopupBuilder.loadPopup("/allFieldsValid.html");
         } else if(isUserInDatabase(usernameLoginField.getText(), passwordLoginField.getText())){
+
+            //tady je success - otevřou se "projekty" - neni zatim screena
             Stage stage = (Stage) usernameLoginField.getScene().getWindow();
             stage.close();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main.fxml"));
@@ -158,13 +154,7 @@ public class MainController {
             primaryStage.show();
             primaryStage.setOnCloseRequest(Event::consume);
         }else{
-            WebView webView = new WebView();
-            webView.getEngine().load(getClass().getResource("/unknownCredentials.html").toExternalForm());
-            Stage stage = new Stage();
-            stage.initStyle(StageStyle.UTILITY);
-            stage.setScene(new Scene(webView, 400, 100));
-         //   stage.setTitle("Špatná kombinace hesla a username");
-            stage.show();
+            PopupBuilder.loadPopup("/unknownCredentials.html");
         }
     }
 }

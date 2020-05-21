@@ -1,5 +1,6 @@
 package cz.vse.java.pfej00.tymovyProjekt.main;
 
+import cz.vse.java.pfej00.tymovyProjekt.builders.PopupBuilder;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -78,11 +79,12 @@ public class RegisterController {
         //zavolá se getUsers? abych si ušetřil čekání při registraci? zjistit dobu trvání
     }
 
-    public void setRegisterNewUser(ActionEvent actionEvent) throws Exception {
+    public void setRegisterNewUser(ActionEvent actionEvent){
         Set<String> allDatabaseUsers = new HashSet<>();//zjistit všechny uživatele - pokud ne už v inicializaci - to je možná moudřejší
 
         if(usernameField.getText().isEmpty() || passwordField.getText().isEmpty() || rolesOption.getSelectionModel().getSelectedItem() == null){
-           loadPopup("Musíš vyplnit všechna pole", "/allFieldsValid.html");
+           PopupBuilder.loadPopup("/allFieldsValid.html");
+            clear();
         } else if(isUserUnique(allDatabaseUsers, usernameField.getText())){
             if(passwordField.getText().matches("(?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#$%!]).{8,40}"))
             {
@@ -92,11 +94,13 @@ public class RegisterController {
                 stage.close();
             }
             else{
-                loadPopup("Heslo je příliš slabé", "/popup.html");
+                PopupBuilder.loadPopup("/popup.html");
+                clear();
             }
         }
         else {
-            loadPopup("Username je obsazený", "/userNotUnique.html");
+            PopupBuilder.loadPopup("/userNotUnique.html");
+            clear();
         }
     }
 
@@ -104,26 +108,6 @@ public class RegisterController {
         this.registerButton = registerButton;
     }
 
-
-    private void loadPopup(String s, String popup) throws InterruptedException {
-        WebView webView = new WebView();
-        webView.getEngine().load(getClass().getResource(popup).toExternalForm());
-        Stage stage = new Stage();
-        stage.setScene(new Scene(webView, 200, 200));
-        stage.setTitle(s);
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.show();
-        usernameField.clear();
-        passwordField.clear();
-        rolesOption.getSelectionModel().clearSelection();
-      /*  long mTime = System.currentTimeMillis();
-        long end = mTime + 2000; // 5 seconds
-        while (mTime < end)
-        {
-            mTime = System.currentTimeMillis();
-        } */
-      Thread.sleep(2000);
-    }
 
     public void getValueFromCombobox(MouseEvent mouseEvent) throws Exception {
 
@@ -138,7 +122,13 @@ public class RegisterController {
     private boolean isUserUnique(Set<String> allUsers, String username){
         boolean isUnique = allUsers.stream().anyMatch(userFromDatabase -> userFromDatabase.equals(username));
         //až budou data, vrátím isUnique
-        return  false;
+        return  true;
+    }
+
+    private void clear(){
+        usernameField.clear();
+        passwordField.clear();
+        rolesOption.getSelectionModel().clearSelection();
     }
 
 }
