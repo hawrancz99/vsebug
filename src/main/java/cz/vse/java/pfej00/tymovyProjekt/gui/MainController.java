@@ -30,10 +30,6 @@ import java.util.List;
 
 public class MainController {
     @FXML
-    public TextField input;
-    @FXML
-    public ListView output;
-    @FXML
     public Button register;
     @FXML
     public Button login;
@@ -60,13 +56,6 @@ public class MainController {
 
     }
 
-    public void sendMessage(ActionEvent actionEvent) throws Exception {
-        String text = input.getText();
-
-        System.out.println("Testing 1 - Send Http GET request");
-       // System.out.println(sendGet());
-
-    }
 
 
     private void sendPost() throws Exception {

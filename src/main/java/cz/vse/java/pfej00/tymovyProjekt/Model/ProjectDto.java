@@ -61,4 +61,14 @@ public class ProjectDto {
     public void setIssues(List<IssueDto> issues) {
         this.issues = issues;
     }
+
+    @Override
+    public String toString() {
+        return "ProjectDto{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", created=" + created +
+                ", issues=" + issues +
+                '}';
+    }
 }

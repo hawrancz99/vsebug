@@ -80,23 +80,21 @@ public class RegisterController {
                 stage.close();
             }
         });
-        //zavolá se getUsers? abych si ušetřil čekání při registraci? zjistit dobu trvání
     }
 
     public void setRegisterNewUser(ActionEvent actionEvent) throws Exception {
-        Set<String> allDatabaseUsers = new HashSet<>();//zjistit všechny uživatele - pokud ne už v inicializaci - to je možná moudřejší
 
         if(usernameField.getText().isEmpty() || passwordField.getText().isEmpty() || rolesOption.getSelectionModel().getSelectedItem() == null){
            PopupBuilder.loadPopup("/allFieldsValid.html");
             clear();
-        } else if(isUserUnique(allDatabaseUsers, usernameField.getText())){
-            if(!passwordField.getText().isEmpty())
-            {
+        }
+        else if(!passwordField.getText().isEmpty()) {
+
                 JSONObject post = new JSONObject();
                 post.put("username", usernameField.getText());
                 post.put("password", passwordField.getText());
                 post.put("role", 1);
-                ClientCallerTask clientCallerTask = new ClientCallerTask("registerNewUser", post.toString());
+                ClientCallerTask clientCallerTask = new ClientCallerTask("sendRegisterNewUser", post.toString());
                 Response response = clientCallerTask.call();
                 if(!response.isSuccessful()){
                     PopupBuilder.loadPopup("/userNotUnique.html");
@@ -108,14 +106,9 @@ public class RegisterController {
                 }
             }
             else{
-                PopupBuilder.loadPopup("/popup.html");
+                PopupBuilder.loadPopup("/passwordIsWeak.html");
                 clear();
             }
-        }
-        else {
-            PopupBuilder.loadPopup("/userNotUnique.html");
-            clear();
-        }
     }
 
     public void setRegisterButton(Button registerButton){
@@ -132,12 +125,6 @@ public class RegisterController {
         System.out.println(chosenRole);
     }
 
-
-    private boolean isUserUnique(Set<String> allUsers, String username){
-        boolean isUnique = allUsers.stream().anyMatch(userFromDatabase -> userFromDatabase.equals(username));
-        //až budou data, vrátím isUnique
-        return  true;
-    }
 
     private void clear(){
         usernameField.clear();

@@ -1,5 +1,9 @@
 package cz.vse.java.pfej00.tymovyProjekt.task;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import cz.vse.java.pfej00.tymovyProjekt.main.ServerClient;
 import javafx.concurrent.Task;
 import okhttp3.Response;
@@ -25,16 +29,26 @@ public class ClientCallerTask extends Task<Response> {
     @Override
     public Response call() throws Exception {
         if (url.equals("sendGetIssues")) {
+            logger.info("Getting issues");
            return SERVER_CLIENT.sendGetIssues();
         }
         if (url.equals("sendUpdateIssue")) {
+            //tohle je hloupý, jen zkouška
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            final ObjectNode node = new ObjectMapper().readValue(post, ObjectNode.class);
+            JsonNode token = node.get("name");
+            logger.info("Updating issue {}", token.asText());
            return SERVER_CLIENT.sendUpdateIssue();
         }
         if (url.equals("sendLoginUser")) {
             return SERVER_CLIENT.sendLoginUser(post);
         }
-        if (url.equals("registerNewUser")) {
+        if (url.equals("sendRegisterNewUser")) {
             return SERVER_CLIENT.sendRegisterNewUser(post);
+        }
+        if (url.equals("sendGetProject")) {
+            return SERVER_CLIENT.sendGetProjects();
         }
         return null;
     }
