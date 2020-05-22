@@ -1,6 +1,7 @@
-package cz.vse.java.pfej00.tymovyProjekt.main;
+package cz.vse.java.pfej00.tymovyProjekt.gui;
 
 import cz.vse.java.pfej00.tymovyProjekt.builders.PopupBuilder;
+import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -12,6 +13,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import okhttp3.Response;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -39,6 +42,7 @@ public class RegisterController {
     public void initialize() {
         ROLES.add("Developer");
         ROLES.add("Tester");
+        ROLES.add("Analytic");
         rolesOption.getItems().setAll(ROLES);
         registerNewUser.setDisable(false);
 
@@ -79,19 +83,29 @@ public class RegisterController {
         //zavolá se getUsers? abych si ušetřil čekání při registraci? zjistit dobu trvání
     }
 
-    public void setRegisterNewUser(ActionEvent actionEvent){
+    public void setRegisterNewUser(ActionEvent actionEvent) throws Exception {
         Set<String> allDatabaseUsers = new HashSet<>();//zjistit všechny uživatele - pokud ne už v inicializaci - to je možná moudřejší
 
         if(usernameField.getText().isEmpty() || passwordField.getText().isEmpty() || rolesOption.getSelectionModel().getSelectedItem() == null){
            PopupBuilder.loadPopup("/allFieldsValid.html");
             clear();
         } else if(isUserUnique(allDatabaseUsers, usernameField.getText())){
-            if(passwordField.getText().matches("(?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#$%!]).{8,40}"))
+            if(!passwordField.getText().isEmpty())
             {
-                System.out.println("heslo splňuje podmínky");
-                registerButton.setDisable(false);
-                Stage stage = (Stage) registerNewUser.getScene().getWindow();
-                stage.close();
+                JSONObject post = new JSONObject();
+                post.put("username", usernameField.getText());
+                post.put("password", passwordField.getText());
+                post.put("role", 1);
+                ClientCallerTask clientCallerTask = new ClientCallerTask("registerNewUser", post.toString());
+                Response response = clientCallerTask.call();
+                if(!response.isSuccessful()){
+                    PopupBuilder.loadPopup("/userNotUnique.html");
+                    clear();
+                }else {
+                    registerButton.setDisable(false);
+                    Stage stage = (Stage) registerNewUser.getScene().getWindow();
+                    stage.close();
+                }
             }
             else{
                 PopupBuilder.loadPopup("/popup.html");

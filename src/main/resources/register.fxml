@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:controller="cz.vse.java.pfej00.tymovyProjekt.main.RegisterController" prefHeight="500.0" prefWidth="347.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.RegisterController" prefHeight="500.0" prefWidth="347.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <PasswordField fx:id="passwordField" layoutX="100.0" layoutY="244.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-color: #0598ff; -fx-border-width: 0px0px2px0px;" />
       <TextField fx:id="usernameField" layoutX="100.0" layoutY="192.0" promptText="Username" style="-fx-background-color: transparent; -fx-border-color: #0598ff; -fx-border-width: 0px0px2px0px;" />

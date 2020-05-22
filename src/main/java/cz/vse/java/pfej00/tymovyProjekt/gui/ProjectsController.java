@@ -1,4 +1,4 @@
-package cz.vse.java.pfej00.tymovyProjekt.main;
+package cz.vse.java.pfej00.tymovyProjekt.gui;
 
 
 import javafx.event.ActionEvent;

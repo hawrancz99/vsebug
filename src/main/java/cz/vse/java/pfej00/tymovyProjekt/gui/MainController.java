@@ -1,12 +1,16 @@
-package cz.vse.java.pfej00.tymovyProjekt.main;
+package cz.vse.java.pfej00.tymovyProjekt.gui;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import cz.vse.java.pfej00.tymovyProjekt.Model.IssueDto;
+import cz.vse.java.pfej00.tymovyProjekt.Model.TokenDto;
 import cz.vse.java.pfej00.tymovyProjekt.builders.PopupBuilder;
+import cz.vse.java.pfej00.tymovyProjekt.main.ServerClient;
+import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,10 +19,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import okhttp3.*;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -41,6 +45,8 @@ public class MainController {
 
     private final OkHttpClient httpClient;
 
+    private final String LOGIN_USER = "sendLoginUser";
+
 
     public MainController()
     {
@@ -58,33 +64,11 @@ public class MainController {
         String text = input.getText();
 
         System.out.println("Testing 1 - Send Http GET request");
-        System.out.println(sendGet());
+       // System.out.println(sendGet());
 
     }
-    private List<IssueDto> sendGet() throws Exception {
-
-        Request request = new Request.Builder()
-                .url("https://vsebug-be.herokuapp.com/issues/")
-                .addHeader("custom-key", "mkyong")  // add request headers
-                .addHeader("User-Agent", "OkHttp Bot")
-                .build();
-
-        try (Response response = httpClient.newCall(request).execute()) {
-
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-            String json = response.body().string();
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-            List<IssueDto> issueDto = objectMapper.reader().forType(new TypeReference<List<IssueDto>>() {}).readValue(json);
-            System.out.println(issueDto.get(0).getName());
-            output.getItems().addAll(issueDto);
-            return issueDto;
 
 
-            // Get response body
-        }
-    }
     private void sendPost() throws Exception {
 
         // form parameters
@@ -129,32 +113,52 @@ public class MainController {
         primaryStage.setTitle("");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-        primaryStage.setOnCloseRequest(Event::consume);
+        //tohle umožní kliknout znovu na editovat v případě, že se zavře přes křížek
+        primaryStage.setOnCloseRequest(Event ->
+               register.setDisable(false));
     }
 
-    private boolean isUserInDatabase(String username, String password){
-        //zatim takhle
+    private boolean isUserInDatabase(String username, String password) throws Exception {
+        JSONObject post = new JSONObject();
+        post.put("username", username);
+        post.put("password", password);
+
+        ClientCallerTask clientCallerTask = new ClientCallerTask(LOGIN_USER, post.toString());
+        Response response = clientCallerTask.call();
+        if(response.isSuccessful()){
+            String json = response.body().string();
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
+            JsonNode token = node.get("access");
+            TokenDto.getTOKEN().setTokenValue(token.asText());
+            return true;
+        }
         return false;
     }
 
-    public void onSuccessLoginOpenProjects(MouseEvent mouseEvent) throws IOException {
+    public void onSuccessLoginOpenProjects(MouseEvent mouseEvent) throws Exception {
         if(usernameLoginField.getText().isEmpty() || passwordLoginField.getText().isEmpty()){
             PopupBuilder.loadPopup("/allFieldsValid.html");
+            clear();
         } else if(isUserInDatabase(usernameLoginField.getText(), passwordLoginField.getText())){
-
             //tady je success - otevřou se "projekty" - neni zatim screena
             Stage stage = (Stage) usernameLoginField.getScene().getWindow();
             stage.close();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main.fxml"));
-            Parent root = fxmlLoader.load();
+            Parent root = new FXMLLoader(getClass().getResource("/main.fxml")).load();
             Stage primaryStage = new Stage();
             primaryStage.initStyle(StageStyle.UTILITY);
             primaryStage.setTitle("");
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
-            primaryStage.setOnCloseRequest(Event::consume);
         }else{
             PopupBuilder.loadPopup("/unknownCredentials.html");
+            clear();
         }
+    }
+
+    private void clear(){
+        usernameLoginField.clear();
+        passwordLoginField.clear();
     }
 }

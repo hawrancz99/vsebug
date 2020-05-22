@@ -7,7 +7,6 @@ public class UserDto {
 
     public UserDto(String username, int role, RoleDto roleName) {
         this.username = username;
-        this.role = role;
         this.roleName = roleName;
     }
 
