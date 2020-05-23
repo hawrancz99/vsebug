@@ -14,6 +14,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import okhttp3.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -25,14 +27,18 @@ public class RegisterController {
 
     @FXML
     public Button registerNewUser;
+
     @FXML
     public ComboBox<String> rolesOption = new ComboBox<>();
 
     @FXML
     public TextField usernameField = new TextField();
-    //TODO
+
     @FXML
     public TextField passwordField = new TextField();
+
+    @FXML
+    public Button closeBtn;
 
     private final List<String> ROLES = new ArrayList<>();
 
@@ -40,8 +46,7 @@ public class RegisterController {
 
     private final String REGISTER_USER = "sendRegisterNewUser";
 
-    @FXML
-    public Button closeBtn;
+    private static final Logger logger = LogManager.getLogger(ClientCallerTask.class);
 
     @FXML
     public void initialize() {
@@ -96,8 +101,10 @@ public class RegisterController {
                         registerButton.setDisable(false);
                         Stage stage = (Stage) registerNewUser.getScene().getWindow();
                         stage.close();
+                        logger.info("New user: {} registered successfully", usernameField.getText());
                     }else{
                         PopupBuilder.loadPopup("/userNotUnique.html");
+                        logger.info("Registering new user failed, username: {} already exists", usernameField.getText());
                         clear();
                     }
                 } catch (InterruptedException | ExecutionException e) {

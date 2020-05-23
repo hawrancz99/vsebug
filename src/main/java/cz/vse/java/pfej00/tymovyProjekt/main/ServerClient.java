@@ -4,6 +4,8 @@ import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import okhttp3.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
 
 import java.io.IOException;
 
@@ -23,7 +25,14 @@ public class ServerClient {
                 .post(body)
                 .build();
 
-        return httpClient.newCall(request).execute();
+        try {
+            logger.info("Registering user {}", post);
+            return httpClient.newCall(request).execute();
+        }
+        catch (IOException e) {
+            logger.error("Error while registering user caused by {}", e.getMessage());
+        }
+        return null;
     }
 
     public Response sendLoginUser(String post) throws Exception {
@@ -35,11 +44,11 @@ public class ServerClient {
                     .build();
 
         try {
-            logger.info("Logging user");
+            logger.info("Logging user with credentials {}", post);
             return httpClient.newCall(request).execute();
         }
         catch (IOException e) {
-            logger.info("Logging user faield, because of {}", e.getMessage());
+            logger.error("Logging user failed, because of {}", e.getMessage());
         }
         return null;
     }
@@ -53,9 +62,14 @@ public class ServerClient {
                 .addHeader("User-Agent", "OkHttp Bot")
                 .build();
 
-        try (Response response = httpClient.newCall(request).execute()) {
-            return response;
+        try {
+            logger.info("Getting issues");
+            return httpClient.newCall(request).execute();
         }
+        catch (IOException e) {
+            logger.error("Error occurred while getting issues, caused by {}", e.getMessage());
+        }
+        return null;
     }
 
     public Response sendUpdateIssue() throws Exception {
@@ -69,13 +83,27 @@ public class ServerClient {
         Request request = new Request.Builder()
                 .url("https://vsebug-be.herokuapp.com/projects/")
                 .build();
-        return httpClient.newCall(request).execute();
+        try {
+            logger.info("Getting projects");
+            return httpClient.newCall(request).execute();
+        }
+        catch (IOException e) {
+            logger.error("Error occurred while getting projects, caused by {}", e.getMessage());
+        }
+        return null;
     }
 
     //nevim routu
     public Response sendUpdateProject() throws Exception {
         RequestBody requestBody = RequestBody.create("asdawd".getBytes());
         Request request = new Request.Builder().method("POST", requestBody).build();
-        return httpClient.newCall(request).execute();
+        try {
+            logger.info("Updating project");
+            return httpClient.newCall(request).execute();
+        }
+        catch (IOException e) {
+            logger.error("Error occurred while updating project, caused by {}", e.getMessage());
+        }
+        return null;
     }
 }

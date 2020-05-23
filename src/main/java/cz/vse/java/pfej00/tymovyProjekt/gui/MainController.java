@@ -19,6 +19,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import okhttp3.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Objects;
@@ -40,6 +42,8 @@ public class MainController {
 
 
     private final String LOGIN_USER = "sendLoginUser";
+
+    private static final Logger logger = LogManager.getLogger(ClientCallerTask.class);
 
 
     public MainController() {
@@ -97,12 +101,14 @@ public class MainController {
                             final ObjectNode node = new ObjectMapper().readValue(json, ObjectNode.class);
                             JsonNode token = node.get("access");
                             TokenDto.getTOKEN().setTokenValue(token.asText());
+                            logger.info("User: {} logged successfully", usernameLoginField.getText());
                             loadProjects();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     } else {
                         PopupBuilder.loadPopup("/unknownCredentials.html");
+                        logger.warn("Unknown credentials used for login, username: {}, password: {}", usernameLoginField.getText(), passwordLoginField.getText());
                         clear();
                     }
                 } catch (InterruptedException | ExecutionException e) {
