@@ -27,7 +27,7 @@
          <children>
             <PasswordField fx:id="passwordLoginField" layoutX="100.0" layoutY="244.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-color: #0598ff; -fx-border-width: 0px0px2px0px;" />
             <TextField fx:id="usernameLoginField" layoutX="100.0" layoutY="192.0" promptText="Username" style="-fx-background-color: transparent; -fx-border-color: #0598ff; -fx-border-width: 0px0px2px0px;" />
-            <Button fx:id="login" onMouseClicked="#onSuccessLoginOpenProjects" layoutX="139.0" layoutY="294.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="70.0" style="-fx-background-color: #0598ff;" text="Login" textFill="WHITE" />
+            <Button fx:id="login" layoutX="139.0" layoutY="294.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="70.0" style="-fx-background-color: #0598ff;" text="Login" textFill="WHITE" />
             <Text fill="#0598ff" layoutX="123.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Login">
                <font>
                   <Font size="22.0" />

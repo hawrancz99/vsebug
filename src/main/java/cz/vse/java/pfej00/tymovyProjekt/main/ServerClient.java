@@ -1,6 +1,11 @@
 package cz.vse.java.pfej00.tymovyProjekt.main;
 
+import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import okhttp3.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 
 /**
@@ -8,6 +13,7 @@ import okhttp3.*;
  */
 public class ServerClient {
     private final OkHttpClient httpClient = new OkHttpClient();
+    private static final Logger logger = LogManager.getLogger(ClientCallerTask.class);
 
     //user operations
     public Response sendRegisterNewUser(String post) throws Exception {
@@ -28,7 +34,14 @@ public class ServerClient {
                     .post(body)
                     .build();
 
-        return httpClient.newCall(request).execute();
+        try {
+            logger.info("Logging user");
+            return httpClient.newCall(request).execute();
+        }
+        catch (IOException e) {
+            logger.info("Logging user faield, because of {}", e.getMessage());
+        }
+        return null;
     }
 
 

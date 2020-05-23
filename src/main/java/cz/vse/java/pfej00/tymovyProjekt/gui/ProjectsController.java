@@ -3,10 +3,7 @@ package cz.vse.java.pfej00.tymovyProjekt.gui;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import cz.vse.java.pfej00.tymovyProjekt.Model.IssueDto;
 import cz.vse.java.pfej00.tymovyProjekt.Model.ProjectDto;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import javafx.event.ActionEvent;
@@ -20,7 +17,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import okhttp3.Response;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
