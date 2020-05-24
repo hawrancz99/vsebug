@@ -15,7 +15,7 @@
 
 <!-- propojení s kontrolerem se provádí v kořenovém elementu pomocí atributu fx:controller -->
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.pfej00.tymovyProjekt.main.MainController">
+<GridPane fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.ProjectsController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     </columnConstraints>
@@ -51,12 +51,12 @@
                         <Insets top="5.0" />
                     </HBox.margin>
                 </Label>
-                <TextField fx:id="input" onAction="#sendMessage" HBox.hgrow="ALWAYS">
+                <TextField fx:id="inputOfProjects" HBox.hgrow="ALWAYS">
                     <HBox.margin>
                         <Insets left="10.0" right="10.0" />
                     </HBox.margin>
                 </TextField>
-                <Button fx:id="send" mnemonicParsing="false" onAction="#sendMessage" text="Odešli" />
+                <Button fx:id="button" mnemonicParsing="false" onAction="#clickOnParticularProject" text="Odešli" />
             </children>
             <GridPane.margin>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -65,7 +65,7 @@
                 <Insets bottom="10.0" />
             </padding>
         </HBox>
-      <ListView fx:id="output" prefHeight="327.0" prefWidth="600.0" GridPane.rowIndex="1">
+      <ListView prefHeight="327.0" prefWidth="600.0" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </GridPane.margin>
