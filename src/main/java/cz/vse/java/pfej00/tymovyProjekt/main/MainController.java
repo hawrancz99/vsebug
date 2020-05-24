@@ -36,13 +36,15 @@ public class MainController {
 
     }
     private String sendGet() throws Exception {
-
+        /*
         Request request = new Request.Builder()
                 .url("https://www.google.com/search?q=mkyong")
                 .addHeader("custom-key", "mkyong")  // add request headers
                 .addHeader("User-Agent", "OkHttp Bot")
+                .build();*/
+        Request request = new Request.Builder()
+                .url("http://127.0.0.1:8000/projects/")
                 .build();
-
         try (Response response = httpClient.newCall(request).execute()) {
 
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
