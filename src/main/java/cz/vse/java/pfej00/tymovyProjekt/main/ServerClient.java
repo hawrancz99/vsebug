@@ -92,6 +92,20 @@ public class ServerClient {
         }
         return null;
     }
+    //Roles
+    public Response sendGetRoles() throws Exception {
+        Request request = new Request.Builder()
+                .url("https://vsebug-be.herokuapp.com/roles/")
+                .build();
+        try {
+            logger.info("Getting Roles");
+            return httpClient.newCall(request).execute();
+        }
+        catch (IOException e) {
+            logger.error("Error occurred while getting roles, caused by {}", e.getMessage());
+        }
+        return null;
+    }
 
     //nevim routu
     public Response sendUpdateProject() throws Exception {
