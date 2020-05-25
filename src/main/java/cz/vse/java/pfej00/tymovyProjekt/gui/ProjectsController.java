@@ -88,6 +88,18 @@ public class ProjectsController {
         stage.show();
     }
 
+    @FXML
+    public void logOut(ActionEvent event) throws IOException {
+        Stage stage = (Stage) log_out.getScene().getWindow();
+        // do what you have to do
+        stage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/login.fxml"));
+        Parent root = fxmlLoader.load();
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("VŠEBUG");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+    }
     /*public editButtonText{
         btn.setText("Hello World");
     }*/

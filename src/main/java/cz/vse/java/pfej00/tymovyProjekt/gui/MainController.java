@@ -133,7 +133,7 @@ public class MainController {
     private void loadProjects() throws IOException {
         Stage stage = (Stage) usernameLoginField.getScene().getWindow();
         stage.close();
-        Parent root = new FXMLLoader(getClass().getResource("/main.fxml")).load();
+        Parent root = new FXMLLoader(getClass().getResource("/projects.fxml")).load();
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
         primaryStage.setTitle("");

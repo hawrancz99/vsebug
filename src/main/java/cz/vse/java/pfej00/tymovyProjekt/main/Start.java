@@ -28,7 +28,7 @@ public class Start extends Application
      */
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/login.fxml"));
-        primaryStage.setTitle("Projekt");
+        primaryStage.setTitle("VŠEBUG");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
