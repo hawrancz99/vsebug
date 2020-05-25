@@ -24,13 +24,11 @@
       <FontAwesomeIcon fill="#0598ff" glyphName="KEY" layoutX="77.0" layoutY="264.0" size="20" />
       <FontAwesomeIcon fill="#0598ff" glyphName="USER" layoutX="153.0" layoutY="116.0" size="40" />
       <Button layoutX="260.0" layoutY="22.0" mnemonicParsing="false" style="-fx-background-color: transparent;" />
-      <FontAwesomeIcon fill="#0598ff" glyphName="CLOSE" layoutX="317.0" layoutY="33.0" size="20" />
       <ComboBox fx:id="rolesOption" layoutX="98.0" layoutY="317.0" prefWidth="150.0" promptText="Role" style="-fx-background-color: transparent; -fx-border-color: #0598ff; -fx-border-width: 1px1px1px1px;" />
       <Label layoutX="54.0" layoutY="283.0" prefHeight="19.0" prefWidth="240.0" text="Choose which role you have in your team" textFill="#0598ff">
          <font>
             <Font size="13.0" />
          </font>
       </Label>
-      <Button fx:id="closeBtn" layoutX="24.0" layoutY="13.0" mnemonicParsing="false" style="-fx-background-color: #0598ff;" text="Go back" textFill="WHITE" />
    </children>
 </AnchorPane>

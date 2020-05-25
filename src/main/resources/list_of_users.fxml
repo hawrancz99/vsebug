@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="573.0" prefWidth="808.0" style="-fx-background-color: #0598ff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="356.0" layoutY="10.0" text="List of users" textFill="WHITE">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Label>
+      <Label layoutX="277.0" layoutY="78.0" text="Search:" textFill="WHITE">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <TextField layoutX="383.0" layoutY="79.0" />
+      <TableView layoutX="72.0" layoutY="126.0" prefHeight="341.0" prefWidth="664.0" stylesheets="@table.css">
+        <columns>
+          <TableColumn prefWidth="330.0" text="Username" />
+          <TableColumn prefWidth="332.0" text="Role" />
+        </columns>
+      </TableView>
+      <FontAwesomeIcon fill="WHITE" glyphName="USERS" layoutX="305.0" layoutY="42.0" size="3em" />
+      <Button layoutX="42.0" layoutY="14.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="33.0" style="-fx-background-color: transparent; -fx-border-color: white;" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <FontAwesomeIcon fill="WHITE" glyphName="ARROW_LEFT" layoutX="46.0" layoutY="38.0" size="2em" wrappingWidth="25.714284896850586" />
+      <FontAwesomeIcon fill="WHITE" glyphName="SEARCH" layoutX="349.0" layoutY="100.0" size="2em" text="" />
+   </children>
+</AnchorPane>

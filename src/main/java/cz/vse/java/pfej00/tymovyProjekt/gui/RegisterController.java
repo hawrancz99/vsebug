@@ -37,8 +37,6 @@ public class RegisterController {
     @FXML
     public TextField passwordField = new TextField();
 
-    @FXML
-    public Button closeBtn;
 
     private final List<String> ROLES = new ArrayList<>();
 
@@ -55,6 +53,7 @@ public class RegisterController {
         ROLES.add("Analytic");
         rolesOption.getItems().setAll(ROLES);
         registerNewUser.setDisable(false);
+        /*ten křížek tam byl zbytečnej tak se to asi může smazat
         closeBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -62,7 +61,7 @@ public class RegisterController {
                 Stage stage = (Stage) closeBtn.getScene().getWindow();
                 stage.close();
             }
-        });
+        });*/
         registerNewUser.setOnAction(this::handle);
     }
 
