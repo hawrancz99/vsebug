@@ -47,11 +47,14 @@ public class ClientCallerTask extends Task<Response> {
         if (url.equals("sendRegisterNewUser")) {
             return SERVER_CLIENT.sendRegisterNewUser(post);
         }
-        if (url.equals("sendGetProject")) {
+        if (url.equals("sendGetProjects")) {
             return SERVER_CLIENT.sendGetProjects();
         }
         if (url.equals("sendGetUsers")) {
             return SERVER_CLIENT.sendGetUsers();
+        }
+        if (url.equals("sendCreateProject")) {
+            return SERVER_CLIENT.sendCreateProject(post);
         }
         return null;
     }

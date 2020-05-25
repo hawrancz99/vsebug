@@ -9,6 +9,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 
 import java.io.IOException;
+import java.sql.Date;
 
 
 /**
@@ -17,6 +18,7 @@ import java.io.IOException;
 public class ServerClient {
     private final OkHttpClient httpClient = new OkHttpClient();
     private static final Logger logger = LogManager.getLogger(ClientCallerTask.class);
+    private  String TOKEN = "Bearer " + TokenDto.getTOKEN().getTokenValue();
 
     //user operations
     public Response sendRegisterNewUser(String post) throws Exception {
@@ -58,7 +60,7 @@ public class ServerClient {
 
         Request request = new Request.Builder()
                 .url("https://vsebug-be.herokuapp.com/users/")
-                .addHeader("authorization", "Bearer " + TokenDto.getTOKEN().getTokenValue())
+                .addHeader("authorization", TOKEN)
                 .get()
                 .build();
 
@@ -101,6 +103,7 @@ public class ServerClient {
     public Response sendGetProjects() throws Exception {
         Request request = new Request.Builder()
                 .url("https://vsebug-be.herokuapp.com/projects/")
+                .addHeader("authorization", TOKEN)
                 .build();
         try {
             logger.info("Getting projects");
@@ -111,6 +114,25 @@ public class ServerClient {
         }
         return null;
     }
+
+    public Response sendCreateProject(String post) throws Exception {
+        RequestBody body = RequestBody.create(post, MediaType.parse("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url("https://vsebug-be.herokuapp.com/projects/")
+                .post(body)
+                .addHeader("authorization", TOKEN)
+                .build();
+
+        try {
+            logger.info("Creating new project {}", post);
+            return httpClient.newCall(request).execute();
+        }
+        catch (IOException e) {
+            logger.error("Error while creating project caused by {}", e.getMessage());
+        }
+        return null;
+    }
+
 
     //nevim routu
     public Response sendUpdateProject() throws Exception {

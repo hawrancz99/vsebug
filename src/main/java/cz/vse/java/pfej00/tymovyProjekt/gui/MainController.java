@@ -103,6 +103,7 @@ public class MainController {
                             TokenDto.getTOKEN().setTokenValue(token.asText());
                             logger.info("User: {} logged successfully", usernameLoginField.getText());
                             loadProjects();
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

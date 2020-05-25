@@ -2,11 +2,11 @@ package cz.vse.java.pfej00.tymovyProjekt.Model;
 
 public class UserDto {
     private String username;
-    private RoleDto role;
+    private RoleDto roleName;
 
-    public UserDto(String username, RoleDto role) {
+    public UserDto(String username, RoleDto roleName) {
         this.username = username;
-        this.role = role;
+        this.roleName = roleName;
     }
 
     public String getUsername() {
@@ -17,11 +17,16 @@ public class UserDto {
         this.username = username;
     }
 
-    public RoleDto getRole() {
-        return role;
+    public RoleDto getRoleName() {
+        return roleName;
     }
 
-    public void setRole(RoleDto role) {
-        this.role = role;
+    public void setRoleName(RoleDto roleName) {
+        this.roleName = roleName;
     }
+
+    public UserDto() {
+        super();
+    }
+
 }
