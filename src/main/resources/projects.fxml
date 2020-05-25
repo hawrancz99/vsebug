@@ -14,17 +14,17 @@
          </font>
       </Label>
       <FontAwesomeIcon fill="WHITE" glyphName="BOOK" layoutX="499.0" layoutY="46.0" size="3em" wrappingWidth="61.54282093048096" />
-      <Button layoutX="55.0" layoutY="145.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="148.0" style="-fx-background-color: #0598ff; -fx-border-color: white;" text="List of users" textFill="WHITE">
+      <Button fx:id="users_list" layoutX="55.0" layoutY="145.0" mnemonicParsing="false" onAction="#goToUsersList" prefHeight="31.0" prefWidth="148.0" style="-fx-background-color: #0598ff; -fx-border-color: white;" text="List of users" textFill="WHITE">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Button>
-      <Button layoutX="55.0" layoutY="70.0" mnemonicParsing="false" prefHeight="58.0" prefWidth="148.0" style="-fx-background-color: #0598ff; -fx-border-color: white;" text="Create new project" textFill="WHITE">
+      <Button fx:id="create_project" layoutX="55.0" layoutY="70.0" mnemonicParsing="false" prefHeight="58.0" prefWidth="148.0" style="-fx-background-color: #0598ff; -fx-border-color: white;" text="Create new project" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button layoutX="843.0" layoutY="20.0" mnemonicParsing="false" style="-fx-background-color: #0598ff; -fx-border-color: white;" text="Log out" textFill="WHITE" />
+      <Button fx:id="log_out" layoutX="843.0" layoutY="20.0" mnemonicParsing="false" style="-fx-background-color: #0598ff; -fx-border-color: white;" text="Log out" textFill="WHITE" />
       <Button layoutX="337.0" layoutY="77.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="224.0" style="-fx-background-color: white;" text="Project 1" textFill="#0598ff">
          <font>
             <Font name="System Bold" size="17.0" />

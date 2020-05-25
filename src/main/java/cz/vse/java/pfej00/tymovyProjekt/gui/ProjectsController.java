@@ -1,4 +1,7 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,6 +25,22 @@ import java.util.List;
 import java.util.Objects;
 
 public class ProjectsController {
+    @FXML
+    private Button users_list;
+
+    @FXML
+    private Button createProject;
+
+    @FXML
+    private Button log_out;
+
+    @FXML
+    private Button deleteProject;
+
+    @FXML
+    private Button editProject;
+
+
 
     @FXML
     public Button button = new Button();
@@ -35,6 +54,7 @@ public class ProjectsController {
     public void initialize(){
              
     }
+
 
     public void clickOnParticularProject(ActionEvent actionEvent) throws Exception {
         ClientCallerTask clientCallerTask = new ClientCallerTask("sendGetProject", null);
@@ -58,4 +78,18 @@ public class ProjectsController {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
+
+    @FXML
+    public void goToUsersList(ActionEvent event) throws IOException {
+        Parent part = FXMLLoader.load(getClass().getResource("/resources/list_of_users.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(part);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    /*public editButtonText{
+        btn.setText("Hello World");
+    }*/
+
 }
