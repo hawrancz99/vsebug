@@ -1,5 +1,6 @@
 package cz.vse.java.pfej00.tymovyProjekt.main;
 
+import cz.vse.java.pfej00.tymovyProjekt.Model.TokenDto;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import okhttp3.*;
 import org.apache.logging.log4j.LogManager;
@@ -49,6 +50,24 @@ public class ServerClient {
         }
         catch (IOException e) {
             logger.error("Logging user failed, because of {}", e.getMessage());
+        }
+        return null;
+    }
+
+    public Response sendGetUsers() throws Exception {
+
+        Request request = new Request.Builder()
+                .url("https://vsebug-be.herokuapp.com/users/")
+                .addHeader("authorization", "Bearer " + TokenDto.getTOKEN().getTokenValue())
+                .get()
+                .build();
+
+        try {
+            logger.info("Getting list of all users");
+            return httpClient.newCall(request).execute();
+        }
+        catch (IOException e) {
+            logger.error("Getting users failed caused by {}", e.getMessage());
         }
         return null;
     }

@@ -50,6 +50,9 @@ public class ClientCallerTask extends Task<Response> {
         if (url.equals("sendGetProject")) {
             return SERVER_CLIENT.sendGetProjects();
         }
+        if (url.equals("sendGetUsers")) {
+            return SERVER_CLIENT.sendGetUsers();
+        }
         return null;
     }
 }

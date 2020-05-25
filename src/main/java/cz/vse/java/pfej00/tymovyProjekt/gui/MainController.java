@@ -43,7 +43,7 @@ public class MainController {
 
     private final String LOGIN_USER = "sendLoginUser";
 
-    private static final Logger logger = LogManager.getLogger(ClientCallerTask.class);
+    private static final Logger logger = LogManager.getLogger(MainController.class);
 
 
     public MainController() {

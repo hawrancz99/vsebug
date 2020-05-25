@@ -1,7 +1,14 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import cz.vse.java.pfej00.tymovyProjekt.Model.RoleDto;
+import cz.vse.java.pfej00.tymovyProjekt.Model.UserDto;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-
+import javafx.scene.control.*;
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -10,36 +17,47 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.vse.java.pfej00.tymovyProjekt.Model.ProjectDto;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import okhttp3.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ProjectsController {
     @FXML
-    private Button users_list;
+    private Button users_list = new Button();
 
     @FXML
-    private Button createProject;
+    private Button createProject = new Button();
 
     @FXML
-    private Button log_out;
+    private Button log_out = new Button();
 
     @FXML
-    private Button deleteProject;
+    private Button deleteProject = new Button();
 
     @FXML
-    private Button editProject;
+    private Button editProject = new Button();
 
+    private TableView listOfUsers = new TableView<>();
+
+    private TableColumn username = new TableColumn();
+    private TableColumn role = new TableColumn();
+
+
+    private static final Logger logger = LogManager.getLogger(MainController.class);
 
 
     @FXML
@@ -52,7 +70,9 @@ public class ProjectsController {
 
     @FXML
     public void initialize(){
-             
+        users_list.setOnAction(this::handleUsers);
+        listOfUsers.getColumns().add(username);
+        listOfUsers.getColumns().add(role);
     }
 
 
@@ -79,29 +99,54 @@ public class ProjectsController {
         primaryStage.show();
     }
 
-    @FXML
-    public void goToUsersList(ActionEvent event) throws IOException {
-        Parent part = FXMLLoader.load(getClass().getResource("/resources/list_of_users.fxml"));
-        Stage stage = new Stage();
-        Scene scene = new Scene(part);
-        stage.setScene(scene);
-        stage.show();
+
+    private void handleUsers(Event event) {
+
+            Stage stg = new Stage();
+            ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
+            task.setOnRunning((successEvent) -> {
+                stg.show();
+            });
+
+            task.setOnSucceeded((succeededEvent) -> {
+                stg.hide();
+                try {
+                    Response response = task.get();
+                    if(response.isSuccessful()){
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/list_of_users.fxml"));
+                        Parent root = fxmlLoader.load();
+                        UsersListController usersListController = fxmlLoader.getController();
+                        fillTable(response);
+                        usersListController.setListOfUsers(listOfUsers);
+                        Stage primaryStage = new Stage();
+                        primaryStage.initStyle(StageStyle.UTILITY);
+                        primaryStage.setTitle("");
+                        primaryStage.setScene(new Scene(root));
+                        primaryStage.show();
+                        logger.info("All users loaded successfully");
+                    } else logger.error("Error while loading all users");
+                } catch (InterruptedException | ExecutionException | IOException e) {
+                    logger.error("Error while loading all users, caused by {}", e.getMessage());
+                }
+            });
+
+            ProgressBar progressBar = new ProgressBar();
+            progressBar.progressProperty().bind(task.progressProperty());
+            stg.setScene(new Scene(progressBar));
+            stg.initStyle(StageStyle.UNDECORATED);
+            stg.setAlwaysOnTop(true);
+
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.submit(task);
+            executorService.shutdown();
+
     }
 
-    @FXML
-    public void logOut(ActionEvent event) throws IOException {
-        Stage stage = (Stage) log_out.getScene().getWindow();
-        // do what you have to do
-        stage.close();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/login.fxml"));
-        Parent root = fxmlLoader.load();
-        Stage primaryStage = new Stage();
-        primaryStage.setTitle("VŠEBUG");
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
+    private void fillTable(Response response) throws IOException {
+        final ObjectNode node = new ObjectMapper().readValue(Objects.requireNonNull(response.body()).string(), ObjectNode.class);
+        JsonNode role = node.get("role");
+        JsonNode username = node.get("username");
     }
-    /*public editButtonText{
-        btn.setText("Hello World");
-    }*/
+
 
 }

@@ -2,22 +2,27 @@ package cz.vse.java.pfej00.tymovyProjekt.Model;
 
 public class RoleDto {
 
-    private String role;
+    private int id;
+    private String name;
 
-    public RoleDto() {
-        super();
+    public RoleDto(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    public RoleDto(String role) {
-        this.role = role;
+    public int getId() {
+        return id;
     }
 
-
-    public String getRole() {
-        return role;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
