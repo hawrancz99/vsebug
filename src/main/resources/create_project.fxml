@@ -7,29 +7,23 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.CreateProjectController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="199.0" prefWidth="600.0" style="-fx-background-color: #0598ff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="229.0" prefWidth="610.0" style="-fx-background-color: #0598ff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.CreateProjectController">
    <children>
-      <Label layoutX="184.0" layoutY="14.0" text="Create new project" textFill="WHITE">
+      <Label layoutX="204.0" layoutY="22.0" text="Create new project" textFill="WHITE">
          <font>
             <Font size="28.0" />
          </font>
       </Label>
-      <Button fx:id="createNewProject" layoutX="257.0" layoutY="128.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="86.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Create" textFill="WHITE">
+      <Button fx:id="createNewProject" layoutX="261.0" layoutY="122.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="86.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Create" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font></Button>
-      <TextField fx:id="inputOfProjects" layoutX="269.0" layoutY="75.0" />
-      <Label layoutX="154.0" layoutY="75.0" text="Project name:" textFill="WHITE">
+      <TextField fx:id="inputOfProjects" layoutX="288.0" layoutY="75.0" />
+      <Label layoutX="174.0" layoutY="74.0" text="Project name:" textFill="WHITE">
          <font>
             <Font size="17.0" />
          </font>
       </Label>
-      <Button layoutX="14.0" layoutY="18.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="33.0" style="-fx-background-color: transparent; -fx-border-color: white;" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Button>
-      <FontAwesomeIcon fill="WHITE" glyphName="ARROW_LEFT" layoutX="18.0" layoutY="42.0" size="2em" wrappingWidth="25.714284896850586" />
-      <FontAwesomeIcon fill="WHITE" glyphName="PENCIL" layoutX="154.0" layoutY="42.0" size="2em" />
+      <FontAwesomeIcon fill="WHITE" glyphName="PENCIL" layoutX="174.0" layoutY="50.0" size="2em" />
    </children>
 </AnchorPane>

@@ -23,9 +23,6 @@ public class IssuesController {
     private Button removeIssue;
 
     @FXML
-    private Button back;
-
-    @FXML
     private Button editIssue;
 
     //all set from Project cuz of disable
@@ -84,16 +81,6 @@ public class IssuesController {
         this.listOfIssues = listOfIssues;
     }
 
-    @FXML
-    public void initialize(){
-        //tohle nevim co je za tlačítko to back
-        back.setOnAction(event -> {
-            enableAllButtons();
-            Stage stage = (Stage) back.getScene().getWindow();
-            stage.close();
-        }
-    );
-    }
 
 
     private void enableAllButtons() {

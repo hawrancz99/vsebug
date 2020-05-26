@@ -22,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import okhttp3.Response;
@@ -51,6 +52,9 @@ public class ProjectsController {
 
     @FXML
     private Button editProject = new Button();
+
+    @FXML
+    private VBox vbox;
 
 
     @FXML
@@ -86,7 +90,6 @@ public class ProjectsController {
     @FXML
     public void logOut(ActionEvent event) throws IOException {
         Stage stage = (Stage) log_out.getScene().getWindow();
-        // do what you have to do
         stage.close();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/login.fxml"));
 
