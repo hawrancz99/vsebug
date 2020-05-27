@@ -34,8 +34,6 @@ public class IssuesController {
 
     private Button createProject;
 
-    private Button deleteProject;
-
     private Button editProject;
 
     private Button log_out;
@@ -61,10 +59,6 @@ public class IssuesController {
         this.createProject = createProject;
     }
 
-    public void setDeleteProject(Button deleteProject) {
-        this.deleteProject = deleteProject;
-    }
-
     public void setEditProject(Button editProject) {
         this.editProject = editProject;
     }
@@ -87,7 +81,6 @@ public class IssuesController {
     private void enableAllButtons() {
         users_list_button.setDisable(false);
         createProject.setDisable(false);
-        deleteProject.setDisable(false);
         editProject.setDisable(false);
         listOfUsers.setDisable(false);
         log_out.setDisable(true);

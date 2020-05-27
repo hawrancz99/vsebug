@@ -47,8 +47,6 @@ public class CreateProjectController {
 
     private Button createProject;
 
-    private Button deleteProject;
-
     private Button editProject;
 
     private Button log_out;
@@ -57,6 +55,11 @@ public class CreateProjectController {
 
     private List<ProjectDto> projects;
 
+    private ProjectsController projectsController;
+
+    public void setProjectsController(ProjectsController projectsController) {
+        this.projectsController = projectsController;
+    }
 
     public void setProjects(List<ProjectDto> projects) {
         this.projects = projects;
@@ -83,9 +86,6 @@ public class CreateProjectController {
         this.createProject = createProject;
     }
 
-    public void setDeleteProject(Button deleteProject) {
-        this.deleteProject = deleteProject;
-    }
 
     public void setEditProject(Button editProject) {
         this.editProject = editProject;
@@ -120,7 +120,6 @@ public class CreateProjectController {
                         Stage stage = (Stage) createNewProject.getScene().getWindow();
                         enableAllButtons();
                         stage.close();
-                        ProjectsController projectsController = new ProjectsController();
                         projectsController.initialize();
                         logger.info("Project created successfully");
                     } else logger.error("Error while creating project");
@@ -150,7 +149,6 @@ public class CreateProjectController {
     private void enableAllButtons() {
         users_list_button.setDisable(false);
         createProject.setDisable(false);
-        deleteProject.setDisable(false);
         editProject.setDisable(false);
         log_out.setDisable(false);
         for(Button b : buttons){

@@ -1,13 +1,12 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import cz.vse.java.pfej00.tymovyProjekt.Model.*;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 
 
@@ -20,7 +19,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -47,21 +46,20 @@ public class ProjectsController {
     @FXML
     private Button log_out = new Button();
 
-    @FXML
-    private Button deleteProject = new Button();
 
     @FXML
     private Button editProject = new Button();
 
     @FXML
-    private VBox vbox;
-
+    private VBox vbox = new VBox();
 
     @FXML
     public AnchorPane allButtons;
 
     private TableView listOfUsers = new TableView<>();
 
+
+    //tohle bude ještě sranda
     private TableColumn username = new TableColumn();
     private TableColumn role = new TableColumn();
 
@@ -80,9 +78,8 @@ public class ProjectsController {
 
     @FXML
     public void initialize() {
-        users_list_button.setOnAction(this::handleUsers);
-        listOfUsers.getColumns().add(username);
-        listOfUsers.getColumns().add(role);
+     //   listOfUsers.getColumns().add(username);
+     //   listOfUsers.getColumns().add(role);
         loadProjects();
     }
 
@@ -103,7 +100,8 @@ public class ProjectsController {
     }
 
 
-    private void handleUsers(Event event) {
+    @FXML
+    public void handleUsers(ActionEvent event) {
 
             Stage stg = new Stage();
             ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
@@ -192,6 +190,9 @@ public class ProjectsController {
         projects.clear();
         buttons.clear();
         vbox.getChildren().clear();
+        //aby byly tlačítka vedle sebe
+        vbox.setSpacing(5);
+        vbox.setAlignment(Pos.TOP_RIGHT);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         projects = objectMapper.reader().forType(new TypeReference<List<ProjectDto>>() {}).readValue(Objects.requireNonNull(response.body()).string());
@@ -199,6 +200,19 @@ public class ProjectsController {
             String projectName = projectDto.getName();
             ObservableList<String> list = FXCollections.observableArrayList(projectName);
             Button b = new Button(list.toString());
+            Button deleteB = new Button();
+            ImageView imageView = new ImageView("/trashcan.png");
+            imageView.setFitHeight(20);
+            imageView.setFitWidth(20);
+            deleteB.setGraphic(imageView);
+            deleteB.setOnAction(event -> {
+                vbox.getChildren().clear();
+                buttons.remove(b);
+                buttons.remove(deleteB);
+                vbox.getChildren().addAll(buttons);
+                callDeleteProject(projectDto.getId());
+                    }
+                    );
             b.setText(projectName);
             b.setOnAction(event ->
                     {
@@ -213,15 +227,15 @@ public class ProjectsController {
                     }
             );
             b.setId("rich-blue");
-            b.setPrefWidth(440);
+            deleteB.setId("trashCan");
+            b.setPrefWidth(300);
             b.setPrefHeight(10);
             String  style = getClass().getResource("/button.css").toExternalForm();
             Stage stage = (Stage) vbox.getScene().getWindow();
             stage.getScene().getStylesheets().add(style);
-
             buttons.add(b);
+            buttons.add(deleteB);
         }
-        vbox.prefWidthProperty().bind(allButtons.widthProperty());
         vbox.prefHeightProperty().bind(allButtons.heightProperty());
         vbox.getChildren().addAll(buttons);
     }
@@ -234,7 +248,6 @@ public class ProjectsController {
         issuesController.setListOfIssues(issues);
         issuesController.setUsers_list_button(users_list_button);
         issuesController.setCreateProject(createProject);
-        issuesController.setDeleteProject(deleteProject);
         issuesController.setEditProject(editProject);
         issuesController.setListOfUsers(listOfUsers);
         issuesController.setLog_out(log_out);
@@ -246,6 +259,7 @@ public class ProjectsController {
         primaryStage.show();
         primaryStage.setOnCloseRequest(event ->
         {
+            loadProjects();
             enableAllButtons();
         });
     }
@@ -257,11 +271,11 @@ public class ProjectsController {
         CreateProjectController createProjectController = fxmlLoader.getController();
         createProjectController.setUsers_list_button(users_list_button);
         createProjectController.setCreateProject(createProject);
-        createProjectController.setDeleteProject(deleteProject);
         createProjectController.setEditProject(editProject);
         createProjectController.setLog_out(log_out);
         createProjectController.setButtons(buttons);
         createProjectController.setProjects(projects);
+        createProjectController.setProjectsController(this);
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
         primaryStage.setTitle("");
@@ -279,7 +293,6 @@ public class ProjectsController {
     private void disableAllButtons() {
         users_list_button.setDisable(true);
         createProject.setDisable(true);
-        deleteProject.setDisable(true);
         editProject.setDisable(true);
         listOfUsers.setDisable(true);
         log_out.setDisable(true);
@@ -291,13 +304,44 @@ public class ProjectsController {
     private void enableAllButtons() {
         users_list_button.setDisable(false);
         createProject.setDisable(false);
-        deleteProject.setDisable(false);
         editProject.setDisable(false);
         listOfUsers.setDisable(false);
         log_out.setDisable(false);
         for(Button b : buttons){
             b.setDisable(false);
         }
+    }
+
+    private void callDeleteProject(int id) {
+        Stage stg = new Stage();
+        //musim to tam poslat jako string
+        String post = ""+ id +"";
+        ClientCallerTask task = new ClientCallerTask("sendDeleteProject", post);
+        task.setOnRunning((successEvent) -> {
+            stg.show();
+        });
+
+        task.setOnSucceeded((succeededEvent) -> {
+            stg.hide();
+            try {
+                Response response = task.get();
+                if (response.isSuccessful()) {
+                    logger.info("Project was deleted");
+                } else logger.error("Error while deleting project");
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error("Error while deleting project, caused by {}", e.getMessage());
+            }
+        });
+
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.progressProperty().bind(task.progressProperty());
+        stg.setScene(new Scene(progressBar));
+        stg.initStyle(StageStyle.UNDECORATED);
+        stg.setAlwaysOnTop(true);
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(task);
+        executorService.shutdown();
     }
 
 }

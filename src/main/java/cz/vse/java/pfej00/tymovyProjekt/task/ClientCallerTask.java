@@ -19,7 +19,6 @@ public class ClientCallerTask extends Task<Response> {
 
     private final ServerClient SERVER_CLIENT = new ServerClient();
 
-    private static final Logger logger = LogManager.getLogger(ClientCallerTask.class);
 
     public ClientCallerTask(String url, String post) {
         this.url = url;
@@ -29,16 +28,9 @@ public class ClientCallerTask extends Task<Response> {
     @Override
     public Response call() throws Exception {
         if (url.equals("sendGetIssues")) {
-            logger.info("Getting issues");
            return SERVER_CLIENT.sendGetIssues();
         }
         if (url.equals("sendUpdateIssue")) {
-            //tohle je hloupý, jen zkouška
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-            final ObjectNode node = new ObjectMapper().readValue(post, ObjectNode.class);
-            JsonNode token = node.get("name");
-            logger.info("Updating issue {}", token.asText());
            return SERVER_CLIENT.sendUpdateIssue();
         }
         if (url.equals("sendLoginUser")) {
@@ -55,6 +47,9 @@ public class ClientCallerTask extends Task<Response> {
         }
         if (url.equals("sendCreateProject")) {
             return SERVER_CLIENT.sendCreateProject(post);
+        }
+        if (url.equals("sendDeleteProject")) {
+            return SERVER_CLIENT.sendDeleteProject(post);
         }
         return null;
     }

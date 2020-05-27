@@ -5,11 +5,8 @@ import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import okhttp3.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.ConsoleAppender;
 
 import java.io.IOException;
-import java.sql.Date;
 
 
 /**
@@ -129,6 +126,24 @@ public class ServerClient {
         }
         catch (IOException e) {
             logger.error("Error while creating project caused by {}", e.getMessage());
+        }
+        return null;
+    }
+
+    public Response sendDeleteProject(String post) throws Exception {
+        int id = Integer.parseInt(post);
+        Request request = new Request.Builder()
+                .url("https://vsebug-be.herokuapp.com/projects/" + id +"/")
+                .delete()
+                .addHeader("authorization", TOKEN)
+                .build();
+
+        try {
+            logger.info("Deleting project with id {}", id);
+            return httpClient.newCall(request).execute();
+        }
+        catch (IOException e) {
+            logger.error("Error while deleting project caused by {}", e.getMessage());
         }
         return null;
     }
