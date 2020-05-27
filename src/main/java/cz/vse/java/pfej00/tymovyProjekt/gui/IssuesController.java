@@ -1,5 +1,7 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -36,14 +38,20 @@ public class IssuesController {
 
     private Button editProject;
 
-    private TextField inputOfProjects;
+    private Button log_out;
 
-    //tohle je zatim jen kvůli tlačítkum, který nevim kam se budou generovat
-    private AnchorPane allButtons;
+    private ObservableList<Button> buttons = FXCollections.observableArrayList();
+
+    public void setButtons(ObservableList<Button> buttons) {
+        this.buttons = buttons;
+    }
 
     //tohle je vlastně stejný jako na projektech, takže je to fajn - nemusim je vůbec volat, stačí zobrazit stejnou tabulku na kliknutí
     private TableView listOfUsers;
 
+    public void setLog_out(Button log_out) {
+        this.log_out = log_out;
+    }
 
     public void setUsers_list_button(Button users_list_button) {
         this.users_list_button = users_list_button;
@@ -61,13 +69,6 @@ public class IssuesController {
         this.editProject = editProject;
     }
 
-    public void setInputOfProjects(TextField inputOfProjects) {
-        this.inputOfProjects = inputOfProjects;
-    }
-
-    public void setAllButtons(AnchorPane allButtons) {
-        this.allButtons = allButtons;
-    }
 
     public void setListOfUsers(TableView listOfUsers) {
         this.listOfUsers = listOfUsers;
@@ -88,9 +89,11 @@ public class IssuesController {
         createProject.setDisable(false);
         deleteProject.setDisable(false);
         editProject.setDisable(false);
-        inputOfProjects.setDisable(false);
-        allButtons.setDisable(false);
         listOfUsers.setDisable(false);
+        log_out.setDisable(true);
+        for(Button b : buttons){
+            b.setDisable(false);
+        }
     }
 }
 

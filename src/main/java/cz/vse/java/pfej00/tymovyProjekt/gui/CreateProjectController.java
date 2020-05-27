@@ -1,7 +1,11 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
 
+import cz.vse.java.pfej00.tymovyProjekt.Model.ProjectDto;
 import cz.vse.java.pfej00.tymovyProjekt.builders.PopupBuilder;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +22,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,13 +35,61 @@ public class CreateProjectController {
     private TextField inputOfProjects = new TextField();
 
     @FXML
-    private Button createNewProject = new Button();
+    private Button createNewProject;
 
     private final String CREATE_PROJECT = "sendCreateProject";
 
-    private static final Logger logger = LogManager.getLogger(MainController.class);
+    private static final Logger logger = LogManager.getLogger(CreateProjectController.class);
+
+    ////setování ne editable
+
+    private Button users_list_button;
+
+    private Button createProject;
+
+    private Button deleteProject;
+
+    private Button editProject;
+
+    private Button log_out;
+
+    private ObservableList<Button> buttons = FXCollections.observableArrayList();
+
+    private List<ProjectDto> projects;
 
 
+    public void setProjects(List<ProjectDto> projects) {
+        this.projects = projects;
+    }
+
+    public void setButtons(ObservableList<Button> buttons) {
+        this.buttons = buttons;
+    }
+
+    public void setLog_out(Button log_out) {
+        this.log_out = log_out;
+    }
+
+    public void setInputOfProjects(TextField inputOfProjects) {
+        this.inputOfProjects = inputOfProjects;
+    }
+
+
+    public void setUsers_list_button(Button users_list_button) {
+        this.users_list_button = users_list_button;
+    }
+
+    public void setCreateProject(Button createProject) {
+        this.createProject = createProject;
+    }
+
+    public void setDeleteProject(Button deleteProject) {
+        this.deleteProject = deleteProject;
+    }
+
+    public void setEditProject(Button editProject) {
+        this.editProject = editProject;
+    }
 
     @FXML
     public void initialize() {
@@ -43,7 +97,9 @@ public class CreateProjectController {
     }
 
     private void handle(Event event) {
-        if (!inputOfProjects.getText().isEmpty()) {
+        if (inputOfProjects.getText().isEmpty()) {
+            PopupBuilder.loadPopup("/allFieldsValid.html");
+        } else if(!projectAlreadyExists(inputOfProjects.getText())){
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
             post.put("name", inputOfProjects.getText());
@@ -51,25 +107,29 @@ public class CreateProjectController {
             post.put("created", "2020-05-22T21:03:41Z");
             ClientCallerTask task = new ClientCallerTask(CREATE_PROJECT, post.toString());
             task.setOnRunning((successEvent) -> {
+                createNewProject.setDisable(true);
                 stg.show();
             });
 
             task.setOnSucceeded((succeededEvent) -> {
+                createNewProject.setDisable(false);
                 stg.hide();
                 try {
                     Response response = task.get();
                     if (response.isSuccessful()) {
                         Stage stage = (Stage) createNewProject.getScene().getWindow();
+                        enableAllButtons();
                         stage.close();
-                        
-                        //budou se muset všechny nasetovat :)
-                 //       primaryStage.setOnCloseRequest(event1 -> enableAllButtons());
+                        ProjectsController projectsController = new ProjectsController();
+                        projectsController.initialize();
                         logger.info("Project created successfully");
                     } else logger.error("Error while creating project");
                 } catch (InterruptedException | ExecutionException e) {
                     logger.error("Error while creating project, caused by {}", e.getMessage());
                 }
             });
+
+            //všude asi udělat task.setOnFailure()
             ProgressBar progressBar = new ProgressBar();
             progressBar.progressProperty().bind(task.progressProperty());
             stg.setScene(new Scene(progressBar));
@@ -80,7 +140,32 @@ public class CreateProjectController {
             executorService.submit(task);
             executorService.shutdown();
         } else {
-            PopupBuilder.loadPopup("/allFieldsValid.html");
+            //zatim takhle
+            inputOfProjects.clear();
+            PopupBuilder.loadPopup("/projectNotUnique.html");
         }
+    }
+
+
+    private void enableAllButtons() {
+        users_list_button.setDisable(false);
+        createProject.setDisable(false);
+        deleteProject.setDisable(false);
+        editProject.setDisable(false);
+        log_out.setDisable(false);
+        for(Button b : buttons){
+            b.setDisable(false);
+        }
+    }
+
+    private boolean projectAlreadyExists(String projectName){
+        boolean exists = false;
+        for (ProjectDto project : projects) {
+            if (projectName.equals(project.getName())) {
+                exists = true;
+                break;
+            }
+        }
+        return exists;
     }
 }

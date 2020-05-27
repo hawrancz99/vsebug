@@ -44,7 +44,7 @@ public class RegisterController {
 
     private final String REGISTER_USER = "sendRegisterNewUser";
 
-    private static final Logger logger = LogManager.getLogger(ClientCallerTask.class);
+    private static final Logger logger = LogManager.getLogger(RegisterController.class);
 
     @FXML
     public void initialize() {
@@ -53,15 +53,6 @@ public class RegisterController {
         ROLES.add("Analytic");
         rolesOption.getItems().setAll(ROLES);
         registerNewUser.setDisable(false);
-        /*ten křížek tam byl zbytečnej tak se to asi může smazat
-        closeBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                registerButton.setDisable(false);
-                Stage stage = (Stage) closeBtn.getScene().getWindow();
-                stage.close();
-            }
-        });*/
         registerNewUser.setOnAction(this::handle);
     }
 

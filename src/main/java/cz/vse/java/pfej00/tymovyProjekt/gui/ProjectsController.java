@@ -39,10 +39,10 @@ import java.util.concurrent.Executors;
 
 public class ProjectsController {
     @FXML
-    private Button users_list_button = new Button();
+    private Button users_list_button;
 
     @FXML
-    private Button createProject = new Button();
+    private Button createProject;
 
     @FXML
     private Button log_out = new Button();
@@ -70,7 +70,7 @@ public class ProjectsController {
     private final String GET_PROJECTS = "sendGetProjects";
 
 
-    private static final Logger logger = LogManager.getLogger(MainController.class);
+    private static final Logger logger = LogManager.getLogger(ProjectsController.class);
 
     private ObservableList<Button> buttons = FXCollections.observableArrayList();
 
@@ -105,8 +105,6 @@ public class ProjectsController {
 
     private void handleUsers(Event event) {
 
-        //když už je mam načtený, tak vzhledem k tomu, že ta appka neni asi multiuser, tak je to zbytečný volání
-        if (listOfUsers.getItems().isEmpty()) {
             Stage stg = new Stage();
             ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
             task.setOnRunning((successEvent) -> {
@@ -146,7 +144,6 @@ public class ProjectsController {
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             executorService.submit(task);
             executorService.shutdown();
-        }
     }
 
 
@@ -194,6 +191,7 @@ public class ProjectsController {
     private void fillProjects(Response response) throws IOException {
         projects.clear();
         buttons.clear();
+        vbox.getChildren().clear();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         projects = objectMapper.reader().forType(new TypeReference<List<ProjectDto>>() {}).readValue(Objects.requireNonNull(response.body()).string());
@@ -214,9 +212,18 @@ public class ProjectsController {
                         }
                     }
             );
+            b.setId("rich-blue");
+            b.setPrefWidth(440);
+            b.setPrefHeight(10);
+            String  style = getClass().getResource("/button.css").toExternalForm();
+            Stage stage = (Stage) vbox.getScene().getWindow();
+            stage.getScene().getStylesheets().add(style);
+
             buttons.add(b);
-            allButtons.getChildren().addAll(buttons);
         }
+        vbox.prefWidthProperty().bind(allButtons.widthProperty());
+        vbox.prefHeightProperty().bind(allButtons.heightProperty());
+        vbox.getChildren().addAll(buttons);
     }
 
     private void getIssues(List<IssueDto> issues) throws IOException {
@@ -230,6 +237,8 @@ public class ProjectsController {
         issuesController.setDeleteProject(deleteProject);
         issuesController.setEditProject(editProject);
         issuesController.setListOfUsers(listOfUsers);
+        issuesController.setLog_out(log_out);
+        issuesController.setButtons(buttons);
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
         primaryStage.setTitle("");
@@ -238,7 +247,6 @@ public class ProjectsController {
         primaryStage.setOnCloseRequest(event ->
         {
             enableAllButtons();
-            loadProjects();
         });
     }
 
@@ -246,14 +254,25 @@ public class ProjectsController {
         disableAllButtons();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/create_project.fxml"));
         Parent root = fxmlLoader.load();
+        CreateProjectController createProjectController = fxmlLoader.getController();
+        createProjectController.setUsers_list_button(users_list_button);
+        createProjectController.setCreateProject(createProject);
+        createProjectController.setDeleteProject(deleteProject);
+        createProjectController.setEditProject(editProject);
+        createProjectController.setLog_out(log_out);
+        createProjectController.setButtons(buttons);
+        createProjectController.setProjects(projects);
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
         primaryStage.setTitle("");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-
-        //tohle umožní kliknout znovu na editovat v případě, že se zavře přes křížek
-        primaryStage.setOnCloseRequest(Event -> {enableAllButtons();loadProjects();});
+        //tohle je přes křížek
+        primaryStage.setOnCloseRequest(event ->
+        {
+            loadProjects();
+            enableAllButtons();
+        });
     }
 
 
@@ -262,8 +281,11 @@ public class ProjectsController {
         createProject.setDisable(true);
         deleteProject.setDisable(true);
         editProject.setDisable(true);
-        allButtons.setDisable(true);
         listOfUsers.setDisable(true);
+        log_out.setDisable(true);
+        for(Button b : buttons){
+            b.setDisable(true);
+        }
     }
 
     private void enableAllButtons() {
@@ -271,8 +293,11 @@ public class ProjectsController {
         createProject.setDisable(false);
         deleteProject.setDisable(false);
         editProject.setDisable(false);
-        allButtons.setDisable(false);
         listOfUsers.setDisable(false);
+        log_out.setDisable(false);
+        for(Button b : buttons){
+            b.setDisable(false);
+        }
     }
 
 }
