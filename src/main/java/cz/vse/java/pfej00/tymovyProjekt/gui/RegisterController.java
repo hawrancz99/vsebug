@@ -43,8 +43,6 @@ public class RegisterController {
     @FXML
     public TextField passwordField = new TextField();
 
-    @FXML
-    public Button closeBtn;
 
     private final List<String> ROLES = new ArrayList<>();
     //private HashMap<int, String> ROLES = new HashMap<int, String>();
@@ -53,7 +51,7 @@ public class RegisterController {
 
     private final String REGISTER_USER = "sendRegisterNewUser";
 
-    private static final Logger logger = LogManager.getLogger(ClientCallerTask.class);
+    private static final Logger logger = LogManager.getLogger(RegisterController.class);
 
     @FXML
     public void initialize() {
@@ -64,14 +62,6 @@ public class RegisterController {
 
         rolesOption.getItems().setAll(ROLES);
         registerNewUser.setDisable(false);
-        closeBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                registerButton.setDisable(false);
-                Stage stage = (Stage) closeBtn.getScene().getWindow();
-                stage.close();
-            }
-        });
         registerNewUser.setOnAction(this::handle);
     }
 

@@ -16,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import okhttp3.*;
@@ -43,7 +45,7 @@ public class MainController {
 
     private final String LOGIN_USER = "sendLoginUser";
 
-    private static final Logger logger = LogManager.getLogger(ClientCallerTask.class);
+    private static final Logger logger = LogManager.getLogger(MainController.class);
 
 
     public MainController() {
@@ -103,6 +105,7 @@ public class MainController {
                             TokenDto.getTOKEN().setTokenValue(token.asText());
                             logger.info("User: {} logged successfully", usernameLoginField.getText());
                             loadProjects();
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -133,7 +136,7 @@ public class MainController {
     private void loadProjects() throws IOException {
         Stage stage = (Stage) usernameLoginField.getScene().getWindow();
         stage.close();
-        Parent root = new FXMLLoader(getClass().getResource("/main.fxml")).load();
+        Parent root = new FXMLLoader(getClass().getResource("/projects.fxml")).load();
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
         primaryStage.setTitle("");

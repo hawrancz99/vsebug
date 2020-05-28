@@ -10,27 +10,29 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.RegisterController" prefHeight="500.0" prefWidth="347.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="515.0" prefWidth="493.0" style="-fx-background-color: white;" stylesheets="@table.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.RegisterController">
    <children>
-      <PasswordField fx:id="passwordField" layoutX="100.0" layoutY="244.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-color: #0598ff; -fx-border-width: 0px0px2px0px;" />
-      <TextField fx:id="usernameField" layoutX="100.0" layoutY="192.0" promptText="Username" style="-fx-background-color: transparent; -fx-border-color: #0598ff; -fx-border-width: 0px0px2px0px;" />
-      <Button fx:id="registerNewUser" layoutX="138.0" layoutY="371.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="70.0" style="-fx-background-color: #0598ff;" text="Register" textFill="WHITE" />
-      <Text fill="#0598ff" layoutX="115.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Registration">
+      <TextField fx:id="usernameField" layoutX="172.0" layoutY="175.0" prefHeight="38.0" prefWidth="161.0" promptText="Username" style="-fx-background-color: transparent; -fx-border-color: #0598ff; -fx-border-width: 0px0px2px0px;" />
+      <PasswordField fx:id="passwordField" layoutX="172.0" layoutY="227.0" prefHeight="38.0" prefWidth="162.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-color: #0598ff; -fx-border-width: 0px0px2px0px;" />
+      <ComboBox fx:id="rolesOption" layoutX="171.0" layoutY="310.0" prefHeight="38.0" prefWidth="162.0" promptText="Role" style="-fx-background-color: transparent; -fx-border-color: #0598ff; -fx-border-width: 1px1px1px1px;" />
+      <Button fx:id="registerNewUser" layoutX="178.0" layoutY="366.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="134.0" text="Register" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font></Button>
+      <Text fill="#0598ff" layoutX="187.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Registration">
          <font>
             <Font size="22.0" />
          </font>
       </Text>
-      <FontAwesomeIcon fill="#0598ff" glyphName="USER" layoutX="79.0" layoutY="212.0" size="20" />
-      <FontAwesomeIcon fill="#0598ff" glyphName="KEY" layoutX="77.0" layoutY="264.0" size="20" />
-      <FontAwesomeIcon fill="#0598ff" glyphName="USER" layoutX="153.0" layoutY="116.0" size="40" />
+      <FontAwesomeIcon fill="#0598ff" glyphName="USER" layoutX="137.0" layoutY="204.0" size="30" />
+      <FontAwesomeIcon fill="#0598ff" glyphName="KEY" layoutX="134.0" layoutY="256.0" size="30" />
+      <FontAwesomeIcon fill="#0598ff" glyphName="USER" layoutX="230.0" layoutY="82.0" size="40" />
       <Button layoutX="260.0" layoutY="22.0" mnemonicParsing="false" style="-fx-background-color: transparent;" />
-      <FontAwesomeIcon fill="#0598ff" glyphName="CLOSE" layoutX="317.0" layoutY="33.0" size="20" />
-      <ComboBox fx:id="rolesOption" layoutX="98.0" layoutY="317.0" prefWidth="150.0" promptText="Role" style="-fx-background-color: transparent; -fx-border-color: #0598ff; -fx-border-width: 1px1px1px1px;" />
-      <Label layoutX="54.0" layoutY="283.0" prefHeight="19.0" prefWidth="240.0" text="Choose which role you have in your team" textFill="#0598ff">
+
+      <Label layoutX="115.0" layoutY="277.0" prefHeight="20.0" prefWidth="260.0" text="Choose which role you have in your team" textFill="#0598ff">
          <font>
-            <Font size="13.0" />
+            <Font size="14.0" />
          </font>
       </Label>
-      <Button fx:id="closeBtn" layoutX="24.0" layoutY="13.0" mnemonicParsing="false" style="-fx-background-color: #0598ff;" text="Go back" textFill="WHITE" />
    </children>
 </AnchorPane>
