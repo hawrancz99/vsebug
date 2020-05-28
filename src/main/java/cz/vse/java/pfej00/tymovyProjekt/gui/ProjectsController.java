@@ -187,26 +187,6 @@ public class ProjectsController {
         executorService.shutdown();
     }
 
-    class EditableButton extends Button {
-        TextField tf = new TextField();
-
-        public EditableButton(String text) {
-            setText(text);
-            setOnMouseClicked(e -> {
-                tf.setText(getText());
-                setText("");
-                setGraphic(tf);
-            });
-
-            tf.setOnMouseExited(ae -> {
-//              if (validateText(tf.getText())) {// this is where you would validate the text
-                setText(tf.getText());
-                setGraphic(null);
-//            }
-            });
-        }
-    }
-
     //TODO
     //tohle padá kvůli tomu anchorpanu, ale to se opraví, až se to bude přidávat na normální místo
     private void fillProjects(Response response) throws IOException {
@@ -222,7 +202,7 @@ public class ProjectsController {
         for (ProjectDto projectDto : projects) {
             String projectName = projectDto.getName();
             ObservableList<String> list = FXCollections.observableArrayList(projectName);
-            Button b = new EditableButton(list.toString());
+            Button b = new Button(list.toString());
             Button deleteB = new Button();
             ImageView imageView = new ImageView("/trashcan.png");
             imageView.setFitHeight(20);

@@ -1,10 +1,14 @@
 package cz.vse.java.pfej00.tymovyProjekt.main;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import cz.vse.java.pfej00.tymovyProjekt.Model.TokenDto;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import okhttp3.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -164,15 +168,28 @@ public class ServerClient {
 
 
     //nevim routu
-    public Response sendUpdateProject() throws Exception {
-        RequestBody requestBody = RequestBody.create("asdawd".getBytes());
-        Request request = new Request.Builder().method("POST", requestBody).build();
+    public Response sendUpdateProject(String post) throws Exception {
+        //musim rozsekat ten post a vzít si z toho jen to co chci
+        final ObjectNode node = new ObjectMapper().readValue(post, ObjectNode.class);
+        JsonNode idAsText = node.get("id");
+        int id = idAsText.asInt();
+        JsonNode name = node.get("name");
+        JSONObject updatedPost = new JSONObject();
+        updatedPost.put("name", name.asText());
+
+        RequestBody body = RequestBody.create(updatedPost.toString(), MediaType.parse("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url("https://vsebug-be.herokuapp.com/projects/" + id +"/")
+                .put(body)
+                .addHeader("authorization", TOKEN)
+                .build();
+
         try {
-            logger.info("Updating project");
+            logger.info("Updating project with id {}", id);
             return httpClient.newCall(request).execute();
         }
         catch (IOException e) {
-            logger.error("Error occurred while updating project, caused by {}", e.getMessage());
+            logger.error("Error while updating project project caused by {}", e.getMessage());
         }
         return null;
     }
