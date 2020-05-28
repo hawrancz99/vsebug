@@ -1,15 +1,9 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.vse.java.pfej00.tymovyProjekt.Model.ProjectDto;
-import cz.vse.java.pfej00.tymovyProjekt.Model.RoleDto;
+import cz.vse.java.pfej00.tymovyProjekt.Model.RolesEnum;
 import cz.vse.java.pfej00.tymovyProjekt.builders.PopupBuilder;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -45,7 +38,6 @@ public class RegisterController {
 
 
     private final List<String> ROLES = new ArrayList<>();
-    //private HashMap<int, String> ROLES = new HashMap<int, String>();
 
     private Button registerButton;
 
@@ -55,10 +47,9 @@ public class RegisterController {
 
     @FXML
     public void initialize() {
-        getRoles();
         ROLES.add("Developer");
         ROLES.add("Tester");
-        ROLES.add("Analytic");
+        ROLES.add("Analyst");
 
         rolesOption.getItems().setAll(ROLES);
         registerNewUser.setDisable(false);
@@ -85,7 +76,8 @@ public class RegisterController {
             post.put("username", usernameField.getText());
             post.put("password", passwordField.getText());
             //Role
-            post.put("role", 1);
+            RolesEnum roleId = RolesEnum.valueOf(rolesOption.getSelectionModel().getSelectedItem());
+            post.put("role", roleId.getNumVal());
             ClientCallerTask task = new ClientCallerTask(REGISTER_USER, post.toString());
             task.setOnRunning((successEvent) -> {
                 registerNewUser.setDisable(true);
@@ -121,31 +113,6 @@ public class RegisterController {
             executorService.submit(task);
             executorService.shutdown();
         }
-    }
-
-    private void getRoles(){
-        ClientCallerTask clientCallerTask = new ClientCallerTask("sendGetRoles", null);
-        try {
-            Response response = clientCallerTask.call();
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-            List<RoleDto> projectDtos = objectMapper.reader().forType(new TypeReference<List<RoleDto>>() {}).readValue(Objects.requireNonNull(response.body()).string());
-            System.out.println(response.body());
-            Iterable<RoleDto> iterable = projectDtos;
-            /*
-            for (RoleDto s : iterable) {
-                //ROLES.add(s.getRole());
-                System.out.println(s.getName());
-            }
-             */
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-
-
-        //loadIssues(projectDtos.get(0));
     }
 
     private void clear(){
