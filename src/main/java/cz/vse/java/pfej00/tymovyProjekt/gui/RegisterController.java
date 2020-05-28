@@ -133,10 +133,12 @@ public class RegisterController {
             List<RoleDto> projectDtos = objectMapper.reader().forType(new TypeReference<List<RoleDto>>() {}).readValue(Objects.requireNonNull(response.body()).string());
             System.out.println(response.body());
             Iterable<RoleDto> iterable = projectDtos;
+            /*
             for (RoleDto s : iterable) {
                 //ROLES.add(s.getRole());
-                System.out.println(s.getRole());
+                System.out.println(s.getName());
             }
+             */
         }
         catch(Exception e) {
             e.printStackTrace();
