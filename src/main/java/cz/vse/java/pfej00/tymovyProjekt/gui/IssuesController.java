@@ -1,8 +1,14 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
+import cz.vse.java.pfej00.tymovyProjekt.Model.UserDto;
+import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import cz.vse.java.pfej00.tymovyProjekt.Model.IssueDto;
@@ -11,21 +17,29 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import okhttp3.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class IssuesController {
     @FXML
-    private TextField searchIssues;
+    private TextField searchIssues = new TextField();
 
     @FXML
-    private Button createIssue;
+    private Button createIssue = new Button();
 
     @FXML
-    private Button removeIssue;
+    private Button removeIssue = new Button();
 
     @FXML
-    private Button editIssue;
+    private Button editIssue = new Button();
 
     //all set from Project cuz of disable
     //////////////////////////////////////////////////////////////////////////////
@@ -40,12 +54,22 @@ public class IssuesController {
 
     private ObservableList<Button> buttons = FXCollections.observableArrayList();
 
+    private static final Logger logger = LogManager.getLogger(IssuesController.class);
+
+
+    /////////////
+    private ChoiceBox<String> assignTo;
+
     public void setButtons(ObservableList<Button> buttons) {
         this.buttons = buttons;
     }
 
     //tohle je vlastně stejný jako na projektech, takže je to fajn - nemusim je vůbec volat, stačí zobrazit stejnou tabulku na kliknutí
-    private TableView listOfUsers;
+    private List<UserDto> listOfUsers;
+
+    public void setAssignTo(ChoiceBox<String> assignTo) {
+        this.assignTo = assignTo;
+    }
 
     public void setLog_out(Button log_out) {
         this.log_out = log_out;
@@ -64,7 +88,7 @@ public class IssuesController {
     }
 
 
-    public void setListOfUsers(TableView listOfUsers) {
+    public void setListOfUsers(List<UserDto> listOfUsers) {
         this.listOfUsers = listOfUsers;
     }
 
@@ -76,17 +100,83 @@ public class IssuesController {
         this.listOfIssues = listOfIssues;
     }
 
+    @FXML
+    public void initialize() {
+        //   listOfUsers.getColumns().add(username);
+        //   listOfUsers.getColumns().add(role);
+    }
 
 
-    private void enableAllButtons() {
-        users_list_button.setDisable(false);
-        createProject.setDisable(false);
-        editProject.setDisable(false);
-        listOfUsers.setDisable(false);
-        log_out.setDisable(true);
-        for(Button b : buttons){
-            b.setDisable(false);
-        }
+    public void createNewIssue(ActionEvent actionEvent) throws IOException {
+        disableAllButtons();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/create_issue.fxml"));
+        Parent root = fxmlLoader.load();
+        CreateIssueController createIssueController = fxmlLoader.getController();
+        createIssueController.setSearchIssues(searchIssues);
+        createIssueController.setCreateIssue(createIssue);
+        createIssueController.setEditIssue(editIssue);
+        createIssueController.setRemoveIssue(removeIssue);
+        createIssueController.setListOfUsers(listOfUsers);
+        createIssueController.setIssuesController(this);
+        createIssueController.setAssignTo(assignTo);
+        Stage primaryStage = new Stage();
+        primaryStage.initStyle(StageStyle.UTILITY);
+        primaryStage.setTitle("");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+        //tohle je přes křížek
+        primaryStage.setOnCloseRequest(event ->
+        {
+            enableAllCreateIssueuttons();
+        });
+    }
+
+
+    private void enableAllCreateIssueuttons() {
+        searchIssues.setDisable(false);
+        createIssue.setDisable(false);
+        editIssue.setDisable(false);
+        removeIssue.setDisable(false);
+    }
+
+
+    public void loadIssues(){
+        Stage stg = new Stage();
+        ClientCallerTask task = new ClientCallerTask("sendGetIssues", null);
+        task.setOnRunning((successEvent) -> {
+            stg.show();
+        });
+
+        task.setOnSucceeded((succeededEvent) -> {
+            stg.hide();
+            try {
+                Response response = task.get();
+                if (response.isSuccessful()) {
+                  //namapovat issues
+                    //volat jen když vytvořim novej projekt, jinak mi to vrátí loadProjects
+                    logger.info("All issues loaded successfully");
+                } else logger.error("Error while loading issues");
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error("Error while loading issues, caused by {}", e.getMessage());
+            }
+        });
+
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.progressProperty().bind(task.progressProperty());
+        stg.setScene(new Scene(progressBar));
+        stg.initStyle(StageStyle.UNDECORATED);
+        stg.setAlwaysOnTop(true);
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(task);
+        executorService.shutdown();
+    }
+
+    private void disableAllButtons() {
+        searchIssues.setDisable(true);
+        createIssue.setDisable(true);
+        editIssue.setDisable(true);
+        removeIssue.setDisable(true);
     }
 }
 

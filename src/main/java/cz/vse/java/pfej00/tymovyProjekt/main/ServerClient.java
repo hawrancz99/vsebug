@@ -80,16 +80,15 @@ public class ServerClient {
     public Response sendGetIssues() throws Exception {
         Request request = new Request.Builder()
                 .url("https://vsebug-be.herokuapp.com/issues/")
-                .addHeader("custom-key", "mkyong")  // add request headers
-                .addHeader("User-Agent", "OkHttp Bot")
+                .addHeader("authorization", TOKEN)
+                .get()
                 .build();
-
         try {
-            logger.info("Getting issues");
+            logger.info("Getting projects");
             return httpClient.newCall(request).execute();
         }
         catch (IOException e) {
-            logger.error("Error occurred while getting issues, caused by {}", e.getMessage());
+            logger.error("Error occurred while getting projects, caused by {}", e.getMessage());
         }
         return null;
     }
@@ -105,6 +104,7 @@ public class ServerClient {
         Request request = new Request.Builder()
                 .url("https://vsebug-be.herokuapp.com/projects/")
                 .addHeader("authorization", TOKEN)
+                .get()
                 .build();
         try {
             logger.info("Getting projects");

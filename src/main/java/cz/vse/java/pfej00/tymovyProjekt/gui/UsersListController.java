@@ -6,6 +6,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
+import java.util.List;
+
 public class UsersListController {
 
     @FXML
@@ -14,10 +16,10 @@ public class UsersListController {
     @FXML
     private Button back;
 
-    private TableView<UserDto> listOfUsers = new TableView<>();
+    private List<UserDto> listOfUsers;
 
 
-    public void setListOfUsers(TableView listOfUsers) {
+    public void setListOfUsers(List<UserDto> listOfUsers) {
         this.listOfUsers = listOfUsers;
     }
 

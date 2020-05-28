@@ -31,6 +31,8 @@ import javafx.stage.StageStyle;
 import okhttp3.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,8 +62,9 @@ public class ProjectsController {
     @FXML
     public AnchorPane allButtons;
 
-    private TableView listOfUsers = new TableView<>();
+    private List<UserDto> listOfUsers = new ArrayList<>();
 
+    private ChoiceBox<String> assignTo = new ChoiceBox<>();
 
     //tohle bude ještě sranda
     private TableColumn username = new TableColumn();
@@ -84,6 +87,8 @@ public class ProjectsController {
     public void initialize() {
      //   listOfUsers.getColumns().add(username);
      //   listOfUsers.getColumns().add(role);
+        users_list_button.setOnAction(this::loadUsersByClick);
+        loadUsers();
         loadProjects();
     }
 
@@ -105,7 +110,7 @@ public class ProjectsController {
 
 
     @FXML
-    public void handleUsers(ActionEvent event) {
+    public void loadUsersByClick(ActionEvent event) {
 
             Stage stg = new Stage();
             ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
@@ -122,7 +127,8 @@ public class ProjectsController {
                         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/list_of_users.fxml"));
                         Parent root = fxmlLoader.load();
                         UsersListController usersListController = fxmlLoader.getController();
-                        fillTable(response);
+                        List<UserDto> users = fillTable(response);
+                        listOfUsers.addAll(users);
                         usersListController.setListOfUsers(listOfUsers);
                         Stage primaryStage = new Stage();
                         primaryStage.initStyle(StageStyle.UTILITY);
@@ -148,11 +154,44 @@ public class ProjectsController {
             executorService.shutdown();
     }
 
+    public void loadUsers() {
 
-    private void fillTable(Response response) throws IOException {
+        Stage stg = new Stage();
+        ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
+        task.setOnRunning((successEvent) -> {
+            stg.show();
+        });
+
+        task.setOnSucceeded((succeededEvent) -> {
+            stg.hide();
+            try {
+                Response response = task.get();
+                if (response.isSuccessful()) {
+                    List<UserDto> users = fillTable(response);
+                    listOfUsers.addAll(users);
+                    logger.info("All users loaded successfully");
+                } else logger.error("Error while loading all users");
+            } catch (InterruptedException | ExecutionException | IOException e) {
+                logger.error("Error while loading all users, caused by {}", e.getMessage());
+            }
+        });
+
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.progressProperty().bind(task.progressProperty());
+        stg.setScene(new Scene(progressBar));
+        stg.initStyle(StageStyle.UNDECORATED);
+        stg.setAlwaysOnTop(true);
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(task);
+        executorService.shutdown();
+    }
+
+
+    private List<UserDto> fillTable(Response response) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        List<UserDto> users = objectMapper.reader().forType(new TypeReference<List<UserDto>>() {
+        return objectMapper.reader().forType(new TypeReference<List<UserDto>>() {
         }).readValue(Objects.requireNonNull(response.body().string()));
     }
 
@@ -250,12 +289,16 @@ public class ProjectsController {
         Parent root = fxmlLoader.load();
         IssuesController issuesController = fxmlLoader.getController();
         issuesController.setListOfIssues(issues);
+        for (UserDto i : listOfUsers) {
+            assignTo.getItems().add(i.getUsername());
+        }
         issuesController.setUsers_list_button(users_list_button);
         issuesController.setCreateProject(createProject);
         issuesController.setEditProject(editProject);
         issuesController.setListOfUsers(listOfUsers);
         issuesController.setLog_out(log_out);
         issuesController.setButtons(buttons);
+        issuesController.setAssignTo(assignTo);
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
         primaryStage.setTitle("");
@@ -263,7 +306,6 @@ public class ProjectsController {
         primaryStage.show();
         primaryStage.setOnCloseRequest(event ->
         {
-            loadProjects();
             enableAllButtons();
         });
     }
@@ -298,7 +340,6 @@ public class ProjectsController {
         users_list_button.setDisable(true);
         createProject.setDisable(true);
         editProject.setDisable(true);
-        listOfUsers.setDisable(true);
         log_out.setDisable(true);
         for(Button b : buttons){
             b.setDisable(true);
@@ -309,7 +350,6 @@ public class ProjectsController {
         users_list_button.setDisable(false);
         createProject.setDisable(false);
         editProject.setDisable(false);
-        listOfUsers.setDisable(false);
         log_out.setDisable(false);
         for(Button b : buttons){
             b.setDisable(false);
