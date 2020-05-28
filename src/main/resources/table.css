@@ -27,13 +27,7 @@
 }
 .button:focused{
 -fx-background-color: #05c5ff;
-
-    /*-fx-faint-focus-color: green;
-    -fx-inner-border: blue;
-    -fx-body-color: orange;
-
-    -fx-background-color: red;
-    -fx-background-insets: -2, -0.3, 1, 2;
-    -fx-background-radius: 7, 6, 4, 3;*/
     }
+
+
 

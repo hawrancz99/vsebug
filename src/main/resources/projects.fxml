@@ -7,8 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.layout.HBox?>
-<AnchorPane fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.ProjectsController" fx:id="allButtons" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="812.0" prefWidth="1140.0" style="-fx-background-color: #0598ff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="allButtons" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="812.0" prefWidth="1140.0" style="-fx-background-color: #0598ff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.ProjectsController">
    <children>
       <Label layoutX="479.0" layoutY="14.0" text="Projects" textFill="WHITE">
          <font>
@@ -16,7 +15,7 @@
          </font>
       </Label>
       <FontAwesomeIcon fill="WHITE" glyphName="BOOK" layoutX="594.0" layoutY="46.0" size="3em" wrappingWidth="61.54282093048096" />
-      <Button fx:id="users_list_button" onAction="#handleUsers" layoutX="868.0" layoutY="79.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="148.0" style="-fx-background-color: #0598ff; -fx-border-color: white;" text="List of users" textFill="WHITE">
+      <Button fx:id="users_list_button" layoutX="868.0" layoutY="79.0" mnemonicParsing="false" onAction="#handleUsers" prefHeight="31.0" prefWidth="148.0" style="-fx-background-color: #0598ff; -fx-border-color: white;" text="List of users" textFill="WHITE">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
@@ -36,6 +35,6 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <VBox fx:id="vbox" layoutX="371.0" layoutY="82.0" prefHeight="346.0" prefWidth="361.0" />
+      <VBox fx:id="vbox" layoutX="331.0" layoutY="83.0" prefHeight="346.0" prefWidth="361.0" />
    </children>
 </AnchorPane>

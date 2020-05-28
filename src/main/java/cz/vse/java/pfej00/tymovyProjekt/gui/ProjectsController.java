@@ -5,7 +5,9 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 
@@ -20,8 +22,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import okhttp3.Response;
@@ -183,6 +187,25 @@ public class ProjectsController {
         executorService.shutdown();
     }
 
+    class EditableButton extends Button {
+        TextField tf = new TextField();
+
+        public EditableButton(String text) {
+            setText(text);
+            setOnMouseClicked(e -> {
+                tf.setText(getText());
+                setText("");
+                setGraphic(tf);
+            });
+
+            tf.setOnMouseExited(ae -> {
+//              if (validateText(tf.getText())) {// this is where you would validate the text
+                setText(tf.getText());
+                setGraphic(null);
+//            }
+            });
+        }
+    }
 
     //TODO
     //tohle padá kvůli tomu anchorpanu, ale to se opraví, až se to bude přidávat na normální místo
@@ -199,12 +222,13 @@ public class ProjectsController {
         for (ProjectDto projectDto : projects) {
             String projectName = projectDto.getName();
             ObservableList<String> list = FXCollections.observableArrayList(projectName);
-            Button b = new Button(list.toString());
+            Button b = new EditableButton(list.toString());
             Button deleteB = new Button();
             ImageView imageView = new ImageView("/trashcan.png");
             imageView.setFitHeight(20);
             imageView.setFitWidth(20);
             deleteB.setGraphic(imageView);
+            deleteB.setBackground(new Background(new BackgroundFill(Color.rgb(255,55,55), CornerRadii.EMPTY, Insets.EMPTY)));
             deleteB.setOnAction(event -> {
                 vbox.getChildren().clear();
                 buttons.remove(b);
