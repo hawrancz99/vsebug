@@ -16,6 +16,7 @@ import java.io.IOException;
 /**
  * All methods for calling the server
  */
+
 public class ServerClient {
     private final OkHttpClient httpClient = new OkHttpClient();
     private static final Logger logger = LogManager.getLogger(ClientCallerTask.class);

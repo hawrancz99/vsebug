@@ -21,6 +21,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -122,6 +123,7 @@ public class ProjectsController {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/list_of_users.fxml"));
                     Parent root = fxmlLoader.load();
                     UsersListController usersListController = fxmlLoader.getController();
+                    //přesunout loading do dovnitř controlleru
                     List<UserDto> users = fillTable(response);
                     listOfUsers.addAll(users);
                     usersListController.setListOfUsers(listOfUsers);
@@ -203,7 +205,7 @@ public class ProjectsController {
                 Response response = task.get();
                 if (response.isSuccessful()) {
                     fillProjects(response);
-                    logger.info("Projects successfully loaded");
+                    logger.info("Projects successfully loaded {}", response);
                 } else logger.error("Error while loading project, caused by {}", response);
             } catch (InterruptedException | ExecutionException | IOException e) {
                 logger.error("Error while loading projects, caused by {}", e.getMessage());
@@ -339,6 +341,8 @@ public class ProjectsController {
         primaryStage.show();
         primaryStage.setOnCloseRequest(event ->
         {
+            //je to nešťastný, ale stejně by se muselo volat načítání issues při otevření ... někde se to updatovat musí
+            loadProjects();
             enableAllButtons();
         });
     }

@@ -21,10 +21,10 @@
          </font>
       </Label>
       <TextField fx:id="search" layoutX="383.0" layoutY="112.0" />
-      <TableView layoutX="72.0" layoutY="159.0" prefHeight="341.0" prefWidth="664.0" stylesheets="@table.css">
+      <TableView fx:id="usersTableView" layoutX="72.0" layoutY="159.0" prefHeight="341.0" prefWidth="664.0" stylesheets="@table.css">
         <columns>
-          <TableColumn prefWidth="330.0" text="Username" />
-          <TableColumn prefWidth="332.0" text="Role" />
+          <TableColumn fx:id="usernameColumn" prefWidth="330.0" text="username" />
+          <TableColumn fx:id="roleColumn" prefWidth="332.0" text="role" />
         </columns>
       </TableView>
       <FontAwesomeIcon fill="WHITE" glyphName="USERS" layoutX="305.0" layoutY="56.0" size="3em" />
