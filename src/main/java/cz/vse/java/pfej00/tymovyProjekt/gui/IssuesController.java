@@ -45,16 +45,19 @@ public class IssuesController {
     @FXML
     private Button editIssue = new Button();
 
+    @FXML
+    private Button users_list_button = new Button();
+
     //all set from Project cuz of disable
     //////////////////////////////////////////////////////////////////////////////
-    @FXML
-    private Button users_list_button;
+
 
     private Button createProject;
 
     private Button editProject;
 
     private Button log_out;
+
 
     private ObservableList<Button> buttons = FXCollections.observableArrayList();
 
@@ -171,6 +174,7 @@ public class IssuesController {
         createIssue.setDisable(false);
         editIssue.setDisable(false);
         removeIssue.setDisable(false);
+        users_list_button.setDisable(false);
     }
 
 
@@ -211,6 +215,7 @@ public class IssuesController {
         createIssue.setDisable(true);
         editIssue.setDisable(true);
         removeIssue.setDisable(true);
+        users_list_button.setDisable(true);
     }
 
 

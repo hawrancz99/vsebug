@@ -52,10 +52,6 @@ public class ProjectsController {
     @FXML
     private Button log_out = new Button();
 
-
-    @FXML
-    private Button editProject = new Button();
-
     @FXML
     private VBox vbox = new VBox();
 
@@ -243,15 +239,27 @@ public class ProjectsController {
             ObservableList<String> list = FXCollections.observableArrayList(projectName);
             Button b = new Button(list.toString());
             Button deleteB = new Button();
+            Button editB = new Button();
+            HBox hBox = new HBox(b,deleteB, editB);
+            hBox.setSpacing(5);
+
             ImageView imageView = new ImageView("/trashcan.png");
             imageView.setFitHeight(20);
             imageView.setFitWidth(20);
             deleteB.setGraphic(imageView);
-            deleteB.setBackground(new Background(new BackgroundFill(Color.rgb(255,55,55), CornerRadii.EMPTY, Insets.EMPTY)));
+            deleteB.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255), CornerRadii.EMPTY, Insets.EMPTY)));
+
+            ImageView imageView1 = new ImageView("/pen.png");
+            imageView1.setFitHeight(20);
+            imageView1.setFitWidth(20);
+            editB.setGraphic(imageView1);
+            editB.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255), CornerRadii.EMPTY, Insets.EMPTY)));
+
             deleteB.setOnAction(event -> {
                 vbox.getChildren().clear();
                 buttons.remove(b);
                 buttons.remove(deleteB);
+                buttons.remove(editB);
                 vbox.getChildren().addAll(buttons);
                 callDeleteProject(projectDto.getId());
                     }
@@ -269,8 +277,27 @@ public class ProjectsController {
                         }
                     }
             );
+            editB.setOnAction(event ->
+                    {
+                        try {
+                            disableAllButtons();
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/edit_project.fxml"));
+                            Parent root = fxmlLoader.load();
+                            Stage primaryStage = new Stage();
+                            primaryStage.initStyle(StageStyle.UTILITY);
+                            primaryStage.setTitle("");
+                            primaryStage.setScene(new Scene(root));
+                            primaryStage.show();
+                            primaryStage.setOnCloseRequest(event1 -> enableAllButtons());
+                        }
+                        catch(IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    );
             b.setId("rich-blue");
             deleteB.setId("trashCan");
+            editB.setId("pen");
             b.setPrefWidth(300);
             b.setPrefHeight(10);
             String  style = getClass().getResource("/button.css").toExternalForm();
@@ -278,9 +305,12 @@ public class ProjectsController {
             stage.getScene().getStylesheets().add(style);
             buttons.add(b);
             buttons.add(deleteB);
+            buttons.add(editB);
+
+            vbox.getChildren().add(hBox);
         }
         vbox.prefHeightProperty().bind(allButtons.heightProperty());
-        vbox.getChildren().addAll(buttons);
+
     }
 
     private void getIssues(List<IssueDto> issues) throws IOException {
@@ -294,7 +324,7 @@ public class ProjectsController {
         }
         issuesController.setUsers_list_button(users_list_button);
         issuesController.setCreateProject(createProject);
-        issuesController.setEditProject(editProject);
+
         issuesController.setListOfUsers(listOfUsers);
         issuesController.setLog_out(log_out);
         issuesController.setButtons(buttons);
@@ -317,7 +347,7 @@ public class ProjectsController {
         CreateProjectController createProjectController = fxmlLoader.getController();
         createProjectController.setUsers_list_button(users_list_button);
         createProjectController.setCreateProject(createProject);
-        createProjectController.setEditProject(editProject);
+
         createProjectController.setLog_out(log_out);
         createProjectController.setButtons(buttons);
         createProjectController.setProjects(projects);
@@ -339,7 +369,7 @@ public class ProjectsController {
     private void disableAllButtons() {
         users_list_button.setDisable(true);
         createProject.setDisable(true);
-        editProject.setDisable(true);
+
         log_out.setDisable(true);
         for(Button b : buttons){
             b.setDisable(true);
@@ -349,7 +379,7 @@ public class ProjectsController {
     private void enableAllButtons() {
         users_list_button.setDisable(false);
         createProject.setDisable(false);
-        editProject.setDisable(false);
+
         log_out.setDisable(false);
         for(Button b : buttons){
             b.setDisable(false);

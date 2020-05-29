@@ -26,15 +26,9 @@
          </font>
       </Button>
       <Button fx:id="log_out" layoutX="868.0" layoutY="27.0" mnemonicParsing="false" onAction="#logOut" style="-fx-background-color: #0598ff; -fx-border-color: white;" text="Log out" textFill="WHITE" />
-      <FontAwesomeIcon fill="WHITE" glyphName="EDIT" layoutX="90.0" layoutY="180.0" size="2em" wrappingWidth="22.285715103149414" />
       <FontAwesomeIcon fill="WHITE" glyphName="SIGN_OUT" layoutX="824.0" layoutY="50.0" size="2em" />
       <FontAwesomeIcon fill="WHITE" glyphName="PLUS" layoutX="92.0" layoutY="107.0" size="2em" />
       <FontAwesomeIcon fill="WHITE" glyphName="USERS" layoutX="823.0" layoutY="104.0" size="2em" text="" />
-      <Button fx:id="editProject" layoutX="122.0" layoutY="143.0" mnemonicParsing="false" prefHeight="58.0" prefWidth="148.0" style="-fx-background-color: #0598ff; -fx-border-color: white;" text="Edit projects name" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Button>
-      <VBox fx:id="vbox" layoutX="331.0" layoutY="83.0" prefHeight="346.0" prefWidth="361.0" />
+      <VBox fx:id="vbox" layoutX="377.0" layoutY="79.0" prefHeight="346.0" prefWidth="361.0" />
    </children>
 </AnchorPane>
