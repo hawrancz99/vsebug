@@ -149,7 +149,6 @@ public class CreateProjectController {
     private void enableAllButtons() {
         users_list_button.setDisable(false);
         createProject.setDisable(false);
-        editProject.setDisable(false);
         log_out.setDisable(false);
         for(Button b : buttons){
             b.setDisable(false);

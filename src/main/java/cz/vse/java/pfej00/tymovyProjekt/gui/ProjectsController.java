@@ -256,11 +256,11 @@ public class ProjectsController {
             editB.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255), CornerRadii.EMPTY, Insets.EMPTY)));
 
             deleteB.setOnAction(event -> {
-                vbox.getChildren().clear();
+                hBox.getChildren().clear();
+                vbox.getChildren().remove(hBox);
                 buttons.remove(b);
                 buttons.remove(deleteB);
                 buttons.remove(editB);
-                vbox.getChildren().addAll(buttons);
                 callDeleteProject(projectDto.getId());
                     }
                     );
