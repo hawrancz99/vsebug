@@ -22,12 +22,12 @@
          </font>
       </Label>
       <TextField fx:id="search" layoutX="448.0" layoutY="141.0" prefHeight="26.0" prefWidth="218.0" />
-      <Button fx:id="usersList" layoutX="791.0" layoutY="40.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="List of users" textFill="WHITE">
+      <Button fx:id="users_list_button" layoutX="791.0" layoutY="40.0" mnemonicParsing="false" onAction="#openListOfUsers" prefHeight="32.0" prefWidth="128.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="List of users" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button fx:id="createIssue" onAction="#createNewIssue" layoutX="44.0" layoutY="101.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="173.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Create new issue" textFill="WHITE">
+      <Button fx:id="createIssue" layoutX="44.0" layoutY="101.0" mnemonicParsing="false" onAction="#createNewIssue" prefHeight="47.0" prefWidth="173.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Create new issue" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

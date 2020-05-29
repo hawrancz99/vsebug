@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.CreateIssueController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="413.0" prefWidth="523.0" style="-fx-background-color: #0598FF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="413.0" prefWidth="523.0" style="-fx-background-color: #0598FF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.CreateIssueController">
    <children>
       <Label layoutX="202.0" layoutY="14.0" text="Create new issue" textFill="WHITE">
          <font>
@@ -37,11 +37,11 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TextField layoutX="114.0" layoutY="65.0" prefHeight="32.0" prefWidth="371.0" />
-      <TextArea layoutX="114.0" layoutY="127.0" prefHeight="126.0" prefWidth="371.0" />
-      <ChoiceBox fx:id="assignToNew" onMouseClicked="#fillChoice" layoutX="114.0" layoutY="289.0" prefHeight="26.0" prefWidth="371.0" />
+      <TextField fx:id="textfieldName" layoutX="114.0" layoutY="65.0" prefHeight="32.0" prefWidth="371.0" />
+      <TextArea fx:id="textfieldDescription" layoutX="114.0" layoutY="127.0" prefHeight="126.0" prefWidth="371.0" />
+      <ChoiceBox fx:id="assignToNew" layoutX="114.0" layoutY="289.0" onMouseClicked="#fillChoice" prefHeight="26.0" prefWidth="371.0" />
       <FontAwesomeIcon fill="WHITE" glyphName="PENCIL" layoutX="167.0" layoutY="40.0" size="2em" />
-      <Button fx:id="save" onAction="#handle" layoutX="210.0" layoutY="353.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="104.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Save" textFill="WHITE">
+      <Button fx:id="save" layoutX="210.0" layoutY="353.0" mnemonicParsing="false" onAction="#handle" prefHeight="32.0" prefWidth="104.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Save" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

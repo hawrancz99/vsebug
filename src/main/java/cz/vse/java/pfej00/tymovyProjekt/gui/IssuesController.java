@@ -1,4 +1,7 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.vse.java.pfej00.tymovyProjekt.Model.UserDto;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -24,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,7 +47,7 @@ public class IssuesController {
 
     //all set from Project cuz of disable
     //////////////////////////////////////////////////////////////////////////////
-
+    @FXML
     private Button users_list_button;
 
     private Button createProject;
@@ -65,7 +69,37 @@ public class IssuesController {
     }
 
     //tohle je vlastně stejný jako na projektech, takže je to fajn - nemusim je vůbec volat, stačí zobrazit stejnou tabulku na kliknutí
-    private List<UserDto> listOfUsers;
+    // asi nějak takhle??
+    private List<UserDto> listOfUsers ;
+
+    public void openListOfUsers(ActionEvent actionEvent) throws IOException {
+        disableAllButtons();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/list_of_users.fxml"));
+        Parent root = fxmlLoader.load();
+        UsersListController usersListController = fxmlLoader.getController();
+        usersListController.setListOfUsers(listOfUsers);
+        Stage primaryStage = new Stage();
+        primaryStage.initStyle(StageStyle.UTILITY);
+        primaryStage.setTitle("");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+        primaryStage.setOnCloseRequest(event1 -> enableAllButtons());
+    }
+
+    private void enableAllButtons() {
+        users_list_button.setDisable(false);
+        createProject.setDisable(false);
+        editProject.setDisable(false);
+        log_out.setDisable(false);
+        createIssue.setDisable(false);
+        removeIssue.setDisable(false);
+        editIssue.setDisable(false);
+        for(Button b : buttons){
+            b.setDisable(false);
+        }
+    }
+
+
 
     public void setAssignTo(ChoiceBox<String> assignTo) {
         this.assignTo = assignTo;
@@ -178,6 +212,8 @@ public class IssuesController {
         editIssue.setDisable(true);
         removeIssue.setDisable(true);
     }
+
+
 }
 
 
