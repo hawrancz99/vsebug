@@ -46,11 +46,13 @@ public class IssuesController {
     private Button editIssue = new Button();
 
     @FXML
-    private Button users_list_button = new Button();
+    private Button userListButtonOnIssuesScreen = new Button();
+
 
     //all set from Project cuz of disable
     //////////////////////////////////////////////////////////////////////////////
 
+    private Button users_list_button;
 
     private Button createProject;
 
@@ -156,6 +158,7 @@ public class IssuesController {
         createIssueController.setListOfUsers(listOfUsers);
         createIssueController.setIssuesController(this);
         createIssueController.setAssignTo(assignTo);
+        createIssueController.setUserListButtonOnIssuesScreen(userListButtonOnIssuesScreen);
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
         primaryStage.setTitle("");
@@ -174,7 +177,7 @@ public class IssuesController {
         createIssue.setDisable(false);
         editIssue.setDisable(false);
         removeIssue.setDisable(false);
-        users_list_button.setDisable(false);
+        userListButtonOnIssuesScreen.setDisable(false);
     }
 
 
@@ -215,7 +218,7 @@ public class IssuesController {
         createIssue.setDisable(true);
         editIssue.setDisable(true);
         removeIssue.setDisable(true);
-        users_list_button.setDisable(true);
+        userListButtonOnIssuesScreen.setDisable(true);
     }
 
 

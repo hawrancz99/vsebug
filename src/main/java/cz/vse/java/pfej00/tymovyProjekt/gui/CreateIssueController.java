@@ -47,6 +47,8 @@ public class CreateIssueController {
 
     private Button createIssue;
 
+    private Button userListButtonOnIssuesScreen;
+
     private Button removeIssue;
 
     private Button editIssue;
@@ -54,6 +56,10 @@ public class CreateIssueController {
     private List<UserDto> listOfUsers;
 
     private IssuesController issuesController;
+
+    public void setUserListButtonOnIssuesScreen(Button userListButtonOnIssuesScreen) {
+        this.userListButtonOnIssuesScreen = userListButtonOnIssuesScreen;
+    }
 
     public void setAssignTo(ChoiceBox<String> assignTo) {
         this.assignTo = assignTo;
@@ -90,6 +96,7 @@ public class CreateIssueController {
     }
 
     public void handle(Event event) {
+            enableAllButtons();
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
             post.put("name", issueName.getText());
@@ -111,7 +118,6 @@ public class CreateIssueController {
                     Response response = task.get();
                     if (response.isSuccessful()) {
                         Stage stage = (Stage) save.getScene().getWindow();
-                        enableAllButtons();
                         stage.close();
                         issuesController.loadIssues();
                         logger.info("Issue created successfully");
@@ -154,6 +160,7 @@ public class CreateIssueController {
         createIssue.setDisable(false);
         editIssue.setDisable(false);
         removeIssue.setDisable(false);
+        userListButtonOnIssuesScreen.setDisable(false);
     }
 
     /*
