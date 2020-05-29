@@ -47,8 +47,6 @@ public class CreateProjectController {
 
     private Button createProject;
 
-    private Button editProject;
-
     private Button log_out;
 
     private ObservableList<Button> buttons = FXCollections.observableArrayList();
@@ -86,10 +84,6 @@ public class CreateProjectController {
         this.createProject = createProject;
     }
 
-
-    public void setEditProject(Button editProject) {
-        this.editProject = editProject;
-    }
 
     @FXML
     public void initialize() {

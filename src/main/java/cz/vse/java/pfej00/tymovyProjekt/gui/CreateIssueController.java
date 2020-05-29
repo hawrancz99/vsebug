@@ -59,6 +59,8 @@ public class CreateIssueController {
 
     private IssuesController issuesController;
 
+    private static final Logger logger = LogManager.getLogger(CreateIssueController.class);
+
     public void setProjectDto(ProjectDto projectDto) {
         this.projectDto = projectDto;
     }
@@ -71,7 +73,6 @@ public class CreateIssueController {
         this.issuesController = issuesController;
     }
 
-    private static final Logger logger = LogManager.getLogger(CreateIssueController.class);
 
     public void setListOfUsers(List<UserDto> listOfUsers) {
         this.listOfUsers = listOfUsers;

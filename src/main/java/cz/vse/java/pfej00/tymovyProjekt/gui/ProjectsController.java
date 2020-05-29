@@ -190,7 +190,7 @@ public class ProjectsController {
         }).readValue(Objects.requireNonNull(response.body().string()));
     }
 
-    private void loadProjects() {
+    void loadProjects() {
         Stage stg = new Stage();
         ClientCallerTask task = new ClientCallerTask(GET_PROJECTS, null);
         task.setOnRunning((runningEvent) -> {
@@ -280,6 +280,15 @@ public class ProjectsController {
                             disableAllButtons();
                             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/edit_project.fxml"));
                             Parent root = fxmlLoader.load();
+                            EditProjectController editProjectController = fxmlLoader.getController();
+                            //aby save dělalo fakin enable tak se tam bude muset nasetovat zase úplně všechno :)))))))))))))))), řekl bych
+                            editProjectController.setButtonWithProjectName(b);
+                            editProjectController.setProjectsController(this);
+                            editProjectController.setEditedProject(projectDto);
+                            editProjectController.setButtons(buttons);
+                            editProjectController.setLog_out(log_out);
+                            editProjectController.setUsers_list_button(users_list_button);
+                            editProjectController.setCreateProject(createProject);
                             Stage primaryStage = new Stage();
                             primaryStage.initStyle(StageStyle.UTILITY);
                             primaryStage.setTitle("");
@@ -372,7 +381,6 @@ public class ProjectsController {
     private void enableAllButtons() {
         users_list_button.setDisable(false);
         createProject.setDisable(false);
-
         log_out.setDisable(false);
         for (Button b : buttons) {
             b.setDisable(false);
