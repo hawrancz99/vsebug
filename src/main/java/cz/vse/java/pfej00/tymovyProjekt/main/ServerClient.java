@@ -84,11 +84,11 @@ public class ServerClient {
                 .get()
                 .build();
         try {
-            logger.info("Getting projects");
+            logger.info("Getting issues");
             return httpClient.newCall(request).execute();
         }
         catch (IOException e) {
-            logger.error("Error occurred while getting projects, caused by {}", e.getMessage());
+            logger.error("Error occurred while getting issues, caused by {}", e.getMessage());
         }
         return null;
     }
@@ -97,6 +97,24 @@ public class ServerClient {
             RequestBody requestBody = RequestBody.create("asdawd".getBytes());
             Request request = new Request.Builder().method("POST", requestBody).build();
             return httpClient.newCall(request).execute();
+    }
+
+    public Response sendCreateIssue(String post) throws Exception {
+        RequestBody body = RequestBody.create(post, MediaType.parse("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url("https://vsebug-be.herokuapp.com/issues/")
+                .post(body)
+                .addHeader("authorization", TOKEN)
+                .build();
+
+        try {
+            logger.info("Creating new issue {}", post);
+            return httpClient.newCall(request).execute();
+        }
+        catch (IOException e) {
+            logger.error("Error while creating new issue caused by {}", e.getMessage());
+        }
+        return null;
     }
 
     //Projects

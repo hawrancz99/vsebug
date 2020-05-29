@@ -80,8 +80,8 @@ public class ProjectsController {
 
     @FXML
     public void initialize() {
-     //   listOfUsers.getColumns().add(username);
-     //   listOfUsers.getColumns().add(role);
+        //   listOfUsers.getColumns().add(username);
+        //   listOfUsers.getColumns().add(role);
         users_list_button.setOnAction(this::loadUsersByClick);
         loadUsers();
         loadProjects();
@@ -107,46 +107,46 @@ public class ProjectsController {
     @FXML
     public void loadUsersByClick(ActionEvent event) {
 
-            Stage stg = new Stage();
-            ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
-            task.setOnRunning((successEvent) -> {
-                stg.show();
-            });
+        Stage stg = new Stage();
+        ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
+        task.setOnRunning((successEvent) -> {
+            stg.show();
+        });
 
-            task.setOnSucceeded((succeededEvent) -> {
-                stg.hide();
-                try {
-                    Response response = task.get();
-                    if (response.isSuccessful()) {
-                        disableAllButtons();
-                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/list_of_users.fxml"));
-                        Parent root = fxmlLoader.load();
-                        UsersListController usersListController = fxmlLoader.getController();
-                        List<UserDto> users = fillTable(response);
-                        listOfUsers.addAll(users);
-                        usersListController.setListOfUsers(listOfUsers);
-                        Stage primaryStage = new Stage();
-                        primaryStage.initStyle(StageStyle.UTILITY);
-                        primaryStage.setTitle("");
-                        primaryStage.setScene(new Scene(root));
-                        primaryStage.show();
-                        primaryStage.setOnCloseRequest(event1 -> enableAllButtons());
-                        logger.info("All users loaded successfully");
-                    } else logger.error("Error while loading all users");
-                } catch (InterruptedException | ExecutionException | IOException e) {
-                    logger.error("Error while loading all users, caused by {}", e.getMessage());
-                }
-            });
+        task.setOnSucceeded((succeededEvent) -> {
+            stg.hide();
+            try {
+                Response response = task.get();
+                if (response.isSuccessful()) {
+                    disableAllButtons();
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/list_of_users.fxml"));
+                    Parent root = fxmlLoader.load();
+                    UsersListController usersListController = fxmlLoader.getController();
+                    List<UserDto> users = fillTable(response);
+                    listOfUsers.addAll(users);
+                    usersListController.setListOfUsers(listOfUsers);
+                    Stage primaryStage = new Stage();
+                    primaryStage.initStyle(StageStyle.UTILITY);
+                    primaryStage.setTitle("");
+                    primaryStage.setScene(new Scene(root));
+                    primaryStage.show();
+                    primaryStage.setOnCloseRequest(event1 -> enableAllButtons());
+                    logger.info("All users loaded successfully");
+                } else logger.error("Error while loading all users");
+            } catch (InterruptedException | ExecutionException | IOException e) {
+                logger.error("Error while loading all users, caused by {}", e.getMessage());
+            }
+        });
 
-            ProgressBar progressBar = new ProgressBar();
-            progressBar.progressProperty().bind(task.progressProperty());
-            stg.setScene(new Scene(progressBar));
-            stg.initStyle(StageStyle.UNDECORATED);
-            stg.setAlwaysOnTop(true);
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.progressProperty().bind(task.progressProperty());
+        stg.setScene(new Scene(progressBar));
+        stg.initStyle(StageStyle.UNDECORATED);
+        stg.setAlwaysOnTop(true);
 
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.submit(task);
-            executorService.shutdown();
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(task);
+        executorService.shutdown();
     }
 
     public void loadUsers() {
@@ -232,45 +232,43 @@ public class ProjectsController {
         vbox.setAlignment(Pos.TOP_RIGHT);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        projects = objectMapper.reader().forType(new TypeReference<List<ProjectDto>>() {}).readValue(Objects.requireNonNull(response.body()).string());
+        projects = objectMapper.reader().forType(new TypeReference<List<ProjectDto>>() {
+        }).readValue(Objects.requireNonNull(response.body()).string());
         for (ProjectDto projectDto : projects) {
             String projectName = projectDto.getName();
             ObservableList<String> list = FXCollections.observableArrayList(projectName);
             Button b = new Button(list.toString());
             Button deleteB = new Button();
             Button editB = new Button();
-            HBox hBox = new HBox(b,deleteB, editB);
+            HBox hBox = new HBox(b, deleteB, editB);
             hBox.setSpacing(5);
 
             ImageView imageView = new ImageView("/trashcan.png");
             imageView.setFitHeight(20);
             imageView.setFitWidth(20);
             deleteB.setGraphic(imageView);
-            deleteB.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255), CornerRadii.EMPTY, Insets.EMPTY)));
+            deleteB.setBackground(new Background(new BackgroundFill(Color.rgb(255, 255, 255), CornerRadii.EMPTY, Insets.EMPTY)));
 
             ImageView imageView1 = new ImageView("/pen.png");
             imageView1.setFitHeight(20);
             imageView1.setFitWidth(20);
             editB.setGraphic(imageView1);
-            editB.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255), CornerRadii.EMPTY, Insets.EMPTY)));
+            editB.setBackground(new Background(new BackgroundFill(Color.rgb(255, 255, 255), CornerRadii.EMPTY, Insets.EMPTY)));
 
             deleteB.setOnAction(event -> {
-                hBox.getChildren().clear();
-                vbox.getChildren().remove(hBox);
-                buttons.remove(b);
-                buttons.remove(deleteB);
-                buttons.remove(editB);
-                callDeleteProject(projectDto.getId());
+                        hBox.getChildren().clear();
+                        vbox.getChildren().remove(hBox);
+                        buttons.remove(b);
+                        buttons.remove(deleteB);
+                        buttons.remove(editB);
+                        callDeleteProject(projectDto.getId());
                     }
-                    );
+            );
             b.setText(projectName);
             b.setOnAction(event ->
                     {
                         try {
-                            //nullpointer
-                            if (projectDto.getIssues() != null) {
-                                getIssues(projectDto.getIssues());
-                            } else getIssues(new ArrayList<>());
+                            getIssues(projectDto);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -288,18 +286,17 @@ public class ProjectsController {
                             primaryStage.setScene(new Scene(root));
                             primaryStage.show();
                             primaryStage.setOnCloseRequest(event1 -> enableAllButtons());
-                        }
-                        catch(IOException e) {
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
-                    );
+            );
             b.setId("rich-blue");
             deleteB.setId("trashCan");
             editB.setId("pen");
             b.setPrefWidth(300);
             b.setPrefHeight(10);
-            String  style = getClass().getResource("/button.css").toExternalForm();
+            String style = getClass().getResource("/button.css").toExternalForm();
             Stage stage = (Stage) vbox.getScene().getWindow();
             stage.getScene().getStylesheets().add(style);
             buttons.add(b);
@@ -312,15 +309,17 @@ public class ProjectsController {
 
     }
 
-    private void getIssues(List<IssueDto> issues) throws IOException {
+    private void getIssues(ProjectDto projectDto) throws IOException {
         disableAllButtons();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/issues.fxml"));
         Parent root = fxmlLoader.load();
         IssuesController issuesController = fxmlLoader.getController();
-        issuesController.setListOfIssues(issues);
+        if(projectDto.getIssues() != null) {
+            issuesController.setListOfIssues(projectDto.getIssues());
+        } else issuesController.setListOfIssues(new ArrayList<>());
         issuesController.setUsers_list_button(users_list_button);
         issuesController.setCreateProject(createProject);
-
+        issuesController.setProjectDto(projectDto);
         issuesController.setListOfUsers(listOfUsers);
         issuesController.setLog_out(log_out);
         issuesController.setButtons(buttons);
@@ -355,7 +354,6 @@ public class ProjectsController {
         //tohle je přes křížek
         primaryStage.setOnCloseRequest(event ->
         {
-            loadProjects();
             enableAllButtons();
         });
     }
@@ -366,7 +364,7 @@ public class ProjectsController {
         createProject.setDisable(true);
 
         log_out.setDisable(true);
-        for(Button b : buttons){
+        for (Button b : buttons) {
             b.setDisable(true);
         }
     }
@@ -376,7 +374,7 @@ public class ProjectsController {
         createProject.setDisable(false);
 
         log_out.setDisable(false);
-        for(Button b : buttons){
+        for (Button b : buttons) {
             b.setDisable(false);
         }
     }
@@ -384,7 +382,7 @@ public class ProjectsController {
     private void callDeleteProject(int id) {
         Stage stg = new Stage();
         //musim to tam poslat jako string
-        String post = ""+ id +"";
+        String post = "" + id + "";
         ClientCallerTask task = new ClientCallerTask("sendDeleteProject", post);
         task.setOnRunning((successEvent) -> {
             stg.show();

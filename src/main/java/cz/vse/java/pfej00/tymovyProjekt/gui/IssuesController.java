@@ -2,6 +2,7 @@ package cz.vse.java.pfej00.tymovyProjekt.gui;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.vse.java.pfej00.tymovyProjekt.Model.ProjectDto;
 import cz.vse.java.pfej00.tymovyProjekt.Model.UserDto;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -58,6 +59,7 @@ public class IssuesController {
 
     private Button log_out;
 
+    private ProjectDto projectDto;
 
     private ObservableList<Button> buttons = FXCollections.observableArrayList();
 
@@ -68,6 +70,10 @@ public class IssuesController {
 
     public void setButtons(ObservableList<Button> buttons) {
         this.buttons = buttons;
+    }
+
+    public void setProjectDto(ProjectDto projectDto) {
+        this.projectDto = projectDto;
     }
 
     //tohle je vlastně stejný jako na projektech, takže je to fajn - nemusim je vůbec volat, stačí zobrazit stejnou tabulku na kliknutí
@@ -148,6 +154,7 @@ public class IssuesController {
         createIssueController.setListOfUsers(listOfUsers);
         createIssueController.setIssuesController(this);
         createIssueController.setUserListButtonOnIssuesScreen(userListButtonOnIssuesScreen);
+        createIssueController.setProjectDto(projectDto);
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
         primaryStage.setTitle("");
@@ -182,11 +189,15 @@ public class IssuesController {
             try {
                 Response response = task.get();
                 if (response.isSuccessful()) {
+                    listOfIssues.clear();
+                    List<IssueDto> issuesForProject = fillListOfIssues(response);
+                    //refresh, ale ono to bude horší s těma tabulkama :)
+                    listOfIssues.addAll(issuesForProject);
                   //namapovat issues
                     //volat jen když vytvořim novej projekt, jinak mi to vrátí loadProjects
                     logger.info("All issues loaded successfully");
                 } else logger.error("Error while loading issues");
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException | ExecutionException | IOException e) {
                 logger.error("Error while loading issues, caused by {}", e.getMessage());
             }
         });
@@ -208,6 +219,13 @@ public class IssuesController {
         editIssue.setDisable(true);
         removeIssue.setDisable(true);
         userListButtonOnIssuesScreen.setDisable(true);
+    }
+
+    private List<IssueDto> fillListOfIssues(Response response) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        return objectMapper.reader().forType(new TypeReference<List<IssueDto>>() {
+        }).readValue(Objects.requireNonNull(response.body().string()));
     }
 
 

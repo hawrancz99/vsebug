@@ -38,6 +38,11 @@ public class CreateIssueController {
     private Button save;
 
 
+    ///////////////////////////////tohle je projekt, abych věděl, ke kterýmu creatuju išu
+
+    private ProjectDto projectDto;
+
+
     ///////////////////kvůli ENABLE/DISABLE
 
     private TextField searchIssues;
@@ -53,6 +58,10 @@ public class CreateIssueController {
     private List<UserDto> listOfUsers;
 
     private IssuesController issuesController;
+
+    public void setProjectDto(ProjectDto projectDto) {
+        this.projectDto = projectDto;
+    }
 
     public void setUserListButtonOnIssuesScreen(Button userListButtonOnIssuesScreen) {
         this.userListButtonOnIssuesScreen = userListButtonOnIssuesScreen;
@@ -93,11 +102,14 @@ public class CreateIssueController {
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
             post.put("name", issueName.getText());
+            //asi může zůstat, nový budou vždycky new
+            post.put("state", 1);
             post.put("description", description.getText());
-            post.put("project", "");
+            post.put("project", projectDto.getId());
             //zatim takhle než zjistíme formát
             post.put("created", "2020-05-22T21:03:41Z");
-            post.put("assignee", assignToNew.getSelectionModel().getSelectedItem());
+            int assignee = getAssigneeIdByUsername(assignToNew.getSelectionModel().getSelectedItem());
+            post.put("assignee", assignee);
             ClientCallerTask task = new ClientCallerTask("sendCreateIssue", post.toString());
             task.setOnRunning((successEvent) -> {
                 save.setDisable(true);
@@ -113,7 +125,7 @@ public class CreateIssueController {
                         Stage stage = (Stage) save.getScene().getWindow();
                         stage.close();
                         issuesController.loadIssues();
-                        logger.info("Issue created successfully");
+                        logger.info("Issue created successfully {}", response);
                     } else logger.error("Error while creating issue");
                 } catch (InterruptedException | ExecutionException e) {
                     logger.error("Error while creating issue, caused by {}", e.getMessage());
@@ -148,6 +160,16 @@ public class CreateIssueController {
         editIssue.setDisable(false);
         removeIssue.setDisable(false);
         userListButtonOnIssuesScreen.setDisable(false);
+    }
+
+    private int getAssigneeIdByUsername(String username){
+        for(UserDto user : listOfUsers){
+            if(user.getUsername().equals(username)){
+                return user.getId();
+            }
+        }
+        //chudák user 0 haha
+        return 0;
     }
 
     /*
