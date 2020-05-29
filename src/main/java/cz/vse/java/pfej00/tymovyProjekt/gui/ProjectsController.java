@@ -60,7 +60,6 @@ public class ProjectsController {
 
     private List<UserDto> listOfUsers = new ArrayList<>();
 
-    private ChoiceBox<String> assignTo = new ChoiceBox<>();
 
     //tohle bude ještě sranda
     private TableColumn username = new TableColumn();
@@ -319,16 +318,12 @@ public class ProjectsController {
         Parent root = fxmlLoader.load();
         IssuesController issuesController = fxmlLoader.getController();
         issuesController.setListOfIssues(issues);
-        for (UserDto i : listOfUsers) {
-            assignTo.getItems().add(i.getUsername());
-        }
         issuesController.setUsers_list_button(users_list_button);
         issuesController.setCreateProject(createProject);
 
         issuesController.setListOfUsers(listOfUsers);
         issuesController.setLog_out(log_out);
         issuesController.setButtons(buttons);
-        issuesController.setAssignTo(assignTo);
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
         primaryStage.setTitle("");

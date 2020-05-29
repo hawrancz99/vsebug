@@ -56,8 +56,6 @@ public class IssuesController {
 
     private Button createProject;
 
-    private Button editProject;
-
     private Button log_out;
 
 
@@ -67,7 +65,6 @@ public class IssuesController {
 
 
     /////////////
-    private ChoiceBox<String> assignTo;
 
     public void setButtons(ObservableList<Button> buttons) {
         this.buttons = buttons;
@@ -88,27 +85,23 @@ public class IssuesController {
         primaryStage.setTitle("");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-        primaryStage.setOnCloseRequest(event1 -> enableAllButtons());
+        primaryStage.setOnCloseRequest(event1 -> enableAllCreateIssueuttons());
     }
 
     private void enableAllButtons() {
         users_list_button.setDisable(false);
         createProject.setDisable(false);
-        editProject.setDisable(false);
         log_out.setDisable(false);
         createIssue.setDisable(false);
         removeIssue.setDisable(false);
         editIssue.setDisable(false);
+        userListButtonOnIssuesScreen.setDisable(false);
         for(Button b : buttons){
             b.setDisable(false);
         }
     }
 
 
-
-    public void setAssignTo(ChoiceBox<String> assignTo) {
-        this.assignTo = assignTo;
-    }
 
     public void setLog_out(Button log_out) {
         this.log_out = log_out;
@@ -122,9 +115,6 @@ public class IssuesController {
         this.createProject = createProject;
     }
 
-    public void setEditProject(Button editProject) {
-        this.editProject = editProject;
-    }
 
 
     public void setListOfUsers(List<UserDto> listOfUsers) {
@@ -157,7 +147,6 @@ public class IssuesController {
         createIssueController.setRemoveIssue(removeIssue);
         createIssueController.setListOfUsers(listOfUsers);
         createIssueController.setIssuesController(this);
-        createIssueController.setAssignTo(assignTo);
         createIssueController.setUserListButtonOnIssuesScreen(userListButtonOnIssuesScreen);
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);

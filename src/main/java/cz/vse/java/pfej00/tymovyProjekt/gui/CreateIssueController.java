@@ -29,13 +29,10 @@ public class CreateIssueController {
     private ChoiceBox<String> assignToNew;
 
     @FXML
-    private ChoiceBox<String> assignTo;
-
-    @FXML
     private TextField issueName = new TextField();
 
     @FXML
-    private TextField description = new TextField();
+    private TextArea description = new TextArea();
 
     @FXML
     private Button save;
@@ -59,10 +56,6 @@ public class CreateIssueController {
 
     public void setUserListButtonOnIssuesScreen(Button userListButtonOnIssuesScreen) {
         this.userListButtonOnIssuesScreen = userListButtonOnIssuesScreen;
-    }
-
-    public void setAssignTo(ChoiceBox<String> assignTo) {
-        this.assignTo = assignTo;
     }
 
     public void setIssuesController(IssuesController issuesController) {
@@ -104,8 +97,8 @@ public class CreateIssueController {
             post.put("project", "");
             //zatim takhle než zjistíme formát
             post.put("created", "2020-05-22T21:03:41Z");
-            post.put("assignee", assignTo.getSelectionModel().getSelectedItem());
-            ClientCallerTask task = new ClientCallerTask("sendCreateProject", post.toString());
+            post.put("assignee", assignToNew.getSelectionModel().getSelectedItem());
+            ClientCallerTask task = new ClientCallerTask("sendCreateIssue", post.toString());
             task.setOnRunning((successEvent) -> {
                 save.setDisable(true);
                 stg.show();
@@ -141,18 +134,12 @@ public class CreateIssueController {
     }
 
     public void fillChoice(MouseEvent mouseEvent){
-        fillChoiceLocal();
+        for (UserDto i : listOfUsers) {
+            assignToNew.getItems().addAll(i.getUsername());
+        }
         assignToNew.show();
     }
 
-    private void fillChoiceLocal(){
-        if(assignToNew.getItems().isEmpty()) {
-            List<String> values = assignTo.getItems();
-            for (String value : values) {
-                assignToNew.getItems().add(value);
-            }
-        }
-    }
 
 
     private void enableAllButtons() {
