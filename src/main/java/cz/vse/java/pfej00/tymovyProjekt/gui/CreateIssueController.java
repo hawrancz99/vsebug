@@ -127,7 +127,7 @@ public class CreateIssueController {
                         stage.close();
                         issuesController.loadIssues();
                         logger.info("Issue created successfully {}", response);
-                    } else logger.error("Error while creating issue");
+                    } else logger.error("Error while creating issue, caused by {}", response);
                 } catch (InterruptedException | ExecutionException e) {
                     logger.error("Error while creating issue, caused by {}", e.getMessage());
                 }

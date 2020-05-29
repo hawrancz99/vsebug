@@ -116,7 +116,7 @@ public class CreateProjectController {
                         stage.close();
                         projectsController.initialize();
                         logger.info("Project created successfully");
-                    } else logger.error("Error while creating project");
+                    } else logger.error("Error while creating project, caused by {}", response);
                 } catch (InterruptedException | ExecutionException e) {
                     logger.error("Error while creating project, caused by {}", e.getMessage());
                 }

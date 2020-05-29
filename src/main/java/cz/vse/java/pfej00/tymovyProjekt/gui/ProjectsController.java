@@ -132,7 +132,7 @@ public class ProjectsController {
                     primaryStage.show();
                     primaryStage.setOnCloseRequest(event1 -> enableAllButtons());
                     logger.info("All users loaded successfully");
-                } else logger.error("Error while loading all users");
+                } else logger.error("Error while loading all users, caused by {}", response);
             } catch (InterruptedException | ExecutionException | IOException e) {
                 logger.error("Error while loading all users, caused by {}", e.getMessage());
             }
@@ -165,7 +165,7 @@ public class ProjectsController {
                     List<UserDto> users = fillTable(response);
                     listOfUsers.addAll(users);
                     logger.info("All users loaded successfully");
-                } else logger.error("Error while loading all users");
+                } else logger.error("Error while loading all users, caused by {}", response);
             } catch (InterruptedException | ExecutionException | IOException e) {
                 logger.error("Error while loading all users, caused by {}", e.getMessage());
             }
@@ -204,7 +204,7 @@ public class ProjectsController {
                 if (response.isSuccessful()) {
                     fillProjects(response);
                     logger.info("Projects successfully loaded");
-                } else logger.error("Error while loading project");
+                } else logger.error("Error while loading project, caused by {}", response);
             } catch (InterruptedException | ExecutionException | IOException e) {
                 logger.error("Error while loading projects, caused by {}", e.getMessage());
             }
@@ -402,7 +402,7 @@ public class ProjectsController {
                 Response response = task.get();
                 if (response.isSuccessful()) {
                     logger.info("Project was deleted");
-                } else logger.error("Error while deleting project");
+                } else logger.error("Error while deleting project, caused by {}", response);
             } catch (InterruptedException | ExecutionException e) {
                 logger.error("Error while deleting project, caused by {}", e.getMessage());
             }

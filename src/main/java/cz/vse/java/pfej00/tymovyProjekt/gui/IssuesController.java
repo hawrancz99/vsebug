@@ -196,7 +196,7 @@ public class IssuesController {
                   //namapovat issues
                     //volat jen když vytvořim novej projekt, jinak mi to vrátí loadProjects
                     logger.info("All issues loaded successfully");
-                } else logger.error("Error while loading issues");
+                } else logger.error("Error while loading issues, caused by {}", response);
             } catch (InterruptedException | ExecutionException | IOException e) {
                 logger.error("Error while loading issues, caused by {}", e.getMessage());
             }

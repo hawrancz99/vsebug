@@ -107,7 +107,7 @@ public class EditProjectController {
                     } else {
                         //nepovedlo se, tak stará hodnota
                         buttonWithProjectName.setText(firstTimeName);
-                        logger.error("Error while updating project");
+                        logger.error("Error occurred while updating project, caused by {}", response2);
                     }
                 } catch (InterruptedException | ExecutionException e) {
                     logger.error("Error while updating project, caused by {}", e.getMessage());

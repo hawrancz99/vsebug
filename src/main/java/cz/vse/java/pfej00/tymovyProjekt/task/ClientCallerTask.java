@@ -57,6 +57,12 @@ public class ClientCallerTask extends Task<Response> {
         if (url.equals("sendCreateIssue")) {
             return SERVER_CLIENT.sendCreateIssue(post);
         }
+        if (url.equals("sendFindUser")) {
+            return SERVER_CLIENT.sendFindUser(post);
+        }
+        if (url.equals("sendFindIssue")) {
+            return SERVER_CLIENT.sendFindIssue(post);
+        }
         return null;
     }
 }
