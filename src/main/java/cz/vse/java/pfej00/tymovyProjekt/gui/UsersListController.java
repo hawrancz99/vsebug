@@ -61,7 +61,7 @@ public class UsersListController implements Initializable {
 
 
 
-    public ObservableList<UserDto> getUsers(List<UserDto> loadedUsers) {
+    private ObservableList<UserDto> getUsers(List<UserDto> loadedUsers) {
         ObservableList<UserDto> users = FXCollections.observableArrayList();
         users.addAll(loadedUsers);
         return users;
@@ -79,8 +79,6 @@ public class UsersListController implements Initializable {
             try {
                 Response response = task.get();
                 if (response.isSuccessful()) {
-                    usernameColumn.setCellValueFactory(new PropertyValueFactory<UserDto, String>("username"));
-                    roleColumn.setCellValueFactory(new PropertyValueFactory<UserDto, String>("role"));
                     List<UserDto> users = fillTableWithUsers(response);
                     fillFilteredUsers(users);
                     logger.info("Users loaded successfully");

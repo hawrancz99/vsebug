@@ -22,7 +22,7 @@
             <Font size="17.0" />
          </font>
       </Label>
-      <TextField fx:id="search" layoutX="494.0" layoutY="141.0" prefHeight="26.0" prefWidth="218.0" />
+      <TextField fx:id="searchIssues" layoutX="494.0" layoutY="141.0" prefHeight="26.0" prefWidth="218.0" />
       <Button fx:id="userListButtonOnIssuesScreen" layoutX="791.0" layoutY="40.0" mnemonicParsing="false" onAction="#openListOfUsers" prefHeight="32.0" prefWidth="128.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="List of users" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
@@ -33,14 +33,14 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <TableView layoutX="18.0" layoutY="178.0" prefHeight="342.0" prefWidth="901.0" stylesheets="@table.css">
+      <TableView fx:id="issueDtoTableView" layoutX="18.0" layoutY="178.0" prefHeight="342.0" prefWidth="901.0" stylesheets="@table.css">
          <columns>
-            <TableColumn fx:id="name" prefWidth="145.59997177124023" text="Name" />
-            <TableColumn fx:id="description" prefWidth="348.80003356933594" text="Description" />
-            <TableColumn fx:id="state" minWidth="9.5999755859375" prefWidth="72.79998779296875" text="State" />
-            <TableColumn fx:id="assigned" prefWidth="122.39996337890625" text="Assigned to" />
-            <TableColumn fx:id="created" prefWidth="126.4000244140625" text="Created" />
-            <TableColumn fx:id="detail" prefWidth="89.5999755859375" text="Detail" />
+            <TableColumn fx:id="issueNameColumn" prefWidth="145.59997177124023" text="Name" />
+            <TableColumn fx:id="descriptionColumn" prefWidth="348.80003356933594" text="Description" />
+            <TableColumn fx:id="stateColumn" minWidth="9.5999755859375" prefWidth="72.79998779296875" text="State" />
+            <TableColumn fx:id="assignedToColumn" prefWidth="122.39996337890625" text="Assigned to" />
+            <TableColumn fx:id="createdColumn" prefWidth="126.4000244140625" text="Created" />
+            <TableColumn fx:id="buttonColumn" prefWidth="89.5999755859375" text="Detail" />
          </columns>
       </TableView>
       <FontAwesomeIcon fill="WHITE" glyphName="PLUS" layoutX="14.0" layoutY="133.0" size="2em" />

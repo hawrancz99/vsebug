@@ -1,11 +1,8 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
 
 import cz.vse.java.pfej00.tymovyProjekt.Model.*;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,10 +18,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -32,8 +26,6 @@ import javafx.stage.StageStyle;
 import okhttp3.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,11 +52,6 @@ public class ProjectsController {
     public AnchorPane allButtons;
 
     private List<UserDto> listOfUsers = new ArrayList<>();
-
-
-    //tohle bude ještě sranda
-    private TableColumn username = new TableColumn();
-    private TableColumn role = new TableColumn();
 
     private List<ProjectDto> projects = new ArrayList<>();
 
@@ -202,7 +189,28 @@ public class ProjectsController {
             b.setOnAction(event ->
                     {
                         try {
-                            getIssues(projectDto);
+                            disableAllButtons();
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/issues.fxml"));
+                            Parent root = fxmlLoader.load();
+                         /*   IssuesController issuesController = fxmlLoader.getController();
+                            issuesController.setListOfIssues(new ArrayList<>());
+                            issuesController.setUsers_list_button(users_list_button);
+                            issuesController.setCreateProject(createProject);
+                            issuesController.setProjectDto(projectDto);
+                            issuesController.setListOfUsers(listOfUsers);
+                            issuesController.setLog_out(log_out);
+                            issuesController.setButtons(buttons);*/
+                            Stage primaryStage = new Stage();
+                            primaryStage.initStyle(StageStyle.UTILITY);
+                            primaryStage.setTitle("");
+                            primaryStage.setScene(new Scene(root));
+                            primaryStage.show();
+                            primaryStage.setOnCloseRequest(event1 ->
+                            {
+                                //je to nešťastný, ale stejně by se muselo volat načítání issues při otevření ... někde se to updatovat musí
+                                loadProjects();
+                                enableAllButtons();
+                            });
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -253,32 +261,6 @@ public class ProjectsController {
 
     }
 
-    private void getIssues(ProjectDto projectDto) throws IOException {
-        disableAllButtons();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/issues.fxml"));
-        Parent root = fxmlLoader.load();
-        IssuesController issuesController = fxmlLoader.getController();
-        if(projectDto.getIssues() != null) {
-            issuesController.setListOfIssues(projectDto.getIssues());
-        } else issuesController.setListOfIssues(new ArrayList<>());
-        issuesController.setUsers_list_button(users_list_button);
-        issuesController.setCreateProject(createProject);
-        issuesController.setProjectDto(projectDto);
-        issuesController.setListOfUsers(listOfUsers);
-        issuesController.setLog_out(log_out);
-        issuesController.setButtons(buttons);
-        Stage primaryStage = new Stage();
-        primaryStage.initStyle(StageStyle.UTILITY);
-        primaryStage.setTitle("");
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
-        primaryStage.setOnCloseRequest(event ->
-        {
-            //je to nešťastný, ale stejně by se muselo volat načítání issues při otevření ... někde se to updatovat musí
-            loadProjects();
-            enableAllButtons();
-        });
-    }
 
     public void createNewProject(ActionEvent actionEvent) throws IOException {
         disableAllButtons();

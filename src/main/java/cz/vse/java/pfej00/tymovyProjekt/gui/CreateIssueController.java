@@ -129,7 +129,7 @@ public class CreateIssueController {
                     if (response.isSuccessful()) {
                         Stage stage = (Stage) save.getScene().getWindow();
                         stage.close();
-                        issuesController.loadIssues();
+                        issuesController.fillIssuesTable();
                         logger.info("Issue created successfully {}", response);
                     } else logger.error("Error while creating issue, caused by {}", response);
                 } catch (InterruptedException | ExecutionException e) {

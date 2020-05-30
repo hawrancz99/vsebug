@@ -8,6 +8,7 @@ import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,7 @@ import cz.vse.java.pfej00.tymovyProjekt.Model.IssueDto;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -29,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -38,16 +41,28 @@ import java.util.concurrent.Executors;
 
 public class IssuesController implements Initializable {
     @FXML
-    private TableView<UserDto> usersTableView;
+    private TableView<IssueDto> issueDtoTableView;
 
     @FXML
     private TextField searchIssues = new TextField();
 
     @FXML
-    private TableColumn<IssueDto, String> usernameColumn = new TableColumn<>();
+    private TableColumn<IssueDto, String> issueNameColumn = new TableColumn<>();
 
     @FXML
-    private TableColumn<UserDto, String> roleColumn = new TableColumn<>();
+    private TableColumn<IssueDto, String> descriptionColumn = new TableColumn<>();
+
+    @FXML
+    private TableColumn<IssueDto, String> stateColumn = new TableColumn<>();
+
+    @FXML
+    private TableColumn<IssueDto, UserDto> assignedToColumn = new TableColumn<>();
+
+    @FXML
+    private TableColumn<IssueDto, Date> createdColumn = new TableColumn<>();
+
+    @FXML
+    private TableColumn buttonColumn = new TableColumn<>();
 
     @FXML
     private Button createIssue = new Button();
@@ -60,6 +75,9 @@ public class IssuesController implements Initializable {
 
     @FXML
     private Button userListButtonOnIssuesScreen = new Button();
+
+    @FXML
+    private ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
 
     //all set from Project cuz of disable
@@ -88,9 +106,6 @@ public class IssuesController implements Initializable {
         this.projectDto = projectDto;
     }
 
-    //tohle je vlastně stejný jako na projektech, takže je to fajn - nemusim je vůbec volat, stačí zobrazit stejnou tabulku na kliknutí
-    // asi nějak takhle??
-    private List<UserDto> listOfUsers ;
 
     public void openListOfUsers(ActionEvent actionEvent) throws IOException {
         disableAllButtons();
@@ -134,22 +149,10 @@ public class IssuesController implements Initializable {
     }
 
 
-
-    public void setListOfUsers(List<UserDto> listOfUsers) {
-        this.listOfUsers = listOfUsers;
-    }
-
-    //dostanu nasetovaný z projektů
-    private List<IssueDto> listOfIssues;
-
-
-    public void setListOfIssues(List<IssueDto> listOfIssues) {
-        this.listOfIssues = listOfIssues;
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        loadIssues();
+        issueNameColumn.setCellValueFactory(new PropertyValueFactory<IssueDto, String>("name"));
+        fillIssuesTable();
     }
 
     public void createNewIssue(ActionEvent actionEvent) throws IOException {
@@ -186,7 +189,8 @@ public class IssuesController implements Initializable {
     }
 
 
-    public void loadIssues(){
+    public void fillIssuesTable(){
+        issueDtoTableView.getItems().clear();
         Stage stg = new Stage();
         ClientCallerTask task = new ClientCallerTask("sendGetIssues", null);
         task.setOnRunning((successEvent) -> {
@@ -198,12 +202,11 @@ public class IssuesController implements Initializable {
             try {
                 Response response = task.get();
                 if (response.isSuccessful()) {
-                    listOfIssues.clear();
+          //          listOfIssues.clear();
                     List<IssueDto> issuesForProject = fillListOfIssues(response);
-                    //refresh, ale ono to bude horší s těma tabulkama :)
-                    listOfIssues.addAll(issuesForProject);
-                  //namapovat issues
-                    //volat jen když vytvořim novej projekt, jinak mi to vrátí loadProjects
+                    fillFilteredIssues(issuesForProject);
+       //             listOfIssues.addAll(issuesForProject);
+
                     logger.info("All issues loaded successfully");
                 } else logger.error("Error while loading issues, caused by {}", response);
             } catch (InterruptedException | ExecutionException | IOException e) {
@@ -237,6 +240,42 @@ public class IssuesController implements Initializable {
         }).readValue(Objects.requireNonNull(response.body().string()));
     }
 
+    private void fillFilteredIssues(List<IssueDto> issues) {
+        ObservableList localList = getUsers(issues);
+        FilteredList<IssueDto> filteredList = new FilteredList(localList, p -> true);;//Pass the data to a filtered list
+        issueDtoTableView.setItems(filteredList);//Set the table's items using the filtered list
+        choiceBox.getItems().addAll("name", "state");
+        choiceBox.setValue("name");
+        searchIssues.setPromptText("Search here!");
+        searchIssues.setOnKeyReleased(keyEvent ->
+        {
+            //zatím choicebox nemáme, asi bych nechal jen na username
+            switch (choiceBox.getValue())//Switch on choiceBox value
+            {
+                case "name":
+                    filteredList.setPredicate(p -> p.getAssignee().getUsername().toLowerCase().contains(searchIssues.getText().toLowerCase().trim()));//filter table by username
+                    break;
+                case "state":
+                    filteredList.setPredicate(p -> p.getState().toLowerCase().contains(searchIssues.getText().toLowerCase().trim()));//filter table by role
+            }
+        });
+
+        choiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) ->
+        {//reset table and textfield when new choice is selected
+            if (newVal != null) {
+                searchIssues.setText("");
+                filteredList.setPredicate(null);
+            }
+        });
+
+
+    }
+
+    private ObservableList<IssueDto> getUsers(List<IssueDto> loadedIssues) {
+        ObservableList<IssueDto> issues = FXCollections.observableArrayList();
+        issues.addAll(loadedIssues);
+        return issues;
+    }
 }
 
 

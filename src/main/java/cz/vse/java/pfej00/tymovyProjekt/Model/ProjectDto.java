@@ -8,18 +8,16 @@ public class ProjectDto {
     private String name;
     private String description;
     private Date created;
-    private List<IssueDto> issues;
 
     public ProjectDto() {
         super();
     }
 
-    public ProjectDto(int id, String name, String description, Date created, List<IssueDto> issues) {
+    public ProjectDto(int id, String name, String description, Date created) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.created = created;
-        this.issues = issues;
     }
 
     public int getId() {
@@ -52,23 +50,5 @@ public class ProjectDto {
 
     public void setCreated(Date created) {
         this.created = created;
-    }
-
-    public List<IssueDto> getIssues() {
-        return issues;
-    }
-
-    public void setIssues(List<IssueDto> issues) {
-        this.issues = issues;
-    }
-
-    @Override
-    public String toString() {
-        return "ProjectDto{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", created=" + created +
-                ", issues=" + issues +
-                '}';
     }
 }
