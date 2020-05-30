@@ -83,8 +83,13 @@ public class ProjectsController {
     public void initialize() {
         //   listOfUsers.getColumns().add(username);
         //   listOfUsers.getColumns().add(role);
-        users_list_button.setOnAction(this::loadUsersByClick);
-        loadUsers();
+        users_list_button.setOnAction(event -> {
+            try {
+                loadUsersByClick(event);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         loadProjects();
     }
 
@@ -106,27 +111,10 @@ public class ProjectsController {
 
 
     @FXML
-    public void loadUsersByClick(ActionEvent event) {
-
-        Stage stg = new Stage();
-        ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
-        task.setOnRunning((successEvent) -> {
-            stg.show();
-        });
-
-        task.setOnSucceeded((succeededEvent) -> {
-            stg.hide();
-            try {
-                Response response = task.get();
-                if (response.isSuccessful()) {
+    public void loadUsersByClick(ActionEvent event) throws IOException {
                     disableAllButtons();
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/list_of_users.fxml"));
                     Parent root = fxmlLoader.load();
-                    UsersListController usersListController = fxmlLoader.getController();
-                    //přesunout loading do dovnitř controlleru
-                    List<UserDto> users = fillTable(response);
-                    listOfUsers.addAll(users);
-                    usersListController.setListOfUsers(listOfUsers);
                     Stage primaryStage = new Stage();
                     primaryStage.initStyle(StageStyle.UTILITY);
                     primaryStage.setTitle("");
@@ -134,54 +122,7 @@ public class ProjectsController {
                     primaryStage.show();
                     primaryStage.setOnCloseRequest(event1 -> enableAllButtons());
                     logger.info("All users loaded successfully");
-                } else logger.error("Error while loading all users, caused by {}", response);
-            } catch (InterruptedException | ExecutionException | IOException e) {
-                logger.error("Error while loading all users, caused by {}", e.getMessage());
-            }
-        });
 
-        ProgressBar progressBar = new ProgressBar();
-        progressBar.progressProperty().bind(task.progressProperty());
-        stg.setScene(new Scene(progressBar));
-        stg.initStyle(StageStyle.UNDECORATED);
-        stg.setAlwaysOnTop(true);
-
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(task);
-        executorService.shutdown();
-    }
-
-    public void loadUsers() {
-
-        Stage stg = new Stage();
-        ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
-        task.setOnRunning((successEvent) -> {
-            stg.show();
-        });
-
-        task.setOnSucceeded((succeededEvent) -> {
-            stg.hide();
-            try {
-                Response response = task.get();
-                if (response.isSuccessful()) {
-                    List<UserDto> users = fillTable(response);
-                    listOfUsers.addAll(users);
-                    logger.info("All users loaded successfully");
-                } else logger.error("Error while loading all users, caused by {}", response);
-            } catch (InterruptedException | ExecutionException | IOException e) {
-                logger.error("Error while loading all users, caused by {}", e.getMessage());
-            }
-        });
-
-        ProgressBar progressBar = new ProgressBar();
-        progressBar.progressProperty().bind(task.progressProperty());
-        stg.setScene(new Scene(progressBar));
-        stg.initStyle(StageStyle.UNDECORATED);
-        stg.setAlwaysOnTop(true);
-
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(task);
-        executorService.shutdown();
     }
 
 
