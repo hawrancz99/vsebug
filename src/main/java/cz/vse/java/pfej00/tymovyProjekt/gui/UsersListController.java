@@ -43,7 +43,6 @@ public class UsersListController implements Initializable {
     @FXML
     private ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-    private List<UserDto> listOfUsers;
 
     @FXML
     private TableColumn<UserDto, String> usernameColumn = new TableColumn<>();
@@ -60,10 +59,6 @@ public class UsersListController implements Initializable {
         fillUserstable();
     }
 
-
-    public void setListOfUsers(List<UserDto> listOfUsers) {
-        this.listOfUsers = listOfUsers;
-    }
 
 
     public ObservableList<UserDto> getUsers(List<UserDto> loadedUsers) {
@@ -88,7 +83,6 @@ public class UsersListController implements Initializable {
                     roleColumn.setCellValueFactory(new PropertyValueFactory<UserDto, String>("role"));
                     List<UserDto> users = fillTableWithUsers(response);
                     fillFilteredUsers(users);
-
                     logger.info("Users loaded successfully");
                 } else logger.error("Error while loading issues, caused by {}", response);
             } catch (InterruptedException | ExecutionException | IOException e) {
@@ -119,7 +113,6 @@ public class UsersListController implements Initializable {
         FilteredList<UserDto> flPerson = new FilteredList(localList, p -> true);;//Pass the data to a filtered list
         usersTableView.setItems(flPerson);//Set the table's items using the filtered list
         choiceBox.getItems().addAll("username", "role");
-        choiceBox.setValue("username");
         search.setPromptText("Search here!");
         search.setOnKeyReleased(keyEvent ->
         {
@@ -127,10 +120,10 @@ public class UsersListController implements Initializable {
             switch (choiceBox.getValue())//Switch on choiceBox value
             {
                 case "username":
-                    flPerson.setPredicate(p -> p.getUsername().toLowerCase().contains(search.getText().toLowerCase().trim()));//filter table by first name
+                    flPerson.setPredicate(p -> p.getUsername().toLowerCase().contains(search.getText().toLowerCase().trim()));//filter table by username
                     break;
                 case "role":
-                    flPerson.setPredicate(p -> p.getRole().toLowerCase().contains(search.getText().toLowerCase().trim()));//filter table by first name
+                    flPerson.setPredicate(p -> p.getRole().toLowerCase().contains(search.getText().toLowerCase().trim()));//filter table by role
             }
         });
 
@@ -138,7 +131,7 @@ public class UsersListController implements Initializable {
         {//reset table and textfield when new choice is selected
             if (newVal != null) {
                 search.setText("");
-                flPerson.setPredicate(null);//This is same as saying flPerson.setPredicate(p->true);
+                flPerson.setPredicate(null);
             }
         });
 

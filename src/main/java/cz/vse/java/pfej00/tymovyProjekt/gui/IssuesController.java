@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -27,15 +28,26 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class IssuesController {
+public class IssuesController implements Initializable {
+    @FXML
+    private TableView<UserDto> usersTableView;
+
     @FXML
     private TextField searchIssues = new TextField();
+
+    @FXML
+    private TableColumn<IssueDto, String> usernameColumn = new TableColumn<>();
+
+    @FXML
+    private TableColumn<UserDto, String> roleColumn = new TableColumn<>();
 
     @FXML
     private Button createIssue = new Button();
@@ -85,7 +97,6 @@ public class IssuesController {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/list_of_users.fxml"));
         Parent root = fxmlLoader.load();
         UsersListController usersListController = fxmlLoader.getController();
-        usersListController.setListOfUsers(listOfUsers);
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
         primaryStage.setTitle("");
@@ -229,6 +240,10 @@ public class IssuesController {
     }
 
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+    }
 }
 
 
