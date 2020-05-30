@@ -112,6 +112,7 @@ public class CreateIssueController {
 
     public void handle(Event event) {
         if(assignToNew.getSelectionModel().isEmpty() || description.getText().isEmpty() || issueName.getText().isEmpty()){
+            clear();
             PopupBuilder.loadPopup("/allFieldsValid.html");
         } else if (!issueAlreadyExists(issueName.getText())) {
             enableAllButtons();
@@ -159,6 +160,7 @@ public class CreateIssueController {
             executorService.submit(task);
             executorService.shutdown();
         } else {
+            clear();
             PopupBuilder.loadPopup("/issueNotUnique.html");
         }
 
@@ -239,5 +241,11 @@ public class CreateIssueController {
             }
         }
         return exists;
+    }
+
+    private void clear(){
+        description.clear();
+        issueName.clear();
+        assignToNew.getSelectionModel().clearSelection();
     }
 }
