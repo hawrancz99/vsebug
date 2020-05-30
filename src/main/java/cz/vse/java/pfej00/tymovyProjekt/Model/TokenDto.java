@@ -4,6 +4,12 @@ public class TokenDto {
     private static final TokenDto TOKEN = new TokenDto();
     private String TOKEN_VALUE;
 
+
+    /**
+     * Konstruktor pro singleton, představující TOKEN,
+     * který uživatel získá, pokud přijde přes LOGIN obrazovku.
+     * K veškerým dalším voláním je potřeba TOKEN přidat do hlavičky
+     */
     private TokenDto() {
     }
 

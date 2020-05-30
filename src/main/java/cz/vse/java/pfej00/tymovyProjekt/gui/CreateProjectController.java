@@ -5,25 +5,18 @@ import cz.vse.java.pfej00.tymovyProjekt.builders.PopupBuilder;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Builder;
 import okhttp3.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
-
-import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +37,7 @@ public class CreateProjectController {
 
     private static final Logger logger = LogManager.getLogger(CreateProjectController.class);
 
-    ////setování ne editable
+    /////////přebrané ze screeny projektů
 
     private Button users_list_button;
 
@@ -74,11 +67,6 @@ public class CreateProjectController {
         this.log_out = log_out;
     }
 
-    public void setInputOfProjects(TextField inputOfProjects) {
-        this.inputOfProjects = inputOfProjects;
-    }
-
-
     public void setUsers_list_button(Button users_list_button) {
         this.users_list_button = users_list_button;
     }
@@ -88,15 +76,24 @@ public class CreateProjectController {
     }
 
 
+    /**
+     * Metoda při inicializaci controlleru nastavuje
+     * akci tlačítka createNewProject
+     */
     @FXML
     public void initialize() {
         createNewProject.setOnAction(this::handle);
     }
 
+    /**
+     * Akce tlačítka createNewProject
+     * Metoda volá BE a zakládá nový projekt
+     * Pokud úspěšně, zavírá i obrazovku
+     */
     private void handle(Event event) {
         if (inputOfProjects.getText().isEmpty()) {
             PopupBuilder.loadPopup("/allFieldsValid.html");
-        } else if(!projectAlreadyExists(inputOfProjects.getText())){
+        } else if (!projectAlreadyExists(inputOfProjects.getText())) {
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
             post.put("name", inputOfProjects.getText());
@@ -128,7 +125,6 @@ public class CreateProjectController {
                 }
             });
 
-            //všude asi udělat task.setOnFailure()
             ProgressBar progressBar = new ProgressBar();
             progressBar.progressProperty().bind(task.progressProperty());
             stg.setScene(new Scene(progressBar));
@@ -139,23 +135,29 @@ public class CreateProjectController {
             executorService.submit(task);
             executorService.shutdown();
         } else {
-            //zatim takhle
             inputOfProjects.clear();
             PopupBuilder.loadPopup("/projectNotUnique.html");
         }
     }
 
 
+    /**
+     * Metoda uvolňuje tlačítka
+     * o obrazovku "níž"
+     */
     private void enableAllButtons() {
         users_list_button.setDisable(false);
         createProject.setDisable(false);
         log_out.setDisable(false);
-        for(Button b : buttons){
+        for (Button b : buttons) {
             b.setDisable(false);
         }
     }
 
-    private boolean projectAlreadyExists(String projectName){
+    /**
+     * Validace na unikátnost názvu projektu
+     */
+    private boolean projectAlreadyExists(String projectName) {
         boolean exists = false;
         for (ProjectDto project : projects) {
             if (projectName.equals(project.getName())) {

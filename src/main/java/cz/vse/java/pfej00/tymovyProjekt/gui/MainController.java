@@ -16,8 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import okhttp3.*;
@@ -48,17 +46,29 @@ public class MainController {
     private static final Logger logger = LogManager.getLogger(MainController.class);
 
 
+    /**
+     * Konstruktor třídy
+     * Vytváří instanci register a login buttonu
+     */
     public MainController() {
         this.register = new Button();
         this.login = new Button();
     }
 
+    /**
+     * Metoda při inicializaci kontrolueru nastaví
+     * tlačítku login patřičnou akci
+     */
     @FXML
     public void initialize() {
         login.setOnAction(this::handle);
     }
 
 
+    /**
+     * Metoda po stisknutí register buttonu otevře
+     * obrazovku pro registraci
+     */
     public void getRegister(ActionEvent actionEvent) throws IOException {
         register.setDisable(true);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/register.fxml"));
@@ -75,6 +85,10 @@ public class MainController {
                 register.setDisable(false));
     }
 
+    /**
+     * Metoda vyvolaná stisknutím tlačítka login
+     * Slouží k přihlášení uživatele
+     */
     private void handle(Event event) {
         if (usernameLoginField.getText().isEmpty() || passwordLoginField.getText().isEmpty()) {
             PopupBuilder.loadPopup("/allFieldsValid.html");
@@ -133,6 +147,9 @@ public class MainController {
     }
 
 
+    /**
+     * Metoda načítá obrazovku s projekty
+     */
     private void loadProjects() throws IOException {
         Stage stage = (Stage) usernameLoginField.getScene().getWindow();
         stage.close();
@@ -144,6 +161,10 @@ public class MainController {
         primaryStage.show();
     }
 
+    /**
+     * V případě zadání špatných nebo žádných
+     * přihlašovacích údajů smaže obsah texfieldů
+     */
     private void clear() {
         usernameLoginField.clear();
         passwordLoginField.clear();

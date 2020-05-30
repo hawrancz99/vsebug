@@ -4,6 +4,12 @@ public class CurrentOpenedProject {
     private static final CurrentOpenedProject PROJECT = new CurrentOpenedProject();
     private int projetId;
 
+
+    /**
+     * Konstruktor pro singleton představující id projektu,
+     * které se zrovna edituje
+     */
+
     private CurrentOpenedProject() {
     }
 

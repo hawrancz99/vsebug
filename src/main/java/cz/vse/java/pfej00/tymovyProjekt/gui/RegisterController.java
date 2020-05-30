@@ -45,6 +45,11 @@ public class RegisterController {
 
     private static final Logger logger = LogManager.getLogger(RegisterController.class);
 
+    /**
+     * Metoda při inicializaci kontroleru
+     * nastaví možnosti pro rolesOption combobox
+     * Nastavuje akci tlačígka register
+     */
     @FXML
     public void initialize() {
         ROLES.add("Developer");
@@ -57,25 +62,32 @@ public class RegisterController {
     }
 
 
-    public void setRegisterButton(Button registerButton){
+    /**
+     * Přebírá registrační tlačítko z úvodní obrazovky
+     * Aby mohlo být zablokované
+     */
+    public void setRegisterButton(Button registerButton) {
         this.registerButton = registerButton;
     }
 
+    /**
+     * Metoda slouží k zaregistrování
+     * nového uživatele
+     * V úspěšném případě zavře obrazovku a odblokuje
+     * registrační tlačíko úvodní obrazovky
+     */
     private void handle(Event event) {
         if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty() || rolesOption.getSelectionModel().isEmpty()) {
             PopupBuilder.loadPopup("/allFieldsValid.html");
             clear();
-            //v tomhle ifu bude pak REGEX, teď nedává smysl
-        }else if (passwordField.getText().isEmpty()){
-            PopupBuilder.loadPopup("/passwordIsWeak.html");
+        } else if (passwordField.getText().isEmpty() || !passwordField.getText().matches("(?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#$%!]).{8,40}")) {
+            PopupBuilder.loadPopupForPassword("/passwordIsWeak.html");
             clear();
-        }
-        else {
+        } else {
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
             post.put("username", usernameField.getText());
             post.put("password", passwordField.getText());
-            //Role
             RolesEnum roleId = RolesEnum.valueOf(rolesOption.getSelectionModel().getSelectedItem());
             post.put("role", roleId.getNumVal());
             ClientCallerTask task = new ClientCallerTask(REGISTER_USER, post.toString());
@@ -89,12 +101,12 @@ public class RegisterController {
                 stg.hide();
                 try {
                     Response response = task.get();
-                    if(response.isSuccessful()){
+                    if (response.isSuccessful()) {
                         registerButton.setDisable(false);
                         Stage stage = (Stage) registerNewUser.getScene().getWindow();
                         stage.close();
                         logger.info("New user: {} registered successfully", usernameField.getText());
-                    }else{
+                    } else {
                         PopupBuilder.loadPopup("/userNotUnique.html");
                         logger.warn("Registering new user failed, username: {} already exists", usernameField.getText());
                         clear();
@@ -115,7 +127,11 @@ public class RegisterController {
         }
     }
 
-    private void clear(){
+    /**
+     * Metoda slouží k vyčištění obsahu
+     * registračního formuláře
+     */
+    private void clear() {
         usernameField.clear();
         passwordField.clear();
         rolesOption.getSelectionModel().clearSelection();

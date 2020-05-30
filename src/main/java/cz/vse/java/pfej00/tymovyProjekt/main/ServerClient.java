@@ -14,15 +14,24 @@ import java.io.IOException;
 
 
 /**
- * All methods for calling the server
+ * Třída slouží k volání backendu
+ * Všechna data pochází z této třídy ve formě RESPONSE
  */
 
 public class ServerClient {
     private final OkHttpClient httpClient = new OkHttpClient();
     private static final Logger logger = LogManager.getLogger(ClientCallerTask.class);
-    private  String TOKEN = "Bearer " + TokenDto.getTOKEN().getTokenValue();
+    private String TOKEN = "Bearer " + TokenDto.getTOKEN().getTokenValue();
 
-    //user operations
+
+    /**
+     * Metoda slouží pro zaregistrování nového uživatele
+     * Parametr slouží jako body volání
+     * metoda - post
+     *
+     * @param post
+     */
+    //USER OPERATIONS
     public Response sendRegisterNewUser(String post) throws Exception {
         RequestBody body = RequestBody.create(post, MediaType.parse("application/json; charset=utf-8"));
         Request request = new Request.Builder()
@@ -33,31 +42,40 @@ public class ServerClient {
         try {
             logger.info("Registering user {}", post);
             return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error while registering user caused by {}", e.getMessage());
         }
         return null;
     }
 
+    /**
+     * Metoda slouží pro zaregistrování nového uživatele
+     * Parametr slouží jako body volání
+     * metoda - post
+     *
+     * @param post
+     */
     public Response sendLoginUser(String post) throws Exception {
 
-            RequestBody body = RequestBody.create(post, MediaType.parse("application/json; charset=utf-8"));
-            Request request = new Request.Builder()
-                    .url("https://vsebug-be.herokuapp.com/login/")
-                    .post(body)
-                    .build();
+        RequestBody body = RequestBody.create(post, MediaType.parse("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url("https://vsebug-be.herokuapp.com/login/")
+                .post(body)
+                .build();
 
         try {
             logger.info("Logging user with credentials {}", post);
             return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Logging user failed, because of {}", e.getMessage());
         }
         return null;
     }
 
+    /**
+     * Metoda vrací všechny zaregistrované uživatele
+     * metoda - get
+     */
     public Response sendGetUsers() throws Exception {
 
         Request request = new Request.Builder()
@@ -69,15 +87,18 @@ public class ServerClient {
         try {
             logger.info("Getting list of all users");
             return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Getting users failed caused by {}", e.getMessage());
         }
         return null;
     }
 
 
-    //issues
+    /**
+     * Metoda vrací všechny vytvořené Issues
+     * metoda - get
+     */
+    //ISSUE OPERATIONS
     public Response sendGetIssues() throws Exception {
         Request request = new Request.Builder()
                 .url("https://vsebug-be.herokuapp.com/issues/")
@@ -87,19 +108,26 @@ public class ServerClient {
         try {
             logger.info("Getting issues");
             return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error occurred while getting issues, caused by {}", e.getMessage());
         }
         return null;
     }
 
+    /**
+     * Metoda vrací Issue ke konkrétnímu projektu
+     * Parametr slouží k získání ID projektu, které
+     * dále poslouží jako část ULR requestu
+     * metoda - get
+     *
+     * @param post
+     **/
     public Response sendGetIssuesForProject(String post) throws Exception {
 
         int id = Integer.parseInt(post);
 
         Request request = new Request.Builder()
-                .url("https://vsebug-be.herokuapp.com/projects/" + id +"/issues/")
+                .url("https://vsebug-be.herokuapp.com/projects/" + id + "/issues/")
                 .get()
                 .addHeader("authorization", TOKEN)
                 .build();
@@ -107,15 +135,21 @@ public class ServerClient {
         try {
             logger.info("Getting issues for project with id: {}", id);
             return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error while getting project´s issues, caused by {}", e.getMessage());
         }
         return null;
     }
 
+    /**
+     * Metoda slouží k updatování konkrétního issue
+     * Parametr slouží jako tělo requestu,
+     * obsahuje issueId, které se přidává do URL requestu
+     * metoda - put
+     *
+     * @param post
+     */
     public Response sendUpdateIssue(String post) throws Exception {
-        //musim rozsekat ten post a vzít si z toho jen to co chci
         final ObjectNode node = new ObjectMapper().readValue(post, ObjectNode.class);
         JsonNode idAsText = node.get("issueId");
         int issueId = idAsText.asInt();
@@ -123,7 +157,7 @@ public class ServerClient {
 
         RequestBody body = RequestBody.create(node.toString(), MediaType.parse("application/json; charset=utf-8"));
         Request request = new Request.Builder()
-                .url("https://vsebug-be.herokuapp.com/issues/" + issueId +"/")
+                .url("https://vsebug-be.herokuapp.com/issues/" + issueId + "/")
                 .put(body)
                 .addHeader("authorization", TOKEN)
                 .build();
@@ -131,13 +165,19 @@ public class ServerClient {
         try {
             logger.info("Updating issue with id {}", issueId);
             return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error while updating issue caused by {}", e.getMessage());
         }
         return null;
     }
 
+    /**
+     * Metoda slouží k založení nového issue
+     * Parametr slouží jako tělo requestu
+     * metoda - post
+     *
+     * @param post
+     */
     public Response sendCreateIssue(String post) throws Exception {
         RequestBody body = RequestBody.create(post, MediaType.parse("application/json; charset=utf-8"));
         Request request = new Request.Builder()
@@ -149,17 +189,24 @@ public class ServerClient {
         try {
             logger.info("Creating new issue {}", post);
             return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error while creating new issue caused by {}", e.getMessage());
         }
         return null;
     }
 
+    /**
+     * Metoda slouží mazání issue
+     * Parametr obsahuje id issue, které má
+     * být smazáno
+     * metoda - delete
+     *
+     * @param post
+     */
     public Response sendDeleteIssue(String post) throws Exception {
         int id = Integer.parseInt(post);
         Request request = new Request.Builder()
-                .url("https://vsebug-be.herokuapp.com/issues/" + id +"/")
+                .url("https://vsebug-be.herokuapp.com/issues/" + id + "/")
                 .delete()
                 .addHeader("authorization", TOKEN)
                 .build();
@@ -167,14 +214,17 @@ public class ServerClient {
         try {
             logger.info("Deleting issue with id {}", id);
             return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error while deleting issue caused by {}", e.getMessage());
         }
         return null;
     }
 
-    //Projects
+    /**
+     * Metoda vrací všechny vytvořené Projekty
+     * metoda - get
+     */
+    //PROJECT OPERATIONS
     public Response sendGetProjects() throws Exception {
         Request request = new Request.Builder()
                 .url("https://vsebug-be.herokuapp.com/projects/")
@@ -184,13 +234,20 @@ public class ServerClient {
         try {
             logger.info("Getting projects");
             return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error occurred while getting projects, caused by {}", e.getMessage());
         }
         return null;
     }
 
+    /**
+     * Metoda slouží k vytvoření nového Projektu
+     * metoda - post
+     * <p>
+     * Parametr slouží jako body requestu
+     *
+     * @param post
+     */
     public Response sendCreateProject(String post) throws Exception {
         RequestBody body = RequestBody.create(post, MediaType.parse("application/json; charset=utf-8"));
         Request request = new Request.Builder()
@@ -202,17 +259,24 @@ public class ServerClient {
         try {
             logger.info("Creating new project {}", post);
             return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error while creating project caused by {}", e.getMessage());
         }
         return null;
     }
 
+    /**
+     * Metoda slouží k mazání Projektu
+     * metoda - delete
+     * Parametr slouží jako projektID pro přidání
+     * do URL requestu
+     *
+     * @param post
+     */
     public Response sendDeleteProject(String post) throws Exception {
         int id = Integer.parseInt(post);
         Request request = new Request.Builder()
-                .url("https://vsebug-be.herokuapp.com/projects/" + id +"/")
+                .url("https://vsebug-be.herokuapp.com/projects/" + id + "/")
                 .delete()
                 .addHeader("authorization", TOKEN)
                 .build();
@@ -220,17 +284,22 @@ public class ServerClient {
         try {
             logger.info("Deleting project with id {}", id);
             return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error while deleting project caused by {}", e.getMessage());
         }
         return null;
     }
 
 
-    //nevim routu
+    /**
+     * Metoda slouží k updatu Projektu
+     * metoda - put
+     * Parametr slouží jako projektID pro přidání
+     * do URL requestu a dále jako body requestu
+     *
+     * @param post
+     */
     public Response sendUpdateProject(String post) throws Exception {
-        //musim rozsekat ten post a vzít si z toho jen to co chci
         final ObjectNode node = new ObjectMapper().readValue(post, ObjectNode.class);
         JsonNode idAsText = node.get("id");
         int id = idAsText.asInt();
@@ -240,7 +309,7 @@ public class ServerClient {
 
         RequestBody body = RequestBody.create(updatedPost.toString(), MediaType.parse("application/json; charset=utf-8"));
         Request request = new Request.Builder()
-                .url("https://vsebug-be.herokuapp.com/projects/" + id +"/")
+                .url("https://vsebug-be.herokuapp.com/projects/" + id + "/")
                 .put(body)
                 .addHeader("authorization", TOKEN)
                 .build();
@@ -248,8 +317,7 @@ public class ServerClient {
         try {
             logger.info("Updating project with id {}", id);
             return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error while updating project caused by {}", e.getMessage());
         }
         return null;

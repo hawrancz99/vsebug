@@ -1,4 +1,5 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
+
 import cz.vse.java.pfej00.tymovyProjekt.Model.*;
 import cz.vse.java.pfej00.tymovyProjekt.builders.PopupBuilder;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
@@ -13,13 +14,8 @@ import okhttp3.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -53,16 +49,23 @@ public class EditIssueController {
     private static final Logger logger = LogManager.getLogger(IssuesController.class);
 
 
-
+    /**
+     * Metoda při inicializaci controlleru
+     * nastavuje akce tlačítek
+     */
     @FXML
-    public void initialize(){
+    public void initialize() {
         save.setOnAction(this::saveEditedIssue);
         delete.setOnAction(this::deleteIssue);
     }
 
+
+    /**
+     * Akce tlačítka DELETE
+     * Metoda zavolá BE a smaže issue
+     */
     private void deleteIssue(ActionEvent event) {
         Stage stg = new Stage();
-        //musim to tam poslat jako string
         String post = "" + issueId + "";
         ClientCallerTask task = new ClientCallerTask("sendDeleteIssue", post);
         task.setOnRunning((successEvent) -> {
@@ -96,10 +99,14 @@ public class EditIssueController {
     }
 
 
+    /**
+     * Akce tlačítka SAVE
+     * Volá BE a updatuje údaje o issue
+     */
     private void saveEditedIssue(Event event) {
         if (nameEdit.getText().isEmpty() || descEdit.getText().isEmpty() /* tamto nejde zvolit prázdný*/) {
             PopupBuilder.loadPopup("/allFieldsValid.html");
-        }else {
+        } else {
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
             post.put("issueId", issueId);
@@ -141,7 +148,10 @@ public class EditIssueController {
         }
     }
 
-    public void acceptDataFromIssue(int issueId,String nameText, IssuesController issuesController, String stateText, String description, String assignTo, List<UserDto> acceptedUsers){
+    /**
+     * Metoda získává potřebná data o issue
+     */
+    public void acceptDataFromIssue(int issueId, String nameText, IssuesController issuesController, String stateText, String description, String assignTo, List<UserDto> acceptedUsers) {
         this.issueId = issueId;
         this.listOfUsers.addAll(acceptedUsers);
         this.choiceState.getItems().addAll("Open", "Closed", "New", "Fixed");
@@ -153,19 +163,26 @@ public class EditIssueController {
         this.choiceAssign.setValue(assignTo.toLowerCase());
     }
 
-    private void fillChoiceAssign(){
-        for(UserDto u : listOfUsers) {
+    /**
+     * Metoda plní choicebox uživatelů
+     */
+    private void fillChoiceAssign() {
+        for (UserDto u : listOfUsers) {
             this.choiceAssign.getItems().add(u.getUsername().toLowerCase());
         }
     }
 
-    private int getAssigneeIdByUsername(String username){
-        for(UserDto user : listOfUsers){
-            if(user.getUsername().equals(username)){
+
+    /**
+     * Metoda vrací ID uživatele podle
+     * jeho username
+     */
+    private int getAssigneeIdByUsername(String username) {
+        for (UserDto user : listOfUsers) {
+            if (user.getUsername().equals(username)) {
                 return user.getId();
             }
         }
-        //chudák user 0 haha
         return 0;
     }
 

@@ -12,11 +12,28 @@ public class IssueDto {
     private UserDto assignee;
 
 
-
+    /**
+     * Konstruktor třídy IssueDto
+     * super() dědí atributy ze svého předka, nutné
+     * při využívání třídy ObjectMapper
+     */
     public IssueDto() {
         super();
     }
 
+
+    /**
+     * Konstruktor třídy IssueDto
+     * Objekt slouží k přemapování databázového objektu do čitelné podoby
+     *
+     * @param id
+     * @param name
+     * @param description
+     * @param created
+     * @param project
+     * @param state
+     * @param assignee
+     */
     public IssueDto(int id, String name, String description, Date created, int project, String state, UserDto assignee) {
         this.id = id;
         this.name = name;

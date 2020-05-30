@@ -9,27 +9,43 @@ import javafx.util.Duration;
 
 public class PopupBuilder {
 
-    public static void loadPopup(String popup){
+    /**
+     * Statická metoda slouží k vyvolání popup hlášky
+     * v případě, že neprošla frontendová validace
+     * Parametr obsahuje stringový odkaz na html soubor
+     * s patřičnou hláškou
+     *
+     * @param popup
+     */
+    public static void loadPopup(String popup) {
         WebView webView = new WebView();
         webView.getEngine().load(PopupBuilder.class.getResource(popup).toExternalForm());
         Stage stage = new Stage();
         stage.setScene(new Scene(webView, 250, 250));
         stage.initStyle(StageStyle.UTILITY);
-        stage.setTitle("error");
+        stage.setTitle("Error");
         PauseTransition delay = new PauseTransition(Duration.seconds(3));
         delay.setOnFinished(event -> stage.close());
         delay.play();
         stage.show();
     }
 
-    public static void loadWaitPopup(String popup){
+    /**
+     * Statická metoda slouží k vyvolání popup hlášky
+     * v případě, že neprošla frontendová validace na HESLO
+     * Parametr obsahuje stringový odkaz na html soubor
+     * s hláškou na slabé heslo
+     *
+     * @param popup
+     */
+    public static void loadPopupForPassword(String popup) {
         WebView webView = new WebView();
         webView.getEngine().load(PopupBuilder.class.getResource(popup).toExternalForm());
         Stage stage = new Stage();
-        stage.setScene(new Scene(webView, 250, 250));
-        stage.initStyle(StageStyle.UNDECORATED);
-        //to bude bez delaye, bude se to kroutit dokud nepřijde odpověď
-        PauseTransition delay = new PauseTransition(Duration.seconds(3));
+        stage.setScene(new Scene(webView, 400, 400));
+        stage.initStyle(StageStyle.UTILITY);
+        stage.setTitle("Error");
+        PauseTransition delay = new PauseTransition(Duration.seconds(8));
         delay.setOnFinished(event -> stage.close());
         delay.play();
         stage.show();

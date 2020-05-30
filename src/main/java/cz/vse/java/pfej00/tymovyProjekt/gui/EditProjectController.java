@@ -1,4 +1,5 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
+
 import cz.vse.java.pfej00.tymovyProjekt.Model.ProjectDto;
 import cz.vse.java.pfej00.tymovyProjekt.builders.PopupBuilder;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
@@ -33,7 +34,7 @@ public class EditProjectController {
     @FXML
     private TextField textChange;
 
-    //nutný pro change
+    ///////////nutný pro práci s projektem
 
     private Button buttonWithProjectName;
 
@@ -43,7 +44,7 @@ public class EditProjectController {
 
     private List<ProjectDto> projects;
 
-    ///////////////nutný pro enable :)
+    ///////////////nutný pro enable
 
     private Button users_list_button;
 
@@ -88,11 +89,16 @@ public class EditProjectController {
         this.buttons = buttons;
     }
 
+    /**
+     * Akce tlačítka SAVE
+     * Volá BE a updatuje projekt
+     * V případě úspěchu zavírá obrazovku
+     */
     @FXML
     public void saveName(ActionEvent event) {
         if (textChange.getText().isEmpty()) {
             PopupBuilder.loadPopup("/allFieldsValid.html");
-        }else if(!projectAlreadyExists(textChange.getText())){
+        } else if (!projectAlreadyExists(textChange.getText())) {
             String firstTimeName = buttonWithProjectName.getText();
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
@@ -146,6 +152,10 @@ public class EditProjectController {
         }
     }
 
+    /**
+     * V případě úspěchu volání uvolňuje
+     * tlačítka na obrazovce projektů
+     */
     private void enableAllButtons() {
         users_list_button.setDisable(false);
         createProject.setDisable(false);
@@ -155,7 +165,10 @@ public class EditProjectController {
         }
     }
 
-    private boolean projectAlreadyExists(String projectName){
+    /**
+     * Validuje jedinečnost názvu projektu
+     */
+    private boolean projectAlreadyExists(String projectName) {
         boolean exists = false;
         for (ProjectDto project : projects) {
             if (projectName.equals(project.getName())) {

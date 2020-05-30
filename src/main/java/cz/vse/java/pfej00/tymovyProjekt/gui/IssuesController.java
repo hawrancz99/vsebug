@@ -1,10 +1,10 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.vse.java.pfej00.tymovyProjekt.Model.*;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -15,18 +15,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-
-import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import okhttp3.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -75,17 +71,16 @@ public class IssuesController implements Initializable {
     private ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
 
-   private List<IssueDto> localLoadedIssues = new ArrayList<>();
+    private List<IssueDto> localLoadedIssues = new ArrayList<>();
 
-   private List<UserDto> localLoadedUsers = new ArrayList<>();
+    private List<UserDto> localLoadedUsers = new ArrayList<>();
 
     private static final Logger logger = LogManager.getLogger(IssuesController.class);
 
-
-    /////////////
-
-
-
+    /**
+     * Metoda otevírá obrazovku s uživateli
+     * Na zavření uvoňuje všechny tlačítka na této obrazovce
+     */
     public void openListOfUsers(ActionEvent actionEvent) throws IOException {
         disableAllButtons();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/list_of_users.fxml"));
@@ -99,6 +94,12 @@ public class IssuesController implements Initializable {
     }
 
 
+    /**
+     * Metoda přepisuje metodu z interfacu Initializable
+     * Setuje sloupce tabulky
+     * Načítá všechny uživatele
+     * Načítá všechny issues
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         issueNameColumn.setCellValueFactory(new PropertyValueFactory<ExtendedIssue, String>("name"));
@@ -112,6 +113,10 @@ public class IssuesController implements Initializable {
         loadUsers();
     }
 
+    /**
+     * Akce tlačítka CREATE_NEW_ISSUE
+     * Otevírá novou obrazovku pro vytvoření issue
+     */
     public void createNewIssue(ActionEvent actionEvent) throws IOException {
         disableAllButtons();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/create_issue.fxml"));
@@ -123,7 +128,7 @@ public class IssuesController implements Initializable {
         createIssueController.setRemoveIssue(removeIssue);
         createIssueController.setIssuesController(this);
         createIssueController.setUserListButtonOnIssuesScreen(userListButtonOnIssuesScreen);
-        //dělam to takhle, protože kvůli initialize nemůžu volat LOAD na screeně předtím
+        //dělam to takhle, protože kvůli initialize nemůžu volat LOAD na screeně
         createIssueController.setProjectId(CurrentOpenedProject.getPROJECT().getProjetId());
         createIssueController.setIssues(localLoadedIssues);
         Stage primaryStage = new Stage();
@@ -139,7 +144,11 @@ public class IssuesController implements Initializable {
     }
 
 
-    private void loadUsers(){
+    /**
+     * Metoda načítá všechny uživatele
+     * voláním BE
+     */
+    private void loadUsers() {
         Stage stg = new Stage();
         ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
         task.setOnRunning((successEvent) -> {
@@ -171,6 +180,10 @@ public class IssuesController implements Initializable {
         executorService.shutdown();
     }
 
+    /**
+     * Metoda přemapovává uživatele z databáze
+     * do listu uživatelů
+     */
     private List<UserDto> fillAssignToValues(Response response) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -179,6 +192,10 @@ public class IssuesController implements Initializable {
     }
 
 
+    /**
+     * V případě zavření obrazovky s uživateli uvolňuje tlačítka
+     * na obrazovce
+     */
     private void enableAllCreateIssueuttons() {
         searchIssues.setDisable(false);
         createIssue.setDisable(false);
@@ -188,7 +205,11 @@ public class IssuesController implements Initializable {
     }
 
 
-    public void fillIssuesTable(){
+    /**
+     * Metoda volána z inicializace controlleru
+     * Volá BE a response plní tabulku s issues
+     */
+    public void fillIssuesTable() {
         Stage stg = new Stage();
         String post = "" + CurrentOpenedProject.getPROJECT().getProjetId() + "";
         ClientCallerTask task = new ClientCallerTask("sendGetIssuesForProject", post);
@@ -223,6 +244,10 @@ public class IssuesController implements Initializable {
         executorService.shutdown();
     }
 
+    /**
+     * V případě otevírání jiné obrazovky
+     * zablokuje tlačítka
+     */
     private void disableAllButtons() {
         searchIssues.setDisable(true);
         createIssue.setDisable(true);
@@ -231,6 +256,10 @@ public class IssuesController implements Initializable {
         userListButtonOnIssuesScreen.setDisable(true);
     }
 
+    /**
+     * Metoda přemapuje RESPONSE ve formě STRING (json)
+     * do listu issues
+     */
     private List<IssueDto> fillListOfIssues(Response response) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -238,17 +267,22 @@ public class IssuesController implements Initializable {
         }).readValue(Objects.requireNonNull(response.body().string()));
     }
 
+    /**
+     * Metoda vytvoří z listu issues FilteredList
+     * a naplní ním tabulku
+     * Nastavuje akci pro TextField SEARCH_ISSUES, kde
+     * texfield funguje jako fulltextový vyhledávač nad tabulkou
+     */
     private void fillFilteredIssues(List<IssueDto> issues) {
         choiceBox.getItems().clear();
         ObservableList localList = getIssues(issues);
-        FilteredList<ExtendedIssue> filteredList = new FilteredList(localList, p -> true);;//Pass the data to a filtered list
+        FilteredList<ExtendedIssue> filteredList = new FilteredList(localList, p -> true); //Pass the data to a filtered list
         issueDtoTableView.setItems(filteredList);//Set the table's items using the filtered list
         choiceBox.getItems().addAll("name", "state", "description", "assignee", "created");
         choiceBox.setValue("name");
         searchIssues.setPromptText("Search here!");
         searchIssues.setOnKeyReleased(keyEvent ->
         {
-            //zatím choicebox nemáme, asi bych nechal jen na username
             switch (choiceBox.getValue())//Switch on choiceBox value
             {
                 case "name":
@@ -279,10 +313,15 @@ public class IssuesController implements Initializable {
 
     }
 
+    /**
+     * Metoda vrací ObserverList, který obsahuje
+     * ExtendedIssue
+     *
+     * @param loadedIssues slouží k naplnění ObserverListu
+     */
     private ObservableList<ExtendedIssue> getIssues(List<IssueDto> loadedIssues) {
         ObservableList<ExtendedIssue> extendedIssues = FXCollections.observableArrayList();
-        ObservableList<IssueDto> issues = FXCollections.observableArrayList();
-        for(IssueDto i : loadedIssues){
+        for (IssueDto i : loadedIssues) {
             ExtendedIssue extendedIssue = new ExtendedIssue();
             extendedIssue.setAssignee(i.getAssignee());
             extendedIssue.setCreated(i.getCreated());
@@ -291,13 +330,12 @@ public class IssuesController implements Initializable {
             extendedIssue.setName(i.getName());
             extendedIssue.setState(i.getState());
             extendedIssue.setProject(i.getProject());
-            //abych po zavření mohl volat ten refresh
-            //později můžu dodat i ten disable...
+            //abychom po zavření mohli volat ten refresh, potřebujeme i controller
             extendedIssue.setIssuesController(this);
+            //abychom na editační obrazovce nemuseli volat znovu getUsers
             extendedIssue.setUsersList(localLoadedUsers);
             extendedIssues.add(extendedIssue);
         }
-        issues.addAll(loadedIssues);
         return extendedIssues;
     }
 }

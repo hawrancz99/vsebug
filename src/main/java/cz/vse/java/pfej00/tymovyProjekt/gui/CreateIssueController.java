@@ -40,7 +40,7 @@ public class CreateIssueController {
     private Button save;
 
 
-    ///////////////////////////////tohle je projekt, abych věděl, ke kterýmu creatuju išu
+    ///////////////////////////////tohle je projekt, abych věděl, ke kterýmu creatuju issue
 
     private int projectId;
 
@@ -100,13 +100,21 @@ public class CreateIssueController {
         this.editIssue = editIssue;
     }
 
+    /**
+     * Metoda načítá uživatele,
+     * kterými naplní choicebox
+     */
     @FXML
     public void initialize() {
         fillAssignTo();
     }
 
+    /**
+     * Metoda vyvolaná stisknutím SAVE buttonu
+     * slouží k založení nového issue
+     */
     public void handle(Event event) {
-        if(assignToNew.getSelectionModel().isEmpty() || description.getText().isEmpty() || issueName.getText().isEmpty()){
+        if (assignToNew.getSelectionModel().isEmpty() || description.getText().isEmpty() || issueName.getText().isEmpty()) {
             clear();
             PopupBuilder.loadPopup("/allFieldsValid.html");
         } else if (!issueAlreadyExists(issueName.getText())) {
@@ -118,7 +126,6 @@ public class CreateIssueController {
             post.put("state", 3);
             post.put("description", description.getText());
             post.put("project", projectId);
-            //zatim takhle než zjistíme formát
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -148,7 +155,6 @@ public class CreateIssueController {
                 }
             });
 
-            //všude asi udělat task.setOnFailure()
             ProgressBar progressBar = new ProgressBar();
             progressBar.progressProperty().bind(task.progressProperty());
             stg.setScene(new Scene(progressBar));
@@ -165,13 +171,19 @@ public class CreateIssueController {
 
     }
 
-    private void fillChoice(List<UserDto> users){
+    /**
+     * Výsledné naplnění choiceboxu
+     */
+    private void fillChoice(List<UserDto> users) {
         for (UserDto i : users) {
             assignToNew.getItems().addAll(i.getUsername());
         }
     }
 
-    private void fillAssignTo(){
+    /**
+     * Metoda slouží k načtení všech uživatelů
+     */
+    private void fillAssignTo() {
         Stage stg = new Stage();
         ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
         task.setOnRunning((successEvent) -> {
@@ -202,8 +214,14 @@ public class CreateIssueController {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(task);
         executorService.shutdown();
-    };
+    }
 
+    /**
+     * Metoda přemapovává STRING odpověď ze severu
+     * do listu uživatelů
+     *
+     * @param response
+     */
     private List<UserDto> fillAssignToValues(Response response) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -212,7 +230,11 @@ public class CreateIssueController {
     }
 
 
-
+    /**
+     * Metoda slouží k odblokování tlačítek
+     * na obrazoce "níž" v případě zavření
+     * stávající screeny
+     */
     private void enableAllButtons() {
         searchIssues.setDisable(false);
         createIssue.setDisable(false);
@@ -221,17 +243,28 @@ public class CreateIssueController {
         userListButtonOnIssuesScreen.setDisable(false);
     }
 
-    private int getAssigneeIdByUsername(String username){
-        for(UserDto user : listOfUsers){
-            if(user.getUsername().equals(username)){
+    /**
+     * Metoda podle username vrací
+     * ID konkrétního užviatele
+     *
+     * @param username
+     */
+    private int getAssigneeIdByUsername(String username) {
+        for (UserDto user : listOfUsers) {
+            if (user.getUsername().equals(username)) {
                 return user.getId();
             }
         }
-        //chudák user 0 haha
         return 0;
     }
 
-    private boolean issueAlreadyExists(String issueName){
+    /**
+     * Metoda slouží k validace
+     * unikátnosti názvu projektu
+     *
+     * @param issueName
+     */
+    private boolean issueAlreadyExists(String issueName) {
         boolean exists = false;
         for (IssueDto issueDto : issues) {
             if (issueName.equals(issueDto.getName())) {
@@ -242,7 +275,11 @@ public class CreateIssueController {
         return exists;
     }
 
-    private void clear(){
+    /**
+     * Pokud uživatel neprojde přes validaci
+     * resetuje se formulář
+     */
+    private void clear() {
         description.clear();
         issueName.clear();
         assignToNew.getSelectionModel().clearSelection();

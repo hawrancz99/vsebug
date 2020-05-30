@@ -1,7 +1,6 @@
 package cz.vse.java.pfej00.tymovyProjekt.Model;
 
 import java.util.Date;
-import java.util.List;
 
 public class ProjectDto {
     private int id;
@@ -9,10 +8,24 @@ public class ProjectDto {
     private String description;
     private Date created;
 
+    /**
+     * Konstruktor třídy ProjectDto
+     * super() dědí atributy ze svého předka, nutné
+     * při využívání třídy ObjectMapper
+     */
     public ProjectDto() {
         super();
     }
 
+    /**
+     * Konstruktor třídy ProjectDto
+     * Objekt slouží k přemapování databázového objektu do čitelné podoby
+     *
+     * @param id
+     * @param name
+     * @param description
+     * @param created
+     */
     public ProjectDto(int id, String name, String description, Date created) {
         this.id = id;
         this.name = name;

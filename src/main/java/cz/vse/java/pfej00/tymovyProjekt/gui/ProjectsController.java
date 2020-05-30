@@ -7,8 +7,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +24,6 @@ import javafx.stage.StageStyle;
 import okhttp3.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,14 +57,13 @@ public class ProjectsController {
 
     private ObservableList<Button> buttons = FXCollections.observableArrayList();
 
-
-    public ProjectsController() {
-    }
-
+    /**
+     * Metoda při inicializaci kontroleru načte všechny projekty
+     * Setuje akci tlačítka USER_LIST_BUTTON, která vyvolává
+     * otevírání screeny s uživateli
+     */
     @FXML
     public void initialize() {
-        //   listOfUsers.getColumns().add(username);
-        //   listOfUsers.getColumns().add(role);
         users_list_button.setOnAction(event -> {
             try {
                 loadUsersByClick(event);
@@ -79,6 +75,10 @@ public class ProjectsController {
     }
 
 
+    /**
+     * Metoda vovolaná stistknutím tlačítka logOut
+     * Vrací uživatele zpět na úvodní obrazovku
+     */
     @FXML
     public void logOut(ActionEvent event) throws IOException {
         Stage stage = (Stage) log_out.getScene().getWindow();
@@ -95,21 +95,27 @@ public class ProjectsController {
     }
 
 
-    @FXML
+    /**
+     * Metoda na stisknutí tlačítka otevírá obrazovku s uživateli
+     */
+
     public void loadUsersByClick(ActionEvent event) throws IOException {
-                    disableAllButtons();
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/list_of_users.fxml"));
-                    Parent root = fxmlLoader.load();
-                    Stage primaryStage = new Stage();
-                    primaryStage.initStyle(StageStyle.UTILITY);
-                    primaryStage.setTitle("");
-                    primaryStage.setScene(new Scene(root));
-                    primaryStage.show();
-                    primaryStage.setOnCloseRequest(event1 -> enableAllButtons());
+        disableAllButtons();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/list_of_users.fxml"));
+        Parent root = fxmlLoader.load();
+        Stage primaryStage = new Stage();
+        primaryStage.initStyle(StageStyle.UTILITY);
+        primaryStage.setTitle("");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+        primaryStage.setOnCloseRequest(event1 -> enableAllButtons());
     }
 
 
-    void loadProjects() {
+    /**
+     * Metoda volá BE a načítá všechny projekty
+     */
+    public void loadProjects() {
         Stage stg = new Stage();
         ClientCallerTask task = new ClientCallerTask(GET_PROJECTS, null);
         task.setOnRunning((runningEvent) -> {
@@ -140,6 +146,13 @@ public class ProjectsController {
         executorService.shutdown();
     }
 
+    /**
+     * Metoda plní VBOX zobrazující projekty na obrazovce
+     * Pro každý projekt vytvoří tlačítko na otevření issue,
+     * na smazání projektu a na editaci projektu
+     *
+     * @param response slouží k namapování všech projektů
+     */
     private void fillProjects(Response response) throws IOException {
         projects.clear();
         buttons.clear();
@@ -248,6 +261,10 @@ public class ProjectsController {
     }
 
 
+    /**
+     * Metoda vyvolaná stisknutím tlačítka CREATE_NEW_PROJECT
+     * Otevírá obrazovku na vytvoření nového projektu
+     */
     public void createNewProject(ActionEvent actionEvent) throws IOException {
         disableAllButtons();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/create_project.fxml"));
@@ -273,16 +290,23 @@ public class ProjectsController {
     }
 
 
+    /**
+     * V případě otevření jiné screeny
+     * disabluje všechna tlačítka
+     */
     private void disableAllButtons() {
         users_list_button.setDisable(true);
         createProject.setDisable(true);
-
         log_out.setDisable(true);
         for (Button b : buttons) {
             b.setDisable(true);
         }
     }
 
+    /**
+     * V případě zavření jiné screeny přes křížek
+     * enabluje všechna tlačítka
+     */
     private void enableAllButtons() {
         users_list_button.setDisable(false);
         createProject.setDisable(false);
@@ -292,6 +316,10 @@ public class ProjectsController {
         }
     }
 
+    /**
+     * Metoda vyvolaná tlačítkem delete
+     * Volá BE a smaže příslušný projekt
+     */
     private void callDeleteProject(int id) {
         Stage stg = new Stage();
         //musim to tam poslat jako string

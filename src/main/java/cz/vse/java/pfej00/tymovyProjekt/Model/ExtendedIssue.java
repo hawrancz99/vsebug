@@ -1,6 +1,5 @@
 package cz.vse.java.pfej00.tymovyProjekt.Model;
 
-import cz.vse.java.pfej00.tymovyProjekt.gui.CreateProjectController;
 import cz.vse.java.pfej00.tymovyProjekt.gui.EditIssueController;
 import cz.vse.java.pfej00.tymovyProjekt.gui.IssuesController;
 import javafx.event.ActionEvent;
@@ -9,13 +8,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.List;
 
+
+/**
+ * Třída rozšiřuje IssueDto o atributy
+ * potřebné pro práci s EditIssueControllerem.
+ */
 public class ExtendedIssue extends IssueDto {
     private Button button = new Button("edit");
 
@@ -41,7 +44,14 @@ public class ExtendedIssue extends IssueDto {
     }
 
 
-    public ExtendedIssue(){
+    /**
+     * Konstruktor třídy ExtendedIssue, který
+     * dědí atributy z IssueDto,
+     * Nastavuje funkci tlačíka BUTTON, kde
+     * na "akci" otevírá editaci issue
+     */
+
+    public ExtendedIssue() {
         button.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/edit_issue.fxml"));

@@ -1,16 +1,15 @@
 package cz.vse.java.pfej00.tymovyProjekt.task;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import cz.vse.java.pfej00.tymovyProjekt.main.ServerClient;
 import javafx.concurrent.Task;
 import okhttp3.Response;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+/**
+ * Třída dědí ze třídy Task
+ * Slouží k multithreadingovým opearcím
+ * Task je následně vyvolán pomocí třídy ExecutorService
+ * Jako odpověď vrací vždy RESPONSE, tedy výsledek volání BE
+ */
 public class ClientCallerTask extends Task<Response> {
 
     private String url;
@@ -20,6 +19,12 @@ public class ClientCallerTask extends Task<Response> {
     private final ServerClient SERVER_CLIENT = new ServerClient();
 
 
+    /**
+     * Konstruktor třídy
+     *
+     * @param url  slouží k identifikaci, jaká URL se má zavolat
+     * @param post slouží k plnění body či části url, pokud to volání vyžaduje
+     */
     public ClientCallerTask(String url, String post) {
         this.url = url;
         this.post = post;
@@ -28,13 +33,13 @@ public class ClientCallerTask extends Task<Response> {
     @Override
     public Response call() throws Exception {
         if (url.equals("sendGetIssues")) {
-           return SERVER_CLIENT.sendGetIssues();
+            return SERVER_CLIENT.sendGetIssues();
         }
         if (url.equals("sendGetIssuesForProject")) {
             return SERVER_CLIENT.sendGetIssuesForProject(post);
         }
         if (url.equals("sendUpdateIssue")) {
-           return SERVER_CLIENT.sendUpdateIssue(post);
+            return SERVER_CLIENT.sendUpdateIssue(post);
         }
         if (url.equals("sendDeleteIssue")) {
             return SERVER_CLIENT.sendDeleteIssue(post);

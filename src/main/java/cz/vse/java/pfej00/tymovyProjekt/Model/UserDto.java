@@ -5,10 +5,28 @@ public class UserDto {
     private String role;
     private int id;
 
+    /**
+     * Konstruktor pro třídu User
+     * Slouží k přemapování databázového objektu
+     *
+     * @param username
+     * @param role
+     * @param id
+     */
     public UserDto(String username, String role, int id) {
         this.username = username;
         this.role = role;
         this.id = id;
+    }
+
+
+    /**
+     * Konstruktor třídy UsrDto
+     * super() dědí atributy ze svého předka, nutné
+     * při využívání třídy ObjectMapper
+     */
+    public UserDto() {
+        super();
     }
 
     public String getUsername() {
@@ -35,12 +53,11 @@ public class UserDto {
         this.id = id;
     }
 
-    public UserDto() {
-        super();
-    }
-
+    /**
+     * Zobrazování userDto v tabulce jako username
+     */
     @Override
     public String toString() {
-        return  username;
+        return username;
     }
 }

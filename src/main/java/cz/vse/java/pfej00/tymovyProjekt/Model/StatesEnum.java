@@ -12,6 +12,9 @@ public enum StatesEnum {
         this.numVal = numVal;
     }
 
+    /**
+     * Vrací INTEGER hodnotu na základě STRING možností definovaných v enumu
+     */
     public int getNumVal() {
         return numVal;
     }
