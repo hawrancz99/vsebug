@@ -1,5 +1,8 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.vse.java.pfej00.tymovyProjekt.Model.IssueDto;
 import cz.vse.java.pfej00.tymovyProjekt.Model.ProjectDto;
 import cz.vse.java.pfej00.tymovyProjekt.Model.UserDto;
@@ -10,6 +13,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -18,7 +22,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -96,6 +102,7 @@ public class CreateIssueController {
 
     @FXML
     public void initialize() {
+        fillAssignTo();
     }
 
     public void handle(Event event) {
@@ -146,11 +153,49 @@ public class CreateIssueController {
 
     }
 
-    public void fillChoice(MouseEvent mouseEvent){
-        for (UserDto i : listOfUsers) {
+    private void fillChoice(List<UserDto> users){
+        for (UserDto i : users) {
             assignToNew.getItems().addAll(i.getUsername());
         }
-        assignToNew.show();
+    }
+
+    private void fillAssignTo(){
+        Stage stg = new Stage();
+        ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
+        task.setOnRunning((successEvent) -> {
+            stg.show();
+        });
+
+        task.setOnSucceeded((succeededEvent) -> {
+            stg.hide();
+            try {
+                Response response = task.get();
+                if (response.isSuccessful()) {
+                    List<UserDto> users = fillAssignToValues(response);
+                    fillChoice(users);
+                    logger.info("Users loaded successfully");
+                } else logger.error("Error while loading issues, caused by {}", response);
+            } catch (InterruptedException | ExecutionException | IOException e) {
+                logger.error("Error while loading issues, caused by {}", e.getMessage());
+            }
+        });
+
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.progressProperty().bind(task.progressProperty());
+        stg.setScene(new Scene(progressBar));
+        stg.initStyle(StageStyle.UNDECORATED);
+        stg.setAlwaysOnTop(true);
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(task);
+        executorService.shutdown();
+    };
+
+    private List<UserDto> fillAssignToValues(Response response) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        return objectMapper.reader().forType(new TypeReference<List<UserDto>>() {
+        }).readValue(Objects.requireNonNull(response.body().string()));
     }
 
 
