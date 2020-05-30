@@ -76,24 +76,6 @@ public class ServerClient {
         return null;
     }
 
-    public Response sendFindUser(String post) throws Exception {
-
-        Request request = new Request.Builder()
-                .url("https://vsebug-be.herokuapp.com/users/?search=" + post)
-                .addHeader("authorization", TOKEN)
-                .get()
-                .build();
-
-        try {
-            logger.info("Finding user by search parameter = {}", post);
-            return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
-            logger.error("Finding user failed, caused by {}", e.getMessage());
-        }
-        return null;
-    }
-
 
     //issues
     public Response sendGetIssues() throws Exception {
@@ -170,23 +152,6 @@ public class ServerClient {
         }
         catch (IOException e) {
             logger.error("Error while creating new issue caused by {}", e.getMessage());
-        }
-        return null;
-    }
-
-    public Response sendFindIssue(String post) throws Exception {
-        Request request = new Request.Builder()
-                .url("https://vsebug-be.herokuapp.com/issues/?search=" + post)
-                .get()
-                .addHeader("authorization", TOKEN)
-                .build();
-
-        try {
-            logger.info("Finding issue, search param = {}", post);
-            return httpClient.newCall(request).execute();
-        }
-        catch (IOException e) {
-            logger.error("Error finding issues, caused by {}", e.getMessage());
         }
         return null;
     }
