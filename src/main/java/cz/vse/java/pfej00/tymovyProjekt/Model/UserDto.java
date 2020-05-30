@@ -39,4 +39,8 @@ public class UserDto {
         super();
     }
 
+    @Override
+    public String toString() {
+        return  username;
+    }
 }

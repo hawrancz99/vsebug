@@ -2,6 +2,7 @@ package cz.vse.java.pfej00.tymovyProjekt.gui;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.vse.java.pfej00.tymovyProjekt.Model.CurrentOpenedProject;
 import cz.vse.java.pfej00.tymovyProjekt.Model.ProjectDto;
 import cz.vse.java.pfej00.tymovyProjekt.Model.UserDto;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
@@ -31,10 +32,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -80,31 +78,13 @@ public class IssuesController implements Initializable {
     private ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
 
-    //all set from Project cuz of disable
-    //////////////////////////////////////////////////////////////////////////////
-
-    private Button users_list_button;
-
-    private Button createProject;
-
-    private Button log_out;
-
-    private ProjectDto projectDto;
-
-    private ObservableList<Button> buttons = FXCollections.observableArrayList();
+   private List<IssueDto> localLoadedIssues = new ArrayList<>();
 
     private static final Logger logger = LogManager.getLogger(IssuesController.class);
 
 
     /////////////
 
-    public void setButtons(ObservableList<Button> buttons) {
-        this.buttons = buttons;
-    }
-
-    public void setProjectDto(ProjectDto projectDto) {
-        this.projectDto = projectDto;
-    }
 
 
     public void openListOfUsers(ActionEvent actionEvent) throws IOException {
@@ -120,38 +100,15 @@ public class IssuesController implements Initializable {
         primaryStage.setOnCloseRequest(event1 -> enableAllCreateIssueuttons());
     }
 
-    //evidentně to funguje i bez toho, netušim proč :DD
-    private void enableAllButtons() {
-        users_list_button.setDisable(false);
-        createProject.setDisable(false);
-        log_out.setDisable(false);
-        createIssue.setDisable(false);
-        removeIssue.setDisable(false);
-        editIssue.setDisable(false);
-        userListButtonOnIssuesScreen.setDisable(false);
-        for(Button b : buttons){
-            b.setDisable(false);
-        }
-    }
-
-
-
-    public void setLog_out(Button log_out) {
-        this.log_out = log_out;
-    }
-
-    public void setUsers_list_button(Button users_list_button) {
-        this.users_list_button = users_list_button;
-    }
-
-    public void setCreateProject(Button createProject) {
-        this.createProject = createProject;
-    }
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         issueNameColumn.setCellValueFactory(new PropertyValueFactory<IssueDto, String>("name"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<IssueDto, String>("description"));
+        createdColumn.setCellValueFactory(new PropertyValueFactory<IssueDto, Date>("created"));
+        stateColumn.setCellValueFactory(new PropertyValueFactory<IssueDto, String>("state"));
+        assignedToColumn.setCellValueFactory(new PropertyValueFactory<IssueDto, UserDto>("assignee"));
+
         fillIssuesTable();
     }
 
@@ -166,7 +123,9 @@ public class IssuesController implements Initializable {
         createIssueController.setRemoveIssue(removeIssue);
         createIssueController.setIssuesController(this);
         createIssueController.setUserListButtonOnIssuesScreen(userListButtonOnIssuesScreen);
-        createIssueController.setProjectDto(projectDto);
+        //dělam to takhle, protože kvůli initialize nemůžu volat LOAD na screeně předtím
+        createIssueController.setProjectId(CurrentOpenedProject.getPROJECT().getProjetId());
+        createIssueController.setIssues(localLoadedIssues);
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
         primaryStage.setTitle("");
@@ -190,9 +149,9 @@ public class IssuesController implements Initializable {
 
 
     public void fillIssuesTable(){
-        issueDtoTableView.getItems().clear();
         Stage stg = new Stage();
-        ClientCallerTask task = new ClientCallerTask("sendGetIssues", null);
+        String post = "" + CurrentOpenedProject.getPROJECT().getProjetId() + "";
+        ClientCallerTask task = new ClientCallerTask("sendGetIssuesForProject", post);
         task.setOnRunning((successEvent) -> {
             stg.show();
         });
@@ -202,10 +161,9 @@ public class IssuesController implements Initializable {
             try {
                 Response response = task.get();
                 if (response.isSuccessful()) {
-          //          listOfIssues.clear();
                     List<IssueDto> issuesForProject = fillListOfIssues(response);
+                    localLoadedIssues.addAll(issuesForProject);
                     fillFilteredIssues(issuesForProject);
-       //             listOfIssues.addAll(issuesForProject);
 
                     logger.info("All issues loaded successfully");
                 } else logger.error("Error while loading issues, caused by {}", response);
@@ -253,7 +211,7 @@ public class IssuesController implements Initializable {
             switch (choiceBox.getValue())//Switch on choiceBox value
             {
                 case "name":
-                    filteredList.setPredicate(p -> p.getAssignee().getUsername().toLowerCase().contains(searchIssues.getText().toLowerCase().trim()));//filter table by username
+                    filteredList.setPredicate(p -> p.getName().toLowerCase().contains(searchIssues.getText().toLowerCase().trim()));//filter table by username
                     break;
                 case "state":
                     filteredList.setPredicate(p -> p.getState().toLowerCase().contains(searchIssues.getText().toLowerCase().trim()));//filter table by role

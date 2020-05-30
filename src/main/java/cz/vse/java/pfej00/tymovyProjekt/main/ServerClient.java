@@ -112,6 +112,26 @@ public class ServerClient {
         return null;
     }
 
+    public Response sendGetIssuesForProject(String post) throws Exception {
+
+        int id = Integer.parseInt(post);
+
+        Request request = new Request.Builder()
+                .url("https://vsebug-be.herokuapp.com/projects/" + id +"/issues/")
+                .get()
+                .addHeader("authorization", TOKEN)
+                .build();
+
+        try {
+            logger.info("Getting issues for project with id: {}", id);
+            return httpClient.newCall(request).execute();
+        }
+        catch (IOException e) {
+            logger.error("Error while getting project´s issues, caused by {}", e.getMessage());
+        }
+        return null;
+    }
+
     public Response sendUpdateIssue() throws Exception {
             RequestBody requestBody = RequestBody.create("asdawd".getBytes());
             Request request = new Request.Builder().method("POST", requestBody).build();

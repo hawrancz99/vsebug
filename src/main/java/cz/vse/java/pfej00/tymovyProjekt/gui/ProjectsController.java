@@ -142,13 +142,10 @@ public class ProjectsController {
         executorService.shutdown();
     }
 
-    //TODO
-    //tohle padá kvůli tomu anchorpanu, ale to se opraví, až se to bude přidávat na normální místo
     private void fillProjects(Response response) throws IOException {
         projects.clear();
         buttons.clear();
         vbox.getChildren().clear();
-        //aby byly tlačítka vedle sebe
         vbox.setSpacing(5);
         vbox.setAlignment(Pos.TOP_RIGHT);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -190,16 +187,9 @@ public class ProjectsController {
                     {
                         try {
                             disableAllButtons();
+                            CurrentOpenedProject.getPROJECT().setProjetId(projectDto.getId());
                             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/issues.fxml"));
                             Parent root = fxmlLoader.load();
-                         /*   IssuesController issuesController = fxmlLoader.getController();
-                            issuesController.setListOfIssues(new ArrayList<>());
-                            issuesController.setUsers_list_button(users_list_button);
-                            issuesController.setCreateProject(createProject);
-                            issuesController.setProjectDto(projectDto);
-                            issuesController.setListOfUsers(listOfUsers);
-                            issuesController.setLog_out(log_out);
-                            issuesController.setButtons(buttons);*/
                             Stage primaryStage = new Stage();
                             primaryStage.initStyle(StageStyle.UTILITY);
                             primaryStage.setTitle("");
@@ -207,7 +197,6 @@ public class ProjectsController {
                             primaryStage.show();
                             primaryStage.setOnCloseRequest(event1 ->
                             {
-                                //je to nešťastný, ale stejně by se muselo volat načítání issues při otevření ... někde se to updatovat musí
                                 loadProjects();
                                 enableAllButtons();
                             });
@@ -223,7 +212,6 @@ public class ProjectsController {
                             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/edit_project.fxml"));
                             Parent root = fxmlLoader.load();
                             EditProjectController editProjectController = fxmlLoader.getController();
-                            //aby save dělalo fakin enable tak se tam bude muset nasetovat zase úplně všechno :)))))))))))))))), řekl bych
                             editProjectController.setButtonWithProjectName(b);
                             editProjectController.setProjectsController(this);
                             editProjectController.setEditedProject(projectDto);

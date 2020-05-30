@@ -47,7 +47,11 @@ public class CreateIssueController {
 
     ///////////////////////////////tohle je projekt, abych věděl, ke kterýmu creatuju išu
 
-    private ProjectDto projectDto;
+    private int projectId;
+
+    ///////////////////////////issues, abych mohl ověřit, že takový neexistuje
+
+    private List<IssueDto> issues;
 
 
     ///////////////////kvůli ENABLE/DISABLE
@@ -68,8 +72,12 @@ public class CreateIssueController {
 
     private static final Logger logger = LogManager.getLogger(CreateIssueController.class);
 
-    public void setProjectDto(ProjectDto projectDto) {
-        this.projectDto = projectDto;
+    public void setIssues(List<IssueDto> issues) {
+        this.issues = issues;
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 
     public void setUserListButtonOnIssuesScreen(Button userListButtonOnIssuesScreen) {
@@ -103,6 +111,9 @@ public class CreateIssueController {
     }
 
     public void handle(Event event) {
+        if(assignToNew.getSelectionModel().isEmpty() || description.getText().isEmpty() || issueName.getText().isEmpty()){
+            PopupBuilder.loadPopup("/allFieldsValid.html");
+        } else if (!issueAlreadyExists(issueName.getText())) {
             enableAllButtons();
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
@@ -110,7 +121,7 @@ public class CreateIssueController {
             //asi může zůstat, nový budou vždycky new
             post.put("state", 1);
             post.put("description", description.getText());
-            post.put("project", projectDto.getId());
+            post.put("project", projectId);
             //zatim takhle než zjistíme formát
             post.put("created", "2020-05-22T21:03:41Z");
             int assignee = getAssigneeIdByUsername(assignToNew.getSelectionModel().getSelectedItem());
@@ -147,6 +158,9 @@ public class CreateIssueController {
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             executorService.submit(task);
             executorService.shutdown();
+        } else {
+            PopupBuilder.loadPopup("/issueNotUnique.html");
+        }
 
     }
 
@@ -216,15 +230,14 @@ public class CreateIssueController {
         return 0;
     }
 
-    /*
-    private boolean issueAlreadyExists(String projectName){
+    private boolean issueAlreadyExists(String issueName){
         boolean exists = false;
-        for (ProjectDto project : issues) {
-            if (projectName.equals(project.getName())) {
+        for (IssueDto issueDto : issues) {
+            if (issueName.equals(issueDto.getName())) {
                 exists = true;
                 break;
             }
         }
         return exists;
-    } */
+    }
 }

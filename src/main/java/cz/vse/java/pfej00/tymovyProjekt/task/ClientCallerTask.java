@@ -30,6 +30,9 @@ public class ClientCallerTask extends Task<Response> {
         if (url.equals("sendGetIssues")) {
            return SERVER_CLIENT.sendGetIssues();
         }
+        if (url.equals("sendGetIssuesForProject")) {
+            return SERVER_CLIENT.sendGetIssuesForProject(post);
+        }
         if (url.equals("sendUpdateIssue")) {
            return SERVER_CLIENT.sendUpdateIssue();
         }
