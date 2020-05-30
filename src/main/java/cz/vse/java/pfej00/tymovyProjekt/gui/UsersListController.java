@@ -113,6 +113,7 @@ public class UsersListController implements Initializable {
         FilteredList<UserDto> flPerson = new FilteredList(localList, p -> true);;//Pass the data to a filtered list
         usersTableView.setItems(flPerson);//Set the table's items using the filtered list
         choiceBox.getItems().addAll("username", "role");
+        choiceBox.setValue("username");
         search.setPromptText("Search here!");
         search.setOnKeyReleased(keyEvent ->
         {
