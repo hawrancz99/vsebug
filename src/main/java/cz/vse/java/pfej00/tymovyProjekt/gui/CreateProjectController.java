@@ -24,7 +24,10 @@ import org.json.JSONObject;
 
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -97,8 +100,11 @@ public class CreateProjectController {
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
             post.put("name", inputOfProjects.getText());
-            //zatim takhle než zjistíme formát
-            post.put("created", "2020-05-22T21:03:41Z");
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String strDate = sdf.format(date);
+            post.put("created", strDate);
             ClientCallerTask task = new ClientCallerTask(CREATE_PROJECT, post.toString());
             task.setOnRunning((successEvent) -> {
                 createNewProject.setDisable(true);

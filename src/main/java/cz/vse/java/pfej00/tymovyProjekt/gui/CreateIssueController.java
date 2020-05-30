@@ -23,9 +23,8 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -124,7 +123,11 @@ public class CreateIssueController {
             post.put("description", description.getText());
             post.put("project", projectId);
             //zatim takhle než zjistíme formát
-            post.put("created", "2020-05-22T21:03:41Z");
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String strDate = sdf.format(date);
+            post.put("created", strDate);
             int assignee = getAssigneeIdByUsername(assignToNew.getSelectionModel().getSelectedItem());
             post.put("assignee", assignee);
             ClientCallerTask task = new ClientCallerTask("sendCreateIssue", post.toString());

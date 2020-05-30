@@ -202,7 +202,7 @@ public class IssuesController implements Initializable {
         ObservableList localList = getUsers(issues);
         FilteredList<IssueDto> filteredList = new FilteredList(localList, p -> true);;//Pass the data to a filtered list
         issueDtoTableView.setItems(filteredList);//Set the table's items using the filtered list
-        choiceBox.getItems().addAll("name", "state");
+        choiceBox.getItems().addAll("name", "state", "description", "assignee", "created");
         choiceBox.setValue("name");
         searchIssues.setPromptText("Search here!");
         searchIssues.setOnKeyReleased(keyEvent ->
@@ -211,10 +211,19 @@ public class IssuesController implements Initializable {
             switch (choiceBox.getValue())//Switch on choiceBox value
             {
                 case "name":
-                    filteredList.setPredicate(p -> p.getName().toLowerCase().contains(searchIssues.getText().toLowerCase().trim()));//filter table by username
+                    filteredList.setPredicate(p -> p.getName().toLowerCase().contains(searchIssues.getText().toLowerCase().trim()));//filter table by issueName
                     break;
                 case "state":
-                    filteredList.setPredicate(p -> p.getState().toLowerCase().contains(searchIssues.getText().toLowerCase().trim()));//filter table by role
+                    filteredList.setPredicate(p -> p.getState().toLowerCase().contains(searchIssues.getText().toLowerCase().trim()));//filter table by state
+                    break;
+                case "description":
+                    filteredList.setPredicate(p -> p.getDescription().toLowerCase().contains(searchIssues.getText().toLowerCase().trim()));//filter table by description
+                    break;
+                case "assignee":
+                    filteredList.setPredicate(p -> p.getAssignee().getUsername().toLowerCase().contains(searchIssues.getText().toLowerCase().trim()));//filter table by assignee
+                    break;
+                case "created":
+                    filteredList.setPredicate(p -> p.getCreated().toString().toLowerCase().contains(searchIssues.getText().toLowerCase().trim()));//filter table by date
             }
         });
 

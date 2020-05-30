@@ -17,7 +17,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -94,7 +97,11 @@ public class EditProjectController {
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
             post.put("name", textChange.getText());
-            post.put("created", "2020-05-22T21:03:41Z");
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String strDate = sdf.format(date);
+            post.put("created", strDate);
             int id = editedProject.getId();
             post.put("id", id);
             ClientCallerTask task = new ClientCallerTask("sendUpdateProject", post.toString());
