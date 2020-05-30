@@ -96,7 +96,7 @@ public class RegisterController {
                         logger.info("New user: {} registered successfully", usernameField.getText());
                     }else{
                         PopupBuilder.loadPopup("/userNotUnique.html");
-                        logger.info("Registering new user failed, username: {} already exists", usernameField.getText());
+                        logger.warn("Registering new user failed, username: {} already exists", usernameField.getText());
                         clear();
                     }
                 } catch (InterruptedException | ExecutionException e) {

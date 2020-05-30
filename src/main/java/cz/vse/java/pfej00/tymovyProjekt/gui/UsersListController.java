@@ -6,6 +6,7 @@ import cz.vse.java.pfej00.tymovyProjekt.Model.UserDto;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -18,6 +19,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import okhttp3.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -48,8 +51,10 @@ public class UsersListController implements Initializable {
     @FXML
     private TableColumn<UserDto, String> roleColumn = new TableColumn<>();
 
+    private static final Logger logger = LogManager.getLogger(IssuesController.class);
+
     @FXML
-    public void initialize(URL location, ResourceBundle resources){
+    public void initialize(URL location, ResourceBundle resources) {
         usernameColumn.setCellValueFactory(new PropertyValueFactory<UserDto, String>("username"));
         roleColumn.setCellValueFactory(new PropertyValueFactory<UserDto, String>("role"));
         fillUserstable();
@@ -61,13 +66,13 @@ public class UsersListController implements Initializable {
     }
 
 
-    public ObservableList<UserDto> getUsers(List<UserDto> loadedUsers){
+    public ObservableList<UserDto> getUsers(List<UserDto> loadedUsers) {
         ObservableList<UserDto> users = FXCollections.observableArrayList();
         users.addAll(loadedUsers);
-       return users;
+        return users;
     }
 
-    private void fillUserstable(){
+    private void fillUserstable() {
         Stage stg = new Stage();
         ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
         task.setOnRunning((successEvent) -> {
@@ -81,13 +86,13 @@ public class UsersListController implements Initializable {
                 if (response.isSuccessful()) {
                     usernameColumn.setCellValueFactory(new PropertyValueFactory<UserDto, String>("username"));
                     roleColumn.setCellValueFactory(new PropertyValueFactory<UserDto, String>("role"));
-                    List<UserDto> users = fillTable(response);
-                    usersTableView.setItems(getUsers(users));
+                    List<UserDto> users = fillTableWithUsers(response);
+                    fillFilteredUsers(users);
 
-
-                } else System.out.println("RIP");;
+                    logger.info("Users loaded successfully");
+                } else logger.error("Error while loading issues, caused by {}", response);
             } catch (InterruptedException | ExecutionException | IOException e) {
-                e.printStackTrace();
+                logger.error("Error while loading issues, caused by {}", e.getMessage());
             }
         });
 
@@ -102,12 +107,42 @@ public class UsersListController implements Initializable {
         executorService.shutdown();
     }
 
-    private List<UserDto> fillTable(Response response) throws IOException {
+    private List<UserDto> fillTableWithUsers(Response response) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         return objectMapper.reader().forType(new TypeReference<List<UserDto>>() {
         }).readValue(Objects.requireNonNull(response.body().string()));
     }
 
+    private void fillFilteredUsers(List<UserDto> users) {
+        ObservableList localList = getUsers(users);
+        FilteredList<UserDto> flPerson = new FilteredList(localList, p -> true);;//Pass the data to a filtered list
+        usersTableView.setItems(flPerson);//Set the table's items using the filtered list
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        choiceBox.getItems().addAll("username", "role");
+        choiceBox.setValue("username");
+        search.setPromptText("Search here!");
+        search.setOnKeyReleased(keyEvent ->
+        {
+            //zatím choicebox nemáme, asi bych nechal jen na username
+            switch (choiceBox.getValue())//Switch on choiceBox value
+            {
+                case "username":
+                    flPerson.setPredicate(p -> p.getUsername().toLowerCase().contains(search.getText().toLowerCase().trim()));//filter table by first name
+                    break;
+                case "role":
+                    flPerson.setPredicate(p -> p.getRole().toLowerCase().contains(search.getText().toLowerCase().trim()));//filter table by first name
+            }
+        });
 
+        choiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) ->
+        {//reset table and textfield when new choice is selected
+            if (newVal != null) {
+                search.setText("");
+                flPerson.setPredicate(null);//This is same as saying flPerson.setPredicate(p->true);
+            }
+        });
+
+
+    }
 }

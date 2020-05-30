@@ -121,17 +121,8 @@ public class ProjectsController {
                     primaryStage.setScene(new Scene(root));
                     primaryStage.show();
                     primaryStage.setOnCloseRequest(event1 -> enableAllButtons());
-                    logger.info("All users loaded successfully");
-
     }
 
-
-    private List<UserDto> fillTable(Response response) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        return objectMapper.reader().forType(new TypeReference<List<UserDto>>() {
-        }).readValue(Objects.requireNonNull(response.body().string()));
-    }
 
     void loadProjects() {
         Stage stg = new Stage();
