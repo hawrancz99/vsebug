@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -61,7 +62,7 @@ public class CreateIssueController {
 
     private Button editIssue;
 
-    private List<UserDto> listOfUsers;
+    private List<UserDto> listOfUsers = new ArrayList<>();
 
     private IssuesController issuesController;
 
@@ -79,10 +80,6 @@ public class CreateIssueController {
         this.issuesController = issuesController;
     }
 
-
-    public void setListOfUsers(List<UserDto> listOfUsers) {
-        this.listOfUsers = listOfUsers;
-    }
 
     public void setSearchIssues(TextField searchIssues) {
         this.searchIssues = searchIssues;
@@ -173,6 +170,7 @@ public class CreateIssueController {
                 if (response.isSuccessful()) {
                     List<UserDto> users = fillAssignToValues(response);
                     fillChoice(users);
+                    listOfUsers.addAll(users);
                     logger.info("Users loaded successfully");
                 } else logger.error("Error while loading issues, caused by {}", response);
             } catch (InterruptedException | ExecutionException | IOException e) {

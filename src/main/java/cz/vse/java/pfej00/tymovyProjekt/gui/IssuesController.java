@@ -105,6 +105,7 @@ public class IssuesController implements Initializable {
         primaryStage.setOnCloseRequest(event1 -> enableAllCreateIssueuttons());
     }
 
+    //evidentně to funguje i bez toho, netušim proč :DD
     private void enableAllButtons() {
         users_list_button.setDisable(false);
         createProject.setDisable(false);
@@ -146,12 +147,10 @@ public class IssuesController implements Initializable {
         this.listOfIssues = listOfIssues;
     }
 
-    @FXML
-    public void initialize() {
-        //   listOfUsers.getColumns().add(username);
-        //   listOfUsers.getColumns().add(role);
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        loadIssues();
     }
-
 
     public void createNewIssue(ActionEvent actionEvent) throws IOException {
         disableAllButtons();
@@ -162,7 +161,6 @@ public class IssuesController implements Initializable {
         createIssueController.setCreateIssue(createIssue);
         createIssueController.setEditIssue(editIssue);
         createIssueController.setRemoveIssue(removeIssue);
-        createIssueController.setListOfUsers(listOfUsers);
         createIssueController.setIssuesController(this);
         createIssueController.setUserListButtonOnIssuesScreen(userListButtonOnIssuesScreen);
         createIssueController.setProjectDto(projectDto);
@@ -239,11 +237,6 @@ public class IssuesController implements Initializable {
         }).readValue(Objects.requireNonNull(response.body().string()));
     }
 
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-    }
 }
 
 

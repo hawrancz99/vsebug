@@ -1,5 +1,6 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
 import cz.vse.java.pfej00.tymovyProjekt.Model.ProjectDto;
+import cz.vse.java.pfej00.tymovyProjekt.builders.PopupBuilder;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,6 +38,8 @@ public class EditProjectController {
 
     private ProjectsController projectsController;
 
+    private List<ProjectDto> projects;
+
     ///////////////nutný pro enable :)
 
     private Button users_list_button;
@@ -48,6 +52,10 @@ public class EditProjectController {
 
 
     private static final Logger logger = LogManager.getLogger(EditProjectController.class);
+
+    public void setProjects(List<ProjectDto> projects) {
+        this.projects = projects;
+    }
 
     public void setButtonWithProjectName(Button buttonWithProjectName) {
         this.buttonWithProjectName = buttonWithProjectName;
@@ -79,7 +87,9 @@ public class EditProjectController {
 
     @FXML
     public void saveName(ActionEvent event) {
-        if (textChange.getText() != null) {
+        if (textChange.getText().isEmpty()) {
+            PopupBuilder.loadPopup("/allFieldsValid.html");
+        }else if(!projectAlreadyExists(textChange.getText())){
             String firstTimeName = buttonWithProjectName.getText();
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
@@ -123,6 +133,9 @@ public class EditProjectController {
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             executorService.submit(task);
             executorService.shutdown();
+        } else {
+            textChange.clear();
+            PopupBuilder.loadPopup("/projectNotUnique.html");
         }
     }
 
@@ -133,6 +146,17 @@ public class EditProjectController {
         for (Button b : buttons) {
             b.setDisable(false);
         }
+    }
+
+    private boolean projectAlreadyExists(String projectName){
+        boolean exists = false;
+        for (ProjectDto project : projects) {
+            if (projectName.equals(project.getName())) {
+                exists = true;
+                break;
+            }
+        }
+        return exists;
     }
 
 }
