@@ -191,6 +191,24 @@ public class ServerClient {
         return null;
     }
 
+    public Response sendDeleteIssue(String post) throws Exception {
+        int id = Integer.parseInt(post);
+        Request request = new Request.Builder()
+                .url("https://vsebug-be.herokuapp.com/issues/" + id +"/")
+                .delete()
+                .addHeader("authorization", TOKEN)
+                .build();
+
+        try {
+            logger.info("Deleting issue with id {}", id);
+            return httpClient.newCall(request).execute();
+        }
+        catch (IOException e) {
+            logger.error("Error while deleting issue caused by {}", e.getMessage());
+        }
+        return null;
+    }
+
     //Projects
     public Response sendGetProjects() throws Exception {
         Request request = new Request.Builder()

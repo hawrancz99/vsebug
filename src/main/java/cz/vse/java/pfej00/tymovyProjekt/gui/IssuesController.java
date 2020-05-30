@@ -295,7 +295,6 @@ public class IssuesController implements Initializable {
             //později můžu dodat i ten disable...
             extendedIssue.setIssuesController(this);
             extendedIssue.setUsersList(localLoadedUsers);
-            extendedIssue.setLoadedIssues(loadedIssues);
             extendedIssues.add(extendedIssue);
         }
         issues.addAll(loadedIssues);

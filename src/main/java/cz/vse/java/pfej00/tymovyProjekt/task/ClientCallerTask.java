@@ -36,6 +36,9 @@ public class ClientCallerTask extends Task<Response> {
         if (url.equals("sendUpdateIssue")) {
            return SERVER_CLIENT.sendUpdateIssue(post);
         }
+        if (url.equals("sendDeleteIssue")) {
+            return SERVER_CLIENT.sendDeleteIssue(post);
+        }
         if (url.equals("sendLoginUser")) {
             return SERVER_CLIENT.sendLoginUser(post);
         }

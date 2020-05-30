@@ -23,7 +23,6 @@ public class ExtendedIssue extends IssueDto {
 
     private List<UserDto> usersList;
 
-    private List<IssueDto> loadedIssues;
 
     public Button getButton() {
         return button;
@@ -41,9 +40,6 @@ public class ExtendedIssue extends IssueDto {
         this.usersList = usersList;
     }
 
-    public void setLoadedIssues(List<IssueDto> loadedIssues) {
-        this.loadedIssues = loadedIssues;
-    }
 
     public ExtendedIssue(){
         button.setOnAction(new EventHandler<ActionEvent>() {
@@ -53,7 +49,7 @@ public class ExtendedIssue extends IssueDto {
                 try {
                     root = fxmlLoader.load();
                     EditIssueController editIssueController = fxmlLoader.getController();
-                    editIssueController.acceptDataFromIssue(getId(), getName(), issuesController, getState(), getDescription(), getAssignee().getUsername(), usersList, loadedIssues);
+                    editIssueController.acceptDataFromIssue(getId(), getName(), issuesController, getState(), getDescription(), getAssignee().getUsername(), usersList);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

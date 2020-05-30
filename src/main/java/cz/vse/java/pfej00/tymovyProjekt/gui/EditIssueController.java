@@ -49,7 +49,6 @@ public class EditIssueController {
 
     private List<UserDto> listOfUsers = new ArrayList<>();
 
-    private List<IssueDto> listOfIssues = new ArrayList<>();
 
     private static final Logger logger = LogManager.getLogger(IssuesController.class);
 
@@ -58,18 +57,49 @@ public class EditIssueController {
     @FXML
     public void initialize(){
         save.setOnAction(this::saveEditedIssue);
+        delete.setOnAction(this::deleteIssue);
     }
 
-    @FXML
-    public void deleteIssue(ActionEvent event) {
+    private void deleteIssue(ActionEvent event) {
+        Stage stg = new Stage();
+        //musim to tam poslat jako string
+        String post = "" + issueId + "";
+        ClientCallerTask task = new ClientCallerTask("sendDeleteIssue", post);
+        task.setOnRunning((successEvent) -> {
+            stg.show();
+        });
 
+        task.setOnSucceeded((succeededEvent) -> {
+            stg.hide();
+            try {
+                Response response = task.get();
+                if (response.isSuccessful()) {
+                    Stage editStage = (Stage) nameEdit.getScene().getWindow();
+                    editStage.close();
+                    issuesController.fillIssuesTable();
+                    logger.info("Issue {} was deleted", issueId);
+                } else logger.error("Error while deleting issue {}, caused by {}", issueId, response);
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error("Error while deleting issue {}, caused by {}", issueId, e.getMessage());
+            }
+        });
+
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.progressProperty().bind(task.progressProperty());
+        stg.setScene(new Scene(progressBar));
+        stg.initStyle(StageStyle.UNDECORATED);
+        stg.setAlwaysOnTop(true);
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(task);
+        executorService.shutdown();
     }
 
 
-    public void saveEditedIssue(Event event) {
+    private void saveEditedIssue(Event event) {
         if (nameEdit.getText().isEmpty() || descEdit.getText().isEmpty() /* tamto nejde zvolit prázdný*/) {
             PopupBuilder.loadPopup("/allFieldsValid.html");
-        }else if (!issueAlreadyExists(nameEdit.getText())){
+        }else {
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
             post.put("issueId", issueId);
@@ -108,15 +138,12 @@ public class EditIssueController {
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             executorService.submit(task);
             executorService.shutdown();
-        } else {
-            PopupBuilder.loadPopup("/issueNotUnique.html");
         }
     }
 
-    public void acceptDataFromIssue(int issueId,String nameText, IssuesController issuesController, String stateText, String description, String assignTo, List<UserDto> acceptedUsers, List<IssueDto> acceptedIssues){
+    public void acceptDataFromIssue(int issueId,String nameText, IssuesController issuesController, String stateText, String description, String assignTo, List<UserDto> acceptedUsers){
         this.issueId = issueId;
         this.listOfUsers.addAll(acceptedUsers);
-        this.listOfIssues.addAll(acceptedIssues);
         this.choiceState.getItems().addAll("Open", "Closed", "New", "Fixed");
         this.choiceState.setValue(stateText);
         this.nameEdit.setText(nameText);
@@ -132,16 +159,6 @@ public class EditIssueController {
         }
     }
 
-    private boolean issueAlreadyExists(String issueName){
-        boolean exists = false;
-        for (IssueDto i : listOfIssues) {
-            if (issueName.equals(i.getName())) {
-                exists = true;
-                break;
-            }
-        }
-        return exists;
-    }
     private int getAssigneeIdByUsername(String username){
         for(UserDto user : listOfUsers){
             if(user.getUsername().equals(username)){
