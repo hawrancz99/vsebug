@@ -2,9 +2,7 @@ package cz.vse.java.pfej00.tymovyProjekt.gui;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.vse.java.pfej00.tymovyProjekt.Model.CurrentOpenedProject;
-import cz.vse.java.pfej00.tymovyProjekt.Model.ProjectDto;
-import cz.vse.java.pfej00.tymovyProjekt.Model.UserDto;
+import cz.vse.java.pfej00.tymovyProjekt.Model.*;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.collections.FXCollections;
@@ -18,7 +16,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 
-import cz.vse.java.pfej00.tymovyProjekt.Model.IssueDto;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -39,25 +36,25 @@ import java.util.concurrent.Executors;
 
 public class IssuesController implements Initializable {
     @FXML
-    private TableView<IssueDto> issueDtoTableView;
+    private TableView<ExtendedIssue> issueDtoTableView;
 
     @FXML
     private TextField searchIssues = new TextField();
 
     @FXML
-    private TableColumn<IssueDto, String> issueNameColumn = new TableColumn<>();
+    private TableColumn<ExtendedIssue, String> issueNameColumn = new TableColumn<>();
 
     @FXML
-    private TableColumn<IssueDto, String> descriptionColumn = new TableColumn<>();
+    private TableColumn<ExtendedIssue, String> descriptionColumn = new TableColumn<>();
 
     @FXML
-    private TableColumn<IssueDto, String> stateColumn = new TableColumn<>();
+    private TableColumn<ExtendedIssue, String> stateColumn = new TableColumn<>();
 
     @FXML
-    private TableColumn<IssueDto, UserDto> assignedToColumn = new TableColumn<>();
+    private TableColumn<ExtendedIssue, UserDto> assignedToColumn = new TableColumn<>();
 
     @FXML
-    private TableColumn<IssueDto, Date> createdColumn = new TableColumn<>();
+    private TableColumn<ExtendedIssue, Date> createdColumn = new TableColumn<>();
 
     @FXML
     private TableColumn buttonColumn = new TableColumn<>();
@@ -80,6 +77,8 @@ public class IssuesController implements Initializable {
 
    private List<IssueDto> localLoadedIssues = new ArrayList<>();
 
+   private List<UserDto> localLoadedUsers = new ArrayList<>();
+
     private static final Logger logger = LogManager.getLogger(IssuesController.class);
 
 
@@ -91,7 +90,6 @@ public class IssuesController implements Initializable {
         disableAllButtons();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/list_of_users.fxml"));
         Parent root = fxmlLoader.load();
-        UsersListController usersListController = fxmlLoader.getController();
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
         primaryStage.setTitle("");
@@ -103,13 +101,15 @@ public class IssuesController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        issueNameColumn.setCellValueFactory(new PropertyValueFactory<IssueDto, String>("name"));
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<IssueDto, String>("description"));
-        createdColumn.setCellValueFactory(new PropertyValueFactory<IssueDto, Date>("created"));
-        stateColumn.setCellValueFactory(new PropertyValueFactory<IssueDto, String>("state"));
-        assignedToColumn.setCellValueFactory(new PropertyValueFactory<IssueDto, UserDto>("assignee"));
+        issueNameColumn.setCellValueFactory(new PropertyValueFactory<ExtendedIssue, String>("name"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<ExtendedIssue, String>("description"));
+        createdColumn.setCellValueFactory(new PropertyValueFactory<ExtendedIssue, Date>("created"));
+        stateColumn.setCellValueFactory(new PropertyValueFactory<ExtendedIssue, String>("state"));
+        assignedToColumn.setCellValueFactory(new PropertyValueFactory<ExtendedIssue, UserDto>("assignee"));
+        buttonColumn.setCellValueFactory(new PropertyValueFactory<ExtendedIssue, Button>("button"));
 
         fillIssuesTable();
+        loadUsers();
     }
 
     public void createNewIssue(ActionEvent actionEvent) throws IOException {
@@ -136,6 +136,46 @@ public class IssuesController implements Initializable {
         {
             enableAllCreateIssueuttons();
         });
+    }
+
+
+    private void loadUsers(){
+        Stage stg = new Stage();
+        ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
+        task.setOnRunning((successEvent) -> {
+            stg.show();
+        });
+
+        task.setOnSucceeded((succeededEvent) -> {
+            stg.hide();
+            try {
+                Response response = task.get();
+                if (response.isSuccessful()) {
+                    List<UserDto> users = fillAssignToValues(response);
+                    localLoadedUsers.addAll(users);
+                    logger.info("Users loaded successfully");
+                } else logger.error("Error while loading issues, caused by {}", response);
+            } catch (InterruptedException | ExecutionException | IOException e) {
+                logger.error("Error while loading issues, caused by {}", e.getMessage());
+            }
+        });
+
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.progressProperty().bind(task.progressProperty());
+        stg.setScene(new Scene(progressBar));
+        stg.initStyle(StageStyle.UNDECORATED);
+        stg.setAlwaysOnTop(true);
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(task);
+        executorService.shutdown();
+    }
+
+    private List<UserDto> fillAssignToValues(Response response) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        return objectMapper.reader().forType(new TypeReference<List<UserDto>>() {
+        }).readValue(Objects.requireNonNull(response.body().string()));
     }
 
 
@@ -199,8 +239,9 @@ public class IssuesController implements Initializable {
     }
 
     private void fillFilteredIssues(List<IssueDto> issues) {
-        ObservableList localList = getUsers(issues);
-        FilteredList<IssueDto> filteredList = new FilteredList(localList, p -> true);;//Pass the data to a filtered list
+        choiceBox.getItems().clear();
+        ObservableList localList = getIssues(issues);
+        FilteredList<ExtendedIssue> filteredList = new FilteredList(localList, p -> true);;//Pass the data to a filtered list
         issueDtoTableView.setItems(filteredList);//Set the table's items using the filtered list
         choiceBox.getItems().addAll("name", "state", "description", "assignee", "created");
         choiceBox.setValue("name");
@@ -238,10 +279,27 @@ public class IssuesController implements Initializable {
 
     }
 
-    private ObservableList<IssueDto> getUsers(List<IssueDto> loadedIssues) {
+    private ObservableList<ExtendedIssue> getIssues(List<IssueDto> loadedIssues) {
+        ObservableList<ExtendedIssue> extendedIssues = FXCollections.observableArrayList();
         ObservableList<IssueDto> issues = FXCollections.observableArrayList();
+        for(IssueDto i : loadedIssues){
+            ExtendedIssue extendedIssue = new ExtendedIssue();
+            extendedIssue.setAssignee(i.getAssignee());
+            extendedIssue.setCreated(i.getCreated());
+            extendedIssue.setDescription(i.getDescription());
+            extendedIssue.setId(i.getId());
+            extendedIssue.setName(i.getName());
+            extendedIssue.setState(i.getState());
+            extendedIssue.setProject(i.getProject());
+            //abych po zavření mohl volat ten refresh
+            //později můžu dodat i ten disable...
+            extendedIssue.setIssuesController(this);
+            extendedIssue.setUsersList(localLoadedUsers);
+            extendedIssue.setLoadedIssues(loadedIssues);
+            extendedIssues.add(extendedIssue);
+        }
         issues.addAll(loadedIssues);
-        return issues;
+        return extendedIssues;
     }
 }
 

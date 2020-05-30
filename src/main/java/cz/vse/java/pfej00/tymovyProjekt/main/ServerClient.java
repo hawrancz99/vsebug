@@ -132,10 +132,28 @@ public class ServerClient {
         return null;
     }
 
-    public Response sendUpdateIssue() throws Exception {
-            RequestBody requestBody = RequestBody.create("asdawd".getBytes());
-            Request request = new Request.Builder().method("POST", requestBody).build();
+    public Response sendUpdateIssue(String post) throws Exception {
+        //musim rozsekat ten post a vzít si z toho jen to co chci
+        final ObjectNode node = new ObjectMapper().readValue(post, ObjectNode.class);
+        JsonNode idAsText = node.get("issueId");
+        int issueId = idAsText.asInt();
+        node.remove("issueId");
+
+        RequestBody body = RequestBody.create(node.toString(), MediaType.parse("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url("https://vsebug-be.herokuapp.com/issues/" + issueId +"/")
+                .put(body)
+                .addHeader("authorization", TOKEN)
+                .build();
+
+        try {
+            logger.info("Updating issue with id {}", issueId);
             return httpClient.newCall(request).execute();
+        }
+        catch (IOException e) {
+            logger.error("Error while updating issue caused by {}", e.getMessage());
+        }
+        return null;
     }
 
     public Response sendCreateIssue(String post) throws Exception {
@@ -249,7 +267,7 @@ public class ServerClient {
             return httpClient.newCall(request).execute();
         }
         catch (IOException e) {
-            logger.error("Error while updating project project caused by {}", e.getMessage());
+            logger.error("Error while updating project caused by {}", e.getMessage());
         }
         return null;
     }

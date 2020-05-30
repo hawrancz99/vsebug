@@ -4,17 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.vse.java.pfej00.tymovyProjekt.Model.IssueDto;
-import cz.vse.java.pfej00.tymovyProjekt.Model.ProjectDto;
 import cz.vse.java.pfej00.tymovyProjekt.Model.UserDto;
 import cz.vse.java.pfej00.tymovyProjekt.builders.PopupBuilder;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import okhttp3.Response;
@@ -118,8 +114,8 @@ public class CreateIssueController {
             Stage stg = new Stage();
             JSONObject post = new JSONObject();
             post.put("name", issueName.getText());
-            //asi může zůstat, nový budou vždycky new
-            post.put("state", 1);
+            //nový budou vždycky new = 3
+            post.put("state", 3);
             post.put("description", description.getText());
             post.put("project", projectId);
             //zatim takhle než zjistíme formát

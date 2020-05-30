@@ -51,8 +51,6 @@ public class ProjectsController {
     @FXML
     public AnchorPane allButtons;
 
-    private List<UserDto> listOfUsers = new ArrayList<>();
-
     private List<ProjectDto> projects = new ArrayList<>();
 
     private final String GET_PROJECTS = "sendGetProjects";
