@@ -223,6 +223,7 @@ public class ProjectsController {
                             editProjectController.setLog_out(log_out);
                             editProjectController.setUsers_list_button(users_list_button);
                             editProjectController.setCreateProject(createProject);
+                            editProjectController.setProjects(projects);
                             Stage primaryStage = new Stage();
                             primaryStage.initStyle(StageStyle.UTILITY);
                             primaryStage.setTitle("");
