@@ -41,7 +41,7 @@ public class UsersListController implements Initializable {
     private TextField search;
 
     @FXML
-    private Button back;
+    private ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
     private List<UserDto> listOfUsers;
 
@@ -118,7 +118,6 @@ public class UsersListController implements Initializable {
         ObservableList localList = getUsers(users);
         FilteredList<UserDto> flPerson = new FilteredList(localList, p -> true);;//Pass the data to a filtered list
         usersTableView.setItems(flPerson);//Set the table's items using the filtered list
-        ChoiceBox<String> choiceBox = new ChoiceBox<>();
         choiceBox.getItems().addAll("username", "role");
         choiceBox.setValue("username");
         search.setPromptText("Search here!");
