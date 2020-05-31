@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cz.vse.java.pfej00</groupId>
-    <artifactId>pfej00-Týmový-projekt</artifactId>
+    <artifactId>pfej00-Tymovy-projekt</artifactId>
     <version>1.0.0</version>
     <build>
         <plugins>
