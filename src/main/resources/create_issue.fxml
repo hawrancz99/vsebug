@@ -9,19 +9,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="413.0" prefWidth="523.0" style="-fx-background-color: #0598FF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.CreateIssueController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="413.0" prefWidth="523.0" styleClass="anchorEdit" stylesheets="@table.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.CreateIssueController">
    <children>
-      <Label layoutX="202.0" layoutY="14.0" text="Create new issue" textFill="WHITE">
+      <Label layoutX="181.0" layoutY="14.0" text="Create new issue" textFill="WHITE">
          <font>
-            <Font name="System Bold" size="25.0" />
+            <Font size="25.0" />
          </font>
       </Label>
-      <Button layoutX="14.0" layoutY="16.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="33.0" style="-fx-background-color: transparent; -fx-border-color: white;" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Button>
-      <FontAwesomeIcon fill="WHITE" glyphName="ARROW_LEFT" layoutX="18.0" layoutY="40.0" size="2em" wrappingWidth="25.714284896850586" />
       <Label layoutX="56.0" layoutY="67.0" text="Name:" textFill="WHITE">
          <font>
             <Font size="18.0" />
@@ -40,7 +34,7 @@
       <TextField fx:id="issueName" layoutX="114.0" layoutY="65.0" prefHeight="32.0" prefWidth="371.0" />
       <TextArea fx:id="description" layoutX="114.0" layoutY="127.0" prefHeight="126.0" prefWidth="371.0" />
       <ChoiceBox fx:id="assignToNew" layoutX="114.0" layoutY="289.0" prefHeight="26.0" prefWidth="371.0" />
-      <FontAwesomeIcon fill="WHITE" glyphName="PENCIL" layoutX="167.0" layoutY="40.0" size="2em" />
+      <FontAwesomeIcon fill="WHITE" glyphName="PENCIL" layoutX="146.0" layoutY="40.0" size="2em" />
       <Button fx:id="save" layoutX="210.0" layoutY="353.0" mnemonicParsing="false" onAction="#handle" prefHeight="32.0" prefWidth="104.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Save" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />

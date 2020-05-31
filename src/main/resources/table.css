@@ -37,3 +37,10 @@
 -fx-background-image:url('desert.jpeg');
 }
 
+.anchorUsers{
+-fx-background-image:url('usersPeople.jpeg');
+}
+.anchorEdit{
+-fx-background-image:url('anchorEdit.jpeg');
+}
+

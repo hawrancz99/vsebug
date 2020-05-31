@@ -7,23 +7,23 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.EditProjectController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="256.0" prefWidth="600.0" style="-fx-background-color: #0598ff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="413.0" prefWidth="523.0" styleClass="anchorEdit" stylesheets="@table.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.EditProjectController">
    <children>
-      <Label layoutX="230.0" layoutY="24.0" text="Edit project" textFill="WHITE">
+      <Label layoutX="195.0" layoutY="56.0" text="Edit project" textFill="WHITE">
          <font>
             <Font size="28.0" />
          </font>
       </Label>
-      <Button fx:id="save" onAction="#saveName" layoutX="257.0" layoutY="142.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="86.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Save" textFill="WHITE">
+      <Button fx:id="save" layoutX="209.0" layoutY="175.0" mnemonicParsing="false" onAction="#saveName" prefHeight="40.0" prefWidth="86.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Save" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font></Button>
-      <TextField fx:id="textChange" layoutX="231.0" layoutY="87.0" />
-      <Label layoutX="115.0" layoutY="86.0" text="Change name:" textFill="WHITE">
+      <TextField fx:id="textChange" layoutX="222.0" layoutY="119.0" />
+      <Label layoutX="106.0" layoutY="118.0" text="Change name:" textFill="WHITE">
          <font>
             <Font size="17.0" />
          </font>
       </Label>
-      <FontAwesomeIcon fill="WHITE" glyphName="PENCIL" layoutX="194.0" layoutY="52.0" size="2em" />
+      <FontAwesomeIcon fill="WHITE" glyphName="PENCIL" layoutX="167.0" layoutY="84.0" size="2em" />
    </children>
 </AnchorPane>
