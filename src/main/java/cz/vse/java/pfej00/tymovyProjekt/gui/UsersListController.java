@@ -47,6 +47,11 @@ public class UsersListController implements Initializable {
 
     private static final Logger logger = LogManager.getLogger(IssuesController.class);
 
+
+    /**
+     * Metoda při inicializaci kontroleru
+     * naplní tabulku uživateli
+     * */
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
         usernameColumn.setCellValueFactory(new PropertyValueFactory<UserDto, String>("username"));

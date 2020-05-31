@@ -17,7 +17,6 @@ import okhttp3.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -177,6 +176,14 @@ public class EditProjectController {
             }
         }
         return exists;
+    }
+
+    /**
+     * Metoda nastavuje na obrazovce
+     * jméno editovaného projektu
+     * */
+    public void passProjectName(String projectName){
+        this.textChange.setText(projectName);
     }
 
 }

@@ -231,6 +231,7 @@ public class ProjectsController {
                             editProjectController.setUsers_list_button(users_list_button);
                             editProjectController.setCreateProject(createProject);
                             editProjectController.setProjects(projects);
+                            editProjectController.passProjectName(b.getText());
                             Stage primaryStage = new Stage();
                             primaryStage.initStyle(StageStyle.UTILITY);
                             primaryStage.setTitle("");
