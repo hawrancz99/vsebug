@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="573.0" prefWidth="808.0" styleClass="anchorUsers" stylesheets="@table.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.vse.java.pfej00.tymovyProjekt.gui.UsersListController">
+   <children>
+      <Label layoutX="356.0" layoutY="24.0" text="List of users" textFill="WHITE">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Label>
+      <Label layoutX="188.0" layoutY="112.0" text="Search by:" textFill="WHITE">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <TextField fx:id="search" layoutX="443.0" layoutY="113.0" />
+      <TableView fx:id="usersTableView" layoutX="72.0" layoutY="159.0" prefHeight="341.0" prefWidth="664.0" stylesheets="@table.css">
+        <columns>
+          <TableColumn fx:id="usernameColumn" prefWidth="330.0" text="username" />
+          <TableColumn fx:id="roleColumn" prefWidth="332.0" text="role" />
+        </columns>
+      </TableView>
+      <FontAwesomeIcon fill="WHITE" glyphName="USERS" layoutX="305.0" layoutY="56.0" size="3em" />
+      <FontAwesomeIcon fill="WHITE" glyphName="SEARCH" layoutX="282.0" layoutY="134.0" size="2em" text="" />
+      <ChoiceBox fx:id="choiceBox" layoutX="322.0" layoutY="112.0" prefHeight="26.0" prefWidth="106.0" style="-fx-background-color: white;" />
+   </children>
+</AnchorPane>
