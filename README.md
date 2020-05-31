@@ -1,5 +1,8 @@
 **Název aplikace:** VŠEBUG
 
+
+![Všebug](src/main/resources/readme.jpg)
+
 *Aplikace projektového řízení, pro přehledné sledování problémů a bugů nejen v IT projektech.*
 
 **Seznam členů týmu:** Jan Pfeiffer, Jan Podestát, Lukáš Vávra
