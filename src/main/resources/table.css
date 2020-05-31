@@ -4,7 +4,9 @@
 	-fx-background-radius: 25px;
 	-fx-fill:white;
 }
-
+.table-column {
+  -fx-alignment: CENTER;
+}
 .table-view .column-header-background{
 	-fx-background-color:#575757;
 	-fx-background-radius: 30px;

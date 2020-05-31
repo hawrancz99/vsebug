@@ -22,6 +22,7 @@ import java.util.List;
 public class ExtendedIssue extends IssueDto {
     private Button button = new Button("edit");
 
+
     private IssuesController issuesController;
 
     private List<UserDto> usersList;
@@ -52,6 +53,7 @@ public class ExtendedIssue extends IssueDto {
      */
 
     public ExtendedIssue() {
+        button.setStyle("-fx-background-color: #edc9af; ");
         button.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/edit_issue.fxml"));

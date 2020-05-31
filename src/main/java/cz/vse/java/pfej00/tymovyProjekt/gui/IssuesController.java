@@ -109,6 +109,7 @@ public class IssuesController implements Initializable {
         assignedToColumn.setCellValueFactory(new PropertyValueFactory<ExtendedIssue, UserDto>("assignee"));
         buttonColumn.setCellValueFactory(new PropertyValueFactory<ExtendedIssue, Button>("button"));
 
+
         fillIssuesTable();
         loadUsers();
     }
