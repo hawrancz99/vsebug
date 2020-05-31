@@ -92,27 +92,7 @@ public class ServerClient {
         }
         return null;
     }
-
-
-    /**
-     * Metoda vrací všechny vytvořené Issues
-     * metoda - get
-     */
-    //ISSUE OPERATIONS
-    public Response sendGetIssues() throws Exception {
-        Request request = new Request.Builder()
-                .url("https://vsebug-be.herokuapp.com/issues/")
-                .addHeader("authorization", TOKEN)
-                .get()
-                .build();
-        try {
-            logger.info("Getting issues");
-            return httpClient.newCall(request).execute();
-        } catch (IOException e) {
-            logger.error("Error occurred while getting issues, caused by {}", e.getMessage());
-        }
-        return null;
-    }
+    
 
     /**
      * Metoda vrací Issue ke konkrétnímu projektu
@@ -122,6 +102,7 @@ public class ServerClient {
      *
      * @param post
      **/
+    //ISSUE OPERATIONS
     public Response sendGetIssuesForProject(String post) throws Exception {
 
         int id = Integer.parseInt(post);

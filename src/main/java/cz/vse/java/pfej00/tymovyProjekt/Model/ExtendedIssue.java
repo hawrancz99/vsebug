@@ -20,12 +20,10 @@ import java.util.List;
  * potřebné pro práci s EditIssueControllerem.
  */
 public class ExtendedIssue extends IssueDto {
+
     private Button button = new Button("edit");
 
-
     private IssuesController issuesController;
-
-    private List<UserDto> usersList;
 
 
     public Button getButton() {
@@ -38,10 +36,6 @@ public class ExtendedIssue extends IssueDto {
 
     public void setIssuesController(IssuesController issuesController) {
         this.issuesController = issuesController;
-    }
-
-    public void setUsersList(List<UserDto> usersList) {
-        this.usersList = usersList;
     }
 
 
@@ -61,7 +55,7 @@ public class ExtendedIssue extends IssueDto {
                 try {
                     root = fxmlLoader.load();
                     EditIssueController editIssueController = fxmlLoader.getController();
-                    editIssueController.acceptDataFromIssue(getId(), getName(), issuesController, getState(), getDescription(), getAssignee().getUsername(), usersList);
+                    editIssueController.acceptDataFromIssue(getId(), getName(), issuesController, getState(), getDescription(), getAssignee().getUsername());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

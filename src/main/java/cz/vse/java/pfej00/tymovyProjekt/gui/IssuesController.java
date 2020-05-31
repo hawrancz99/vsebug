@@ -73,8 +73,6 @@ public class IssuesController implements Initializable {
 
     private List<IssueDto> localLoadedIssues = new ArrayList<>();
 
-    private List<UserDto> localLoadedUsers = new ArrayList<>();
-
     private static final Logger logger = LogManager.getLogger(IssuesController.class);
 
     /**
@@ -111,7 +109,6 @@ public class IssuesController implements Initializable {
 
 
         fillIssuesTable();
-        loadUsers();
     }
 
     /**
@@ -131,6 +128,7 @@ public class IssuesController implements Initializable {
         createIssueController.setUserListButtonOnIssuesScreen(userListButtonOnIssuesScreen);
         //dělam to takhle, protože kvůli initialize nemůžu volat LOAD na screeně
         createIssueController.setProjectId(CurrentOpenedProject.getPROJECT().getProjetId());
+        //kvůli unikátnosti jména
         createIssueController.setIssues(localLoadedIssues);
         Stage primaryStage = new Stage();
         primaryStage.initStyle(StageStyle.UTILITY);
@@ -144,42 +142,6 @@ public class IssuesController implements Initializable {
         });
     }
 
-
-    /**
-     * Metoda načítá všechny uživatele
-     * voláním BE
-     */
-    private void loadUsers() {
-        Stage stg = new Stage();
-        ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
-        task.setOnRunning((successEvent) -> {
-            stg.show();
-        });
-
-        task.setOnSucceeded((succeededEvent) -> {
-            stg.hide();
-            try {
-                Response response = task.get();
-                if (response.isSuccessful()) {
-                    List<UserDto> users = fillAssignToValues(response);
-                    localLoadedUsers.addAll(users);
-                    logger.info("Users loaded successfully");
-                } else logger.error("Error while loading issues, caused by {}", response);
-            } catch (InterruptedException | ExecutionException | IOException e) {
-                logger.error("Error while loading issues, caused by {}", e.getMessage());
-            }
-        });
-
-        ProgressBar progressBar = new ProgressBar();
-        progressBar.progressProperty().bind(task.progressProperty());
-        stg.setScene(new Scene(progressBar));
-        stg.initStyle(StageStyle.UNDECORATED);
-        stg.setAlwaysOnTop(true);
-
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(task);
-        executorService.shutdown();
-    }
 
     /**
      * Metoda přemapovává uživatele z databáze
@@ -333,8 +295,6 @@ public class IssuesController implements Initializable {
             extendedIssue.setProject(i.getProject());
             //abychom po zavření mohli volat ten refresh, potřebujeme i controller
             extendedIssue.setIssuesController(this);
-            //abychom na editační obrazovce nemuseli volat znovu getUsers
-            extendedIssue.setUsersList(localLoadedUsers);
             extendedIssues.add(extendedIssue);
         }
         return extendedIssues;

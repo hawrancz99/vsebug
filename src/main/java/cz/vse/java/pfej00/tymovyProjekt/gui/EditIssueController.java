@@ -1,5 +1,8 @@
 package cz.vse.java.pfej00.tymovyProjekt.gui;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.vse.java.pfej00.tymovyProjekt.Model.*;
 import cz.vse.java.pfej00.tymovyProjekt.builders.PopupBuilder;
 import cz.vse.java.pfej00.tymovyProjekt.task.ClientCallerTask;
@@ -14,8 +17,11 @@ import okhttp3.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,6 +63,42 @@ public class EditIssueController {
     public void initialize() {
         save.setOnAction(this::saveEditedIssue);
         delete.setOnAction(this::deleteIssue);
+        loadUsers();
+    }
+
+
+    private void loadUsers() {
+        Stage stg = new Stage();
+        ClientCallerTask task = new ClientCallerTask("sendGetUsers", null);
+        task.setOnRunning((successEvent) -> {
+            stg.show();
+        });
+
+        task.setOnSucceeded((succeededEvent) -> {
+            stg.hide();
+            try {
+                Response response = task.get();
+                if (response.isSuccessful()) {
+                    List<UserDto> users = fillTableWithUsers(response);
+                    listOfUsers.addAll(users);
+                    fillChoiceAssign();
+
+                    logger.info("Users loaded successfully");
+                } else logger.error("Error while loading issues, caused by {}", response);
+            } catch (InterruptedException | ExecutionException | IOException e) {
+                logger.error("Error while loading issues, caused by {}", e.getMessage());
+            }
+        });
+
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.progressProperty().bind(task.progressProperty());
+        stg.setScene(new Scene(progressBar));
+        stg.initStyle(StageStyle.UNDECORATED);
+        stg.setAlwaysOnTop(true);
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(task);
+        executorService.shutdown();
     }
 
 
@@ -149,17 +191,28 @@ public class EditIssueController {
     }
 
     /**
+     * Metoda přemapuje RESPONSE ve formě
+     * STRING (json) do listu uživatelů
+     *
+     * @param response
+     */
+    private List<UserDto> fillTableWithUsers(Response response) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        return objectMapper.reader().forType(new TypeReference<List<UserDto>>() {
+        }).readValue(Objects.requireNonNull(response.body().string()));
+    }
+
+    /**
      * Metoda získává potřebná data o issue
      */
-    public void acceptDataFromIssue(int issueId, String nameText, IssuesController issuesController, String stateText, String description, String assignTo, List<UserDto> acceptedUsers) {
+    public void acceptDataFromIssue(int issueId, String nameText, IssuesController issuesController, String stateText, String description, String assignTo) {
         this.issueId = issueId;
-        this.listOfUsers.addAll(acceptedUsers);
         this.choiceState.getItems().addAll("Open", "Closed", "New", "Fixed");
         this.choiceState.setValue(stateText);
         this.nameEdit.setText(nameText);
         this.issuesController = issuesController;
         this.descEdit.setText(description);
-        fillChoiceAssign();
         this.choiceAssign.setValue(assignTo.toLowerCase());
     }
 

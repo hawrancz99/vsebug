@@ -32,9 +32,6 @@ public class ClientCallerTask extends Task<Response> {
 
     @Override
     public Response call() throws Exception {
-        if (url.equals("sendGetIssues")) {
-            return SERVER_CLIENT.sendGetIssues();
-        }
         if (url.equals("sendGetIssuesForProject")) {
             return SERVER_CLIENT.sendGetIssuesForProject(post);
         }
