@@ -176,13 +176,13 @@ public class ProjectsController {
             imageView.setFitHeight(20);
             imageView.setFitWidth(20);
             deleteB.setGraphic(imageView);
-            deleteB.setBackground(new Background(new BackgroundFill(Color.rgb(255, 255, 255), CornerRadii.EMPTY, Insets.EMPTY)));
+
 
             ImageView imageView1 = new ImageView("/pen.png");
             imageView1.setFitHeight(20);
             imageView1.setFitWidth(20);
             editB.setGraphic(imageView1);
-            editB.setBackground(new Background(new BackgroundFill(Color.rgb(255, 255, 255), CornerRadii.EMPTY, Insets.EMPTY)));
+
 
             deleteB.setOnAction(event -> {
                         hBox.getChildren().clear();

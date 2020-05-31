@@ -47,7 +47,7 @@ public class ExtendedIssue extends IssueDto {
     /**
      * Konstruktor třídy ExtendedIssue, který
      * dědí atributy z IssueDto,
-     * Nastavuje funkci tlačíka BUTTON, kde
+     * Nastavuje funkci tlačítka BUTTON, kde
      * na "akci" otevírá editaci issue
      */
 

@@ -39,7 +39,6 @@ public class UsersListController implements Initializable {
     @FXML
     private ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-
     @FXML
     private TableColumn<UserDto, String> usernameColumn = new TableColumn<>();
 

@@ -51,7 +51,7 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <FontAwesomeIcon fill="WHITE" glyphName="SAVE" layoutX="89.0" layoutY="309.0" size="1.8em" />
-      <FontAwesomeIcon fill="WHITE" glyphName="TRASH" layoutX="358.0" layoutY="311.0" size="1.8em" text="" />
+      <FontAwesomeIcon fill="WHITE" glyphName="SAVE" layoutX="83.0" layoutY="310.0" size="1.8em" />
+      <FontAwesomeIcon fill="WHITE" glyphName="TRASH" layoutX="355.0" layoutY="309.0" size="1.8em" text="" />
    </children>
 </AnchorPane>

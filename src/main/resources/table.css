@@ -29,5 +29,11 @@
 -fx-background-color: #05c5ff;
     }
 
+.anchorProject  {
+-fx-background-image:url('mountains.jpeg');
+}
 
+.anchorIssues{
+-fx-background-image:url('desert.jpeg');
+}
 
